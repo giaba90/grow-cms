@@ -1,27 +1,32 @@
-import prisma from "../../lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import superjson from 'superjson';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import prisma from "../../../lib/prisma";
+import { NextResponse } from "next/server";
+import superjson from "superjson";
 
 // Define types
+type post_status = "draft" | "published" | "archived";
+
 type PostData = {
   title: string;
   content: string;
-  url?: string;
-  description?: string;
-  status?: string;
-  featured?: boolean;
-  author_id: number;
+  url?: string | null;
+  description?: string | null;
+  status?: post_status | null | undefined;
+  featured?: boolean | null;
+  author_id: string | null | undefined;
 };
 
 // Utility function to serialize post
-const serializePost = (post: any) => {
+const serializePost = (post: PostData) => {
   const { json } = superjson.serialize(post);
   return json;
 };
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const id = searchParams.get("id");
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const id = (await params).id;
 
   if (!id) {
     return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
@@ -39,14 +44,18 @@ export async function GET(request: NextRequest) {
     const postSerialized = serializePost(post);
     return NextResponse.json(postSerialized);
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
     const data: PostData = await req.json();
-    const { title, content, url, description, status, featured, author_id } = data;
+    const { title, content, url, description, status, featured, author_id } =
+      data;
 
     if (!title || !content || !author_id) {
       return NextResponse.json(
@@ -72,6 +81,9 @@ export async function POST(req: Request) {
       status: 201,
     });
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
