@@ -1,0 +1,45 @@
+#Name project
+
+GROW CMS - A light cms for create pages and post for my little blog
+
+#Tecnologies 
+
+Framework js : nextjs
+Framework css : tailwindcss
+Library ui : shadcn-ui
+Database : PostgreSQL
+IDE : vs code
+Program Language : Typescript
+CI/CD : GitHub
+Hosting : Vercel (maybe)
+
+-------------------------------
+
+To-do
+
+- route ARTICLES : CRUD
+- route PAGE : CRUD
+- route USER : CRUD
+- route MEDIA : CRUD
+- route TAXONOMY: CRUD
+
+- authentication
+- dashboard 
+- articles section
+- page section
+- user section
+- media section
+- taxonomy section
+
+
+Note: stiamo usando la App Router , Route Handlers
+
+
+Route Handlers are defined in a route.js|ts file inside the app directory:
+
+
+/dashboard         --- cartella: app/dashboard  ---# pagine principale
+/dashboard/articles  --- cartella: app/dashboard/articles  ---# pagina che visualizza tutti gli articoli , lo gestiamo con page.tsx + route.ts
+/dashboard/articles/id -- cartella: app/dashboard/articles/[id] ---# pagina singolo articolo , lo gestiamo con page.tsx + route.ts
+/dashboard/articles/create --cartella: app/dashboard/articles/create ---# pagina per la creazione singolo articolo , lo gestiamo con page.tsx + rpute.ts
+/dashboard/articles/id/edit -- cartella: app/dashboard/articles/[id] ---# pagina modifica singolo articolo , lo gestiamo con edit.tsx + route.ts
