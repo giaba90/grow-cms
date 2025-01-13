@@ -1,10 +1,5 @@
-async function fetchArticle(id: string): Promise<PostData> {
-  const res = await fetch(`${process.env.BASE_URL_API}/articles/${id}`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch article");
-  }
-  return res.json();
-}
+// app/dashboard/articles/[id]/page.tsx
+import { fetchArticle } from "@/lib/api/articles";
 
 export default async function ArticlePage({
   params,
