@@ -1,26 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { serializePost } from "@/app/utils/utility";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import superjson from "superjson";
-
-// Define types
-type post_status = "draft" | "published" | "archived";
-
-type PostData = {
-  title: string;
-  content: string;
-  url?: string | null;
-  description?: string | null;
-  status?: post_status | null | undefined;
-  featured?: boolean | null;
-  author_id: string | null | undefined;
-};
-
-// Utility function to serialize post
-const serializePost = (post: PostData) => {
-  const { json } = superjson.serialize(post);
-  return json;
-};
 
 export async function GET(
   request: Request,
