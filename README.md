@@ -1,6 +1,6 @@
 ## Name project
 
-GROW CMS - A slim cms for create pages and post for my little blog
+GROW CMS - A light cms for create pages and post for my little blog
 
 ## Tecnologies 
 
