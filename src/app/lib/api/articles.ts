@@ -1,10 +1,4 @@
 // lib/api/articles.ts
-export type Article = {
-  id: string;
-  title: string;
-  content: string;
-};
-
 import { API_BASE_URL } from "./configs";
 // Fetch tutti gli articoli
 export async function fetchArticles(): Promise<Article[]> {
@@ -14,7 +8,6 @@ export async function fetchArticles(): Promise<Article[]> {
   }
   return res.json();
 }
-
 // Fetch singolo articolo
 export async function fetchArticle(id: string): Promise<Article> {
   const res = await fetch(`${API_BASE_URL}/articles/${id}`);

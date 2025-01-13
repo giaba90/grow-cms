@@ -10,6 +10,12 @@ declare global {
     featured?: boolean | null;
     author_id: string | null | undefined;
   };
+
+  type Article = {
+    id: string;
+    title: string;
+    content: string;
+  };
 }
 
 export {};
