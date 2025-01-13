@@ -4,18 +4,12 @@ GROW CMS - A light cms for create pages and post for my little blog
 
 ## Tecnologies 
 
-Framework js : nextjs
-
-Framework css : tailwindcss
-
-Library ui : shadcn-ui
-
-Database : PostgreSQL
-
-IDE : vs code
-
-Program Language : Typescript
-
-CI/CD : GitHub
-
-Hosting : Vercel (maybe)
+1. TypeScript
+2. NextJS 15
+3. TailwindCSS
+4. Shadcn
+5. PostgreSQL
+6. Prisma ORM
+7. GraphQL
+8. Eslint
+9. Prettier
