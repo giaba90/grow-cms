@@ -1,3 +1,5 @@
+// dashboard/articles/[id]/edit.tsx
+
 export default function Page() {
   return (
     <div>

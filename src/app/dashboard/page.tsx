@@ -1,3 +1,5 @@
+// dashboard page component
+
 export default function Page() {
   return (
     <div>

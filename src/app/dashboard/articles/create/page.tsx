@@ -1,3 +1,5 @@
+//dashboard/articles/create/page.tsx
+
 export default function Page() {
   return (
     <div>
