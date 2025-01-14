@@ -29,7 +29,10 @@
       ],
       "@/app/*": [
         "app/*"
-      ]
+      ],
+      "@/components/*": [
+        "app/lib/components/*"
+      ],
     }
   },
   "include": [

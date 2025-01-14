@@ -2,8 +2,9 @@
 
 //import { signup } from "@/app/auth/01-auth";
 import { useFormState, useFormStatus } from "react-dom";
-import { Label, Input, Button } from "@/components/ui"; // Adjust the import path as necessary
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 export function SignupForm() {
   // const [state, action] = useFormState(signup, undefined);
 
