@@ -16,6 +16,25 @@ declare global {
     title: string;
     content: string;
   };
+
+  interface CookieOptions {
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: "lax" | "strict" | "none";
+    path: string;
+    expires?: Date;
+  }
+
+  interface Cookie {
+    name: string;
+    options: CookieOptions;
+    duration: number;
+  }
+
+  type SessionPayload = {
+    userId: string | number;
+    expiresAt: Date;
+  };
 }
 
 export {};
