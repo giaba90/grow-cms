@@ -1,4 +1,4 @@
-## Name project
+## About project
 
 GROW CMS - A light cms for create pages and post for my little blog
 
