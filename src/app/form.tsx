@@ -3,15 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-//import { login } from "@/app/auth/01-auth";
 import Link from "next/link";
-//import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
+
+const state = {
+  errors: {
+    email: "Email is required",
+    password: "Password is required",
+  },
+  message: "Invalid email or password",
+};
 
 export default function LoginForm() {
-  // const [state, action] = useFormState(login, undefined);
-
   return (
-    <form action={action}>
+    <form>
+      {/* mettere l'action */}
       <div className="flex flex-col gap-2">
         <div>
           <Label htmlFor="email">Email</Label>

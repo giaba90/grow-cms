@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
-
-const articles = [
-  { id: "1", title: "Article 1", content: "Content of Article 1" },
-  { id: "2", title: "Article 2", content: "Content of Article 2" },
-];
+import prisma from "@/lib/prisma";
 
 export async function GET() {
-  return NextResponse.json(articles);
+  try {
+    const articles = await prisma.post.findMany();
+    return NextResponse.json(articles);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch articles" },
+      { status: 500 }
+    );
+  }
 }

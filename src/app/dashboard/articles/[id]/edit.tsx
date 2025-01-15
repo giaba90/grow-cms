@@ -1,6 +1,6 @@
 // dashboard/articles/[id]/edit.tsx
 
-export default function Page() {
+export default function EditArticle() {
   return (
     <div>
       <h1>Edit article</h1>
