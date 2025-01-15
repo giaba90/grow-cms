@@ -35,6 +35,18 @@ declare global {
     userId: string | number;
     expiresAt: Date;
   };
+
+  interface LoginFormData {
+    email: string;
+    password: string;
+  }
+
+  interface User {
+    id: string;
+    email: string;
+    password: string | null;
+  }
+
 }
 
-export {};
+export { };
