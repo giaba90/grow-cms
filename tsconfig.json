@@ -22,17 +22,9 @@
         "name": "next"
       }
     ],
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@/lib/*": [
-        "app/lib/*"
-      ],
-      "@/app/*": [
-        "app/*"
-      ],
-      "@/components/*": [
-        "app/lib/components/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
   "include": [

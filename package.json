@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@prisma/client": "^6.2.1",
+    "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "apollo-server-micro": "^3.13.0",
@@ -20,6 +21,7 @@
     "jose": "^5.9.6",
     "lucide-react": "^0.471.1",
     "next": "15.1.4",
+    "next-auth": "^4.24.11",
     "pg": "^8.13.1",
     "prisma": "^6.2.1",
     "react": "^19.0.0",

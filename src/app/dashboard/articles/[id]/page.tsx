@@ -1,5 +1,5 @@
 // app/dashboard/articles/[id]/page.tsx
-import { fetchArticle } from "@/lib/api/articles";
+import { fetchArticle } from "../../../lib/api/articles";
 
 export default async function ArticlePage({
   params,

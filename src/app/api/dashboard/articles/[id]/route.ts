@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { serializePost } from "@/app/utils/utility";
-import prisma from "@/lib/prisma";
+import prisma from "../../../../lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(
