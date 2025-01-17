@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import Alert from "@/app/components/ui/alert"
+import Alert from "@/app/components/ui/alert";
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -28,21 +29,21 @@ export default function LoginForm() {
 
     const onSubmit = async (data: LoginFormData) => {
         try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+            const result = await signIn("credentials", {
+                redirect: false,
+                email: data.email,
+                password: data.password,
             });
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message);
+            if (result?.error) {
+                setError(result.error);
+                return;
             }
 
             router.push("/dashboard");
             router.refresh();
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An error occurred");
+            setError("An unexpected error occurred");
         }
     };
 

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "server-only";
-import { SignJWT, jwtVerify } from "jose";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { ResponseCookies } from "next/dist/server/web/spec-extension/cookies";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-export async function encrypt(payload: any) {
+export async function encrypt(payload: JWTPayload | undefined) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()

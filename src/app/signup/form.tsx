@@ -1,12 +1,26 @@
 "use client";
 
-//import { signup } from "@/app/auth/01-auth";
 import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
+
+interface SignupState {
+  errors?: {
+    name?: string;
+    email?: string;
+    password?: string[];
+  };
+  message?: string;
+}
+
+async function signup(_prevState: SignupState | undefined, _formData: FormData): Promise<SignupState> {
+  // Your signup logic here
+  return { errors: { name: "Not implemented" } };
+}
+
 export function SignupForm() {
-  // const [state, action] = useFormState(signup, undefined);
+  const [state, action] = useFormState<SignupState, FormData>(signup, {});
 
   return (
     <form action={action}>
@@ -54,3 +68,4 @@ export function SignupButton() {
     </Button>
   );
 }
+

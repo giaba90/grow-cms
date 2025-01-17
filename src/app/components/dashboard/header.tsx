@@ -10,7 +10,7 @@ interface HeaderProps {
     isSidebarOpen: boolean;
 }
 
-export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
+export function Header({ onMenuClick }: HeaderProps) {
     const { data: session } = useSession();
 
     return (
