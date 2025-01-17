@@ -1,5 +1,5 @@
 import { serializePost } from "@/app/utils/utility";
-import prisma from "../../../../lib/prisma";
+import prisma from "@/app/lib/prisma/client";
 import { NextResponse } from "next/server";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export async function POST(req: Request) {
