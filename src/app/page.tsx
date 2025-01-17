@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Github, LogIn } from "lucide-react";
+import { Github, LogIn, Rocket } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 
 export default function WelcomePage() {
@@ -9,11 +9,14 @@ export default function WelcomePage() {
       <div className="mx-auto w-full max-w-2xl text-center">
         {/* Logo and Title Section */}
         <div className="mb-8 space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+          <div className="flex justify-center">
+            <Rocket className="h-16 w-16" />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl flex items-center justify-center gap-4">
             Welcome to GROW CMS
           </h1>
           <p className="text-lg text-gray-600">
-            The custom management system for your needs
+            The custom management system to takeoff
           </p>
         </div>
 
