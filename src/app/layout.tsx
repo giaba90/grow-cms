@@ -1,5 +1,4 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { headers } from "next/headers";
 import { AuthProvider } from "../app/components/providers/auth-provider";
 import "./styles/globals.css";
 

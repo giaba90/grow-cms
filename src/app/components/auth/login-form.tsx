@@ -42,8 +42,8 @@ export default function LoginForm() {
 
             router.push("/dashboard");
             router.refresh();
-        } catch (err) {
-            setError("An unexpected error occurred");
+        } catch (error) {
+            setError((error as Error).message);
         }
     };
 
