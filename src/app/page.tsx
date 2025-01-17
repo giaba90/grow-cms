@@ -1,7 +1,7 @@
 import Link from "next/link";
 import LoginForm from "./form";
 
-export default function Page() {
+export default function Login() {
   return (
     <div className="flex flex-col p-4 lg:w-1/3">
       <div className="text-center">

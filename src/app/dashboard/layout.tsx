@@ -1,28 +1,19 @@
-"use client";
-import { useState } from "react";
-import { Header } from "@/app/components/dashboard/header";
-import { Sidebar } from "@/app/components/dashboard/sidebar";
+import { Suspense } from "react";
+import { DashboardClient } from "@/app/components/dashboard/dashboard-client";
+
+// Configure segment
+export const dynamic = "force-dynamic";
+export const runtime = "edge";
+export const preferredRegion = "auto";
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
     return (
-        <div className="min-h-screen bg-gray-100">
-            <Header
-                onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                isSidebarOpen={isSidebarOpen}
-            />
-            <div className="flex">
-                <Sidebar isOpen={isSidebarOpen} />
-                <main className={`flex-1 p-6 transition-all duration-300 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-20'
-                    }`}>
-                    {children}
-                </main>
-            </div>
-        </div>
+        <Suspense>
+            <DashboardClient>{children}</DashboardClient>
+        </Suspense>
     );
 } 
