@@ -49,6 +49,9 @@ declare global {
     userId: string;
     expiresAt: Date;
   }
+  interface ArticlesListProps {
+    articles: Article[];
+  }
 }
 
 export {};

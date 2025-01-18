@@ -1,17 +1,40 @@
 // app/dashboard/articles/[id]/page.tsx
-import { fetchArticle } from "../../../lib/api/articles";
+"use client";
+import { Suspense, use } from "react";
+import { useArticle } from "@/app/hooks/useArticle";
+import React from "react";
 
-export default async function ArticlePage({
+const ArticleContent = React.memo(({ article }: { article: Article }) => (
+  <div>
+    <h1>{article?.title}</h1>
+    <p>{article?.content}</p>
+  </div>
+));
+ArticleContent.displayName = "ArticleContent";
+
+export default function ArticlePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const article = await fetchArticle(params.id);
+  const { id } = use(params);
+  const { article, loading, error } = useArticle(id);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
-    <div>
-      <h1>{article.title}</h1>
-      <p>{article.content}</p>
-    </div>
+    <Suspense fallback={<div>Loading article...</div>}>
+      {article ? (
+        <ArticleContent article={article} />
+      ) : (
+        <div>No article found</div>
+      )}
+    </Suspense>
   );
 }
