@@ -23,6 +23,7 @@ declare global {
     sameSite: "lax" | "strict" | "none";
     path: string;
     expires?: Date;
+    domain?: string;
   }
 
   interface Cookie {
@@ -30,11 +31,6 @@ declare global {
     options: CookieOptions;
     duration: number;
   }
-
-  type SessionPayload = {
-    userId: string | number;
-    expiresAt: Date;
-  };
 
   interface LoginFormData {
     email: string;
@@ -44,9 +40,15 @@ declare global {
   interface User {
     id: string;
     email: string;
-    password: string | null;
+    name?: string;
+    image?: string;
+    role: "ADMIN" | "USER";
   }
 
+  interface Session {
+    userId: string;
+    expiresAt: Date;
+  }
 }
 
-export { };
+export {};
