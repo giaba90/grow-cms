@@ -8,36 +8,37 @@ datasource db {
 }
 
 model content_taxonomy {
-  id          BigInt    @id @default(autoincrement())
-  taxonomy    taxonomy? @relation(fields: [taxonomy_id], references: [id])
-  taxonomy_id BigInt?
-  post        post?     @relation(fields: [post_id], references: [id])
-  post_id     BigInt?
+  id          Int       @id @default(autoincrement())
+  content_id  Int?
+  taxonomy_id Int?
+  post        post?     @relation(fields: [content_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "content_taxonomy_content_id_fk")
+  taxonomy    taxonomy? @relation(fields: [taxonomy_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "content_taxonomy_taxonomy_id_fk")
 }
 
 model media {
-  id         BigInt  @id @default(autoincrement())
-  file_name  String
-  file_path  String
-  file_type  String
-  size       Int
-  content_id BigInt?
-  post       post?   @relation(fields: [content_id], references: [id])
-  user       users?  @relation(fields: [user_id], references: [id])
-  user_id    String? @db.Uuid
+  id         Int       @id @default(autoincrement())
+  user_id    String?   @db.Uuid
+  file_name  String?   @db.VarChar(255)
+  file_path  String?   @db.VarChar(255)
+  file_type  String?   @db.VarChar(50)
+  size       Int?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  content_id Int?
+  post       post?     @relation(fields: [content_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_content_id_fk")
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk")
 }
 
 model page {
-  id          BigInt       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   title       String?
   content     String?
-  url         String?      @db.VarChar(50)
+  url         String?      @db.VarChar(255)
   description String       @db.VarChar(255)
   status      post_status? @default(draft)
 }
 
 model post {
-  id               BigInt             @id @default(autoincrement())
+  id               Int                @id @default(autoincrement())
   title            String
   content          String
   url              String?            @db.VarChar(255)
@@ -48,19 +49,21 @@ model post {
   author_id        String?            @db.Uuid
   content_taxonomy content_taxonomy[]
   media            media[]
-  users            users?             @relation(fields: [author_id], references: [id])
+  users            users?             @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model taxonomy {
-  id               BigInt             @id @default(autoincrement())
-  name             String
-  slug             String             @unique
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(255)
+  slug             String             @unique @db.VarChar(255)
   description      String?
   type             taxonomy_type
-  parent_id        BigInt?
+  parent_id        Int?
   created_at       DateTime?          @default(now()) @db.Timestamp(6)
   updated_at       DateTime?          @default(now()) @db.Timestamp(6)
   content_taxonomy content_taxonomy[]
+  taxonomy         taxonomy?          @relation("taxonomyTotaxonomy", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_taxonomy   taxonomy[]         @relation("taxonomyTotaxonomy")
 }
 
 model users {
