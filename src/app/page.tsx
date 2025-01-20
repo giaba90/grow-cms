@@ -6,14 +6,11 @@ export default function WelcomePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-white p-4">
       {/* Main Content Container */}
-      <div className="mx-auto w-full max-w-2xl text-center">
+      <div className="mx-auto w-full max-w-3xl text-center">
         {/* Logo and Title Section */}
         <div className="mb-8 space-y-4">
-          <div className="flex justify-center">
-            <Rocket className="h-16 w-16" />
-          </div>
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl flex items-center justify-center gap-4">
-            Welcome to GROW CMS
+            Welcome to GROW CMS <Rocket className="h-16 w-16" />
           </h1>
           <p className="text-lg text-gray-600">
             The custom management system to takeoff
