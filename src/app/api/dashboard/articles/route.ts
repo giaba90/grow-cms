@@ -3,9 +3,14 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/lib/prisma/client";
 import { serializePost } from "@/app/utils/utility";
 
+// GET /api/dashboard/articles
 export async function GET() {
   try {
-    const articles = await prisma.post.findMany();
+    const articles = await prisma.post.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
     return NextResponse.json(articles);
   } catch (error) {
     return NextResponse.json(
