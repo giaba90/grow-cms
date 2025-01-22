@@ -52,6 +52,15 @@ declare global {
   interface ArticlesListProps {
     articles: Article[];
   }
+
+  interface SignupState {
+    errors?: {
+      name?: string;
+      email?: string;
+      password?: string[];
+    };
+    message?: string;
+  }
 }
 
 export {};

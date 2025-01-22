@@ -5,16 +5,7 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 
-interface SignupState {
-  errors?: {
-    name?: string;
-    email?: string;
-    password?: string[];
-  };
-  message?: string;
-}
-
-async function signup(_prevState: SignupState | undefined, _formData: FormData): Promise<SignupState> {
+async function signup(): Promise<SignupState> {
   // Your signup logic here
   return { errors: { name: "Not implemented" } };
 }
@@ -68,4 +59,3 @@ export function SignupButton() {
     </Button>
   );
 }
-
