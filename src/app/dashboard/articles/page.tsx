@@ -1,24 +1,25 @@
 // app/dashboard/articles/page.tsx
-"use client";
 import { Suspense } from "react";
-import { useArticles } from "../../hooks/useArticle";
 import Link from "next/link";
-import React from "react";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const ArticlesList = React.memo(({ articles }: ArticlesListProps) => (
-  <ul>
-    {articles.map((article: Article) => (
-      <li key={article.id}>
-        <Link href={`/dashboard/articles/${article.id}`}>{article.title}</Link>
-      </li>
-    ))}
-  </ul>
-));
+async function BlogPost() {
+  let loading: boolean = true;
+  let error: string | null = null;
+  let articles: Article[] = [];
 
-ArticlesList.displayName = "ArticlesList";
-
-export default function ArticlesPage() {
-  const { articles, loading, error } = useArticles();
+  try {
+    const res = await fetch(`${API_BASE_URL}/articles`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch articles");
+    }
+    const data = await res.json();
+    articles = data;
+  } catch (err) {
+    error = (err as Error).message;
+  } finally {
+    loading = false;
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -29,10 +30,25 @@ export default function ArticlesPage() {
   }
 
   return (
+    <ul>
+      {articles.map((article: Article) => (
+        <li key={article.id}>
+          <Link href={`/dashboard/articles/${article.id}`}>
+            {article.title}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default function ArticlesPage() {
+  return (
     <div>
       <h1>Articles</h1>
       <Suspense fallback={<div>Loading articles...</div>}>
-        <ArticlesList articles={articles} />
+        {/*     <ArticlesList articles={articles} />*/}
+        <BlogPost />
       </Suspense>
     </div>
   );
