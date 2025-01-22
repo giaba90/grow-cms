@@ -1,40 +1,38 @@
 // app/dashboard/articles/[id]/page.tsx
-"use client";
-import { Suspense, use } from "react";
-import { useArticle } from "@/app/hooks/useArticle";
-import React from "react";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const ArticleContent = React.memo(({ article }: { article: Article }) => (
-  <div>
-    <h1>{article?.title}</h1>
-    <p>{article?.content}</p>
-  </div>
-));
-ArticleContent.displayName = "ArticleContent";
+async function fetchArticle(id: string): Promise<Article | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch article");
+    }
+    return res.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
 
-export default function ArticlePage({
+export default async function ArticlePage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = use(params);
-  const { article, loading, error } = useArticle(id);
+  const article = await fetchArticle(params.id);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (!article) {
+    <div>
+      Errore: Impossibile recuperare l&apos;articolo o articolo non trovato
+    </div>;
   }
 
   return (
-    <Suspense fallback={<div>Loading article...</div>}>
-      {article ? (
-        <ArticleContent article={article} />
-      ) : (
-        <div>No article found</div>
-      )}
-    </Suspense>
+    <div>
+      <h1>{article?.title}</h1>
+      <p>{article?.content}</p>
+    </div>
   );
 }
