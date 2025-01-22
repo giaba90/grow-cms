@@ -4,7 +4,6 @@ import Link from "next/link";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function BlogPost() {
-  let loading: boolean = true;
   let error: string | null = null;
   let articles: Article[] = [];
 
@@ -13,16 +12,9 @@ async function BlogPost() {
     if (!res.ok) {
       throw new Error("Failed to fetch articles");
     }
-    const data = await res.json();
-    articles = data;
+    articles = await res.json();
   } catch (err) {
     error = (err as Error).message;
-  } finally {
-    loading = false;
-  }
-
-  if (loading) {
-    return <div>Loading...</div>;
   }
 
   if (error) {
@@ -47,7 +39,6 @@ export default function ArticlesPage() {
     <div>
       <h1>Articles</h1>
       <Suspense fallback={<div>Loading articles...</div>}>
-        {/*     <ArticlesList articles={articles} />*/}
         <BlogPost />
       </Suspense>
     </div>
