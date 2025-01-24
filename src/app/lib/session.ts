@@ -38,8 +38,17 @@ export async function createSession(userId: string) {
     sameSite: "lax",
     path: "/",
   });
+}
 
-  redirect("/dashboard");
+export async function getSession() {
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
+
+  if (!session?.userId) {
+    return null;
+  }
+
+  return { isAuth: true, userId: Number(session.userId) };
 }
 
 export async function verifySession() {
