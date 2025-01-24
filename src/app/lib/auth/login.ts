@@ -18,11 +18,7 @@ export async function login(formData: FormData) {
   //check if the user is authenticated
   try {
     const result = await response.json();
-    if (result.success) {
-      await createSession(result.id);
-    } else {
-      console.error("Login failed:", result.message);
-    }
+    await createSession(result.id);
   } catch (error) {
     console.error("Error parsing JSON:", error);
   }
