@@ -47,7 +47,7 @@ const menuItems = [
   },
 ];
 
-export function Sidebar(isOpen: boolean) {
+export function Sidebar({ isOpen }: { isOpen: boolean }) {
   const pathname = usePathname();
 
   return (

@@ -1,8 +1,7 @@
 "use server";
-import { redirect } from "next/navigation";
+
 import { createSession } from "../lib/session";
 import { loginSchema } from "@/app/lib/validation";
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function login(prevState: any, formData: FormData) {
   if (!process.env.NEXT_PUBLIC_API_LOGIN_URL) {
@@ -31,7 +30,7 @@ export async function login(prevState: any, formData: FormData) {
   try {
     const result = await response.json();
     await createSession(result.id);
-    redirect("/dashboard");
+    return Response.redirect(new URL("/dashboard", nextUrl));
   } catch (error) {
     console.log("Error occurred:", error);
   }

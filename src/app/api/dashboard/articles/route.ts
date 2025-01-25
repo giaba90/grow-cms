@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import prisma from "@/app/lib/prisma/client";
-import { serializePost } from "@/app/utils/utility";
 
 // GET /api/dashboard/articles
 export async function GET() {
@@ -46,8 +45,8 @@ export async function POST(req: Request) {
       },
     });
 
-    const newPostSerialized = serializePost(newPost);
-    return NextResponse.json(newPostSerialized, {
+    //  const newPostSerialized = serializePost(newPost);
+    return NextResponse.json(newPost, {
       status: 201,
     });
   } catch (error) {

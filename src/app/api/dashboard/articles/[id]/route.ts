@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { serializePost } from "@/app/utils/utility";
 import prisma from "@/app/lib/prisma/client";
 import { NextResponse } from "next/server";
 
@@ -23,8 +22,8 @@ export async function GET(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const postSerialized = serializePost(post);
-    return NextResponse.json(postSerialized);
+    //   const postSerialized = serializePost(post);
+    return NextResponse.json(post);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -69,8 +68,8 @@ export async function PUT(
       },
     });
 
-    const updatedPostSerialized = serializePost(updatedPost);
-    return NextResponse.json(updatedPostSerialized);
+    //    const updatedPostSerialized = serializePost(updatedPost);
+    return NextResponse.json(updatedPost);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },
