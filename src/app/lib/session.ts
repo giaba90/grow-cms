@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import "server-only";
-import { JWTPayload, SignJWT, jwtVerify } from "jose";
-import { redirect } from "next/navigation";
+import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { ResponseCookies } from "next/dist/server/web/spec-extension/cookies";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-export async function encrypt(payload: JWTPayload | undefined) {
+type SessionPayload = { userId: string; expiresAt: Date };
+
+export async function encrypt(payload: SessionPayload) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -15,12 +14,15 @@ export async function encrypt(payload: JWTPayload | undefined) {
     .sign(secret);
 }
 
-export async function decrypt(input: string | undefined) {
-  if (!input) return null;
+export async function decrypt(session: string | undefined = "") {
   try {
-    const { payload } = await jwtVerify(input, secret);
-    return payload;
-  } catch (error) {
+    const { payload } = await jwtVerify(session, secret, {
+      algorithms: ["HS256"],
+    });
+
+    return payload as SessionPayload;
+  } catch {
+    //   console.log("Invalid session token");
     return null;
   }
 }
@@ -29,17 +31,14 @@ export async function createSession(userId: string) {
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
   const session = await encrypt({ userId, expiresAt });
 
-  const response = new Response();
-  const responseCookies = new ResponseCookies(response.headers);
-  responseCookies.set("session", session, {
+  (await cookies()).set("session", session, {
     httpOnly: true,
     secure: true,
     expires: expiresAt,
     sameSite: "lax",
-    path: "/",
   });
 }
-
+/**** 
 export async function getSession() {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
@@ -88,3 +87,4 @@ export async function deleteSession() {
   responseCookies.delete("session");
   redirect("/login");
 }
+*/

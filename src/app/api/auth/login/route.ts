@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import prisma from "@/app/lib/prisma/client";
+import bcrypt from "bcrypt";
 
 export async function POST(request: Request) {
   try {
@@ -40,8 +40,7 @@ export async function POST(request: Request) {
       { message: "Login successful", id: user.id },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Login error:", error);
+  } catch {
     return NextResponse.json({ message: "Invalid request" }, { status: 400 });
   }
 }
