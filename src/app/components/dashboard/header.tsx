@@ -1,9 +1,5 @@
-"use client";
-
-import { useSession, signOut } from "next-auth/react";
-import { Menu, LogIn } from "lucide-react";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Menu } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -11,8 +7,6 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const { data: session } = useSession();
-
   return (
     <header className="fixed top-0 z-50 w-full bg-white shadow-sm">
       <div className="flex h-16 items-center justify-between px-4">
@@ -25,27 +19,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         </button>
 
         <div className="flex items-center gap-4">
-          {session ? (
-            <>
-              <span className="text-sm font-medium">
-                {session.user?.name || session.user?.email}
-              </span>
-              <Avatar>
-                <AvatarImage
-                  src={session.user?.image || ""}
-                  alt={session.user?.name || "User avatar"}
-                />
-                <AvatarFallback>
-                  {session.user?.name?.[0] || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <Button variant="outline" onClick={() => signOut()}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <LogIn />
-          )}
+          <button onClick={() => signOut()}>Logout</button>
         </div>
       </div>
     </header>
