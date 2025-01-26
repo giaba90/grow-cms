@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import prisma from "@/app/lib/prisma/client";
 
@@ -45,7 +44,6 @@ export async function POST(req: Request) {
       },
     });
 
-    //  const newPostSerialized = serializePost(newPost);
     return NextResponse.json(newPost, {
       status: 201,
     });

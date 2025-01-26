@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import prisma from "@/app/lib/prisma/client";
 import { NextResponse } from "next/server";
 
@@ -22,9 +21,8 @@ export async function GET(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    //   const postSerialized = serializePost(post);
     return NextResponse.json(post);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -67,10 +65,8 @@ export async function PUT(
         author_id,
       },
     });
-
-    //    const updatedPostSerialized = serializePost(updatedPost);
     return NextResponse.json(updatedPost);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -92,7 +88,7 @@ export async function DELETE(
   try {
     await prisma.post.delete({ where: { id: parseInt(id, 10) } });
     return NextResponse.json({ message: "Post deleted" });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
