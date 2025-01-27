@@ -86,6 +86,7 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: "/auth/signin", // Percorso personalizzato per il login
+    signIn: "/auth/signin",
+    signOut: "/auth/signout",
   },
 });
