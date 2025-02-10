@@ -2,11 +2,27 @@ import NextAuth from "next-auth";
 import { ZodError } from "zod";
 import Credentials from "next-auth/providers/credentials";
 // Your own logic for dealing with plaintext password strings; be careful!
-import { saltAndHashPassword } from "@/utils/password";
-import { getUserFromDb } from "@/utils/db";
+//import { saltAndHashPassword } from "@/utils/password";
 import { signInSchema } from "./app/lib/validation";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/app/prisma/client";
+import bcrypt from "bcryptjs";
+// Funzione per ottenere l'utente dal database
+async function getUserFromDb(email: string) {
+  try {
+    const user = await prisma.users.findUnique({
+      where: { email },
+      select: { id: true, email: true, password: true },
+    });
+    return user;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    return null;
+  }
+}
 
 export const { handlers, auth } = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
@@ -15,7 +31,7 @@ export const { handlers, auth } = NextAuth({
         email: {},
         password: {},
       },
-      authorize: async (credentials) => {
+      authorize: async (credentials, request): Promise<User | null> => {
         try {
           let user = null;
 
@@ -23,23 +39,32 @@ export const { handlers, auth } = NextAuth({
             credentials
           );
 
-          // logic to salt and hash password
-          const pwHash = saltAndHashPassword(password);
-
-          // logic to verify if the user exists
-          user = await getUserFromDb(email, pwHash);
-
+          user = await getUserFromDb(email);
           if (!user) {
-            throw new Error("Invalid credentials.");
-          }
-
-          // return JSON object with the user data
-          return user;
-        } catch (error) {
-          if (error instanceof ZodError) {
-            // Return `null` to indicate that the credentials are invalid
+            console.log("User not found");
             return null;
           }
+
+          if (!user.password) {
+            console.log("Invalid password");
+            return null;
+          }
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (!passwordsMatch) {
+            console.log("Password mismatch");
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email ?? "",
+            role: "ADMIN",
+          };
+        } catch (error) {
+          if (error instanceof ZodError) {
+            return null;
+          }
+          throw error;
         }
       },
     }),

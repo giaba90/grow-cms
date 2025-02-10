@@ -1,4 +1,5 @@
 // dashboard page component
+import { auth } from "@/auth";
 import {
   Card,
   CardContent,
@@ -7,7 +8,9 @@ import {
 } from "../components/ui/card";
 import { BarChart, Users, FileText, Activity } from "lucide-react";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const session = await auth();
+  if (!session) return <div>Not authenticated</div>;
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>

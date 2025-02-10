@@ -1,3 +1,4 @@
+"use client";
 import { signIn } from "next-auth/react";
 
 export function SignIn() {
@@ -12,7 +13,11 @@ export function SignIn() {
           ])
         );
 
-        signIn("credentials", { ...data, redirect: false });
+        signIn("credentials", {
+          ...data,
+          redirect: true,
+          callbackUrl: "/dashboard",
+        });
       }}
     >
       <label>
