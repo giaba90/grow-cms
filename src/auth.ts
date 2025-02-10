@@ -54,7 +54,7 @@ export default NextAuth({
         }
         const passwordsMatch = await bcrypt.compare(password, user.password);
         if (!passwordsMatch) {
-          console.log("Invalid password");
+          console.log("Password mismatch");
           return null;
         }
 
