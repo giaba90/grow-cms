@@ -7,10 +7,23 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { BarChart, Users, FileText, Activity } from "lucide-react";
+import Modal from "../components/ui/modal";
 
 export default async function Dashboard() {
   const session = await auth();
-  if (!session) return <div>Not authenticated</div>;
+  if (!session)
+    return (
+      <Modal
+        title={"Acccess danied"}
+        children={
+          <span>
+            Sorry! You can view this content because you are not authenticated
+          </span>
+        }
+        ctaText={"Go to Login"}
+        redirectTo={"/login"}
+      />
+    );
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
