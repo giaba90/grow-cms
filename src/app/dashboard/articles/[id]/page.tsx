@@ -21,7 +21,7 @@ export default async function ArticlePage({
 }: {
   params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
   const article = await fetchArticle(id);
 
   if (!article) {
