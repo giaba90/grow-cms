@@ -5,7 +5,7 @@ import { cn } from "../lib/utils";
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-6 shadow-lg">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <div className="text-center">
           <div className="flex h-16 items-center justify-center px-4">
             <Rocket className="h-6 w-6 text-primary" />
