@@ -1,25 +1,21 @@
 "use client";
+
 import { signIn } from "next-auth/react";
-
+// Component to render the Sign In form.
 export function SignIn() {
+  // Function to handle form submission when user clicks the "Sign In" button.
+  const handleSubmit = async (formData: FormData) => {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: true,
+      callbackUrl: "/dashboard",
+    });
+  };
   return (
-    <form
-      action={async (formData: FormData) => {
-        "use server";
-        const data: Record<string, string> = Object.fromEntries(
-          Array.from(formData.entries()).map(([key, value]) => [
-            key,
-            value.toString(),
-          ])
-        );
-
-        signIn("credentials", {
-          ...data,
-          redirect: true,
-          callbackUrl: "/dashboard",
-        });
-      }}
-    >
+    <form action={handleSubmit}>
       <label>
         Email
         <input name="email" type="email" />
