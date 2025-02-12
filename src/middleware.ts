@@ -11,30 +11,17 @@ export default auth(async function middleware(req) {
   const { nextUrl } = req;
   const isPrivateRoute = privateRoutes.includes(nextUrl.pathname); // Check if the current URL is a private route
   const isAuthRoute = authRoutes.includes(nextUrl.pathname); // Check if the current URL is a auth route
-  /* Check if the user is logged in and is trying to access a private route, or if the user is not logged in and is trying to access an auth route. If either condition is true, redirect the
-     user to the login page.
-     */
-  if (isPrivateRoute && (!isLoggedIn || isAuthRoute)) {
-    return Response.redirect(new URL(APP_PATHS.auth.login, nextUrl));
-  }
-  /* Check if the user is logged in and is trying to access a private route and is not logged in. 
-  If either condition is true, redirect the user to the dashboard.
-  */
-  if (isPrivateRoute && isLoggedIn) {
+
+  if (isLoggedIn && isAuthRoute) {
     return Response.redirect(new URL(APP_PATHS.dashboard.root, nextUrl));
   }
-  /*
-  If the user is not logged in and is trying to access an auth route, redirect the user to the dashboard.
-  */
-  if (isAuthRoute && !isLoggedIn) {
-    return Response.redirect(new URL(APP_PATHS.dashboard.root, nextUrl));
-  }
+
+  if (!isLoggedIn && isAuthRoute) return;
+
   /* If the user is not logged in and is trying to access a private route, redirect the user to the login page. */
-  if (isPrivateRoute && !isLoggedIn) {
+  if (!isLoggedIn && isPrivateRoute) {
     return Response.redirect(new URL(APP_PATHS.auth.login, nextUrl));
   }
-  /* If the user is logged in and is trying to access an auth route, redirect the user to the dashboard. */
-  if (isAuthRoute && !isLoggedIn) return;
 });
 
 // Optionally, don't invoke Middleware on some paths
