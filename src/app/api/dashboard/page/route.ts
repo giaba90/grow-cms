@@ -6,7 +6,8 @@ import { ZodError } from "zod";
 export async function POST(req: Request) {
   try {
     const data: PageData = await req.json();
-    const { title, content, url, status } = data;
+    const { title, content, status } = data;
+    const url = title.toLowerCase().replace(/\s+/g, "-");
 
     const page = await prisma.page.create({
       data: {
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
         content,
         url,
         status,
+        description: content.slice(0, 200),
       },
     });
 

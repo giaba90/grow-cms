@@ -11,12 +11,12 @@ declare global {
     author_id: string | null | undefined;
   };
 
-  interface PageData {
+  type PageData = {
     title: string;
     content: string;
     url: string;
     status: post_status | null | undefined;
-  }
+  };
 
   type Article = {
     id: string;
