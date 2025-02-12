@@ -9,18 +9,21 @@ const authRoutes: string[] = Object.values(APP_PATHS.auth).map(String); // Auth 
 export default auth(async function middleware(req) {
   const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
-  const isPrivateRoute = privateRoutes.includes(nextUrl.pathname); // Check if the current URL is a private route
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname); // Check if the current URL is a auth route
+  const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
+  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isLoggedIn && isAuthRoute) {
-    return Response.redirect(new URL(APP_PATHS.dashboard.root, nextUrl));
+    return Response.redirect(
+      new URL(process.env.NEXTAUTH_URL + APP_PATHS.dashboard.root, nextUrl)
+    );
   }
 
   if (!isLoggedIn && isAuthRoute) return;
 
-  /* If the user is not logged in and is trying to access a private route, redirect the user to the login page. */
   if (!isLoggedIn && isPrivateRoute) {
-    return Response.redirect(new URL(APP_PATHS.auth.login, nextUrl));
+    return Response.redirect(
+      new URL(process.env.NEXTAUTH_URL + APP_PATHS.auth.login, nextUrl)
+    );
   }
 });
 
