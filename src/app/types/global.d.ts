@@ -11,47 +11,18 @@ declare global {
     author_id: string | null | undefined;
   };
 
+  interface PageData {
+    title: string;
+    content: string;
+    url: string;
+    status: post_status | null | undefined;
+  }
+
   type Article = {
     id: string;
     title: string;
     content: string;
   };
-
-  interface CookieOptions {
-    httpOnly: boolean;
-    secure: boolean;
-    sameSite: "lax" | "strict" | "none";
-    path: string;
-    expires?: Date;
-    domain?: string;
-  }
-
-  interface Cookie {
-    name: string;
-    options: CookieOptions;
-    duration: number;
-  }
-
-  interface LoginFormData {
-    email: string;
-    password: string;
-  }
-
-  interface User {
-    id: string;
-    email: string;
-    name?: string;
-    image?: string;
-    role?: string;
-  }
-
-  interface Session {
-    userId: string;
-    expiresAt: Date;
-  }
-  interface ArticlesListProps {
-    articles: Article[];
-  }
 
   interface SignupState {
     errors?: {
