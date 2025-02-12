@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { object, string } from "zod";
+import z, { object, string } from "zod";
 
 // Define the schema for the login request payload.
 export const loginSchema = z.object({
@@ -27,4 +26,10 @@ export const signInSchema = object({
     .min(1, "Password is required")
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
+});
+// zod schema for page data
+export const pageDataSchema = z.object({
+  title: z.string().min(1).max(100),
+  content: z.string().min(10).max(10000),
+  status: z.enum(["draft", "published"]),
 });

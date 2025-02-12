@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
-import z, { ZodError } from "zod";
-
-// zod schema for page data
-const pageDataSchema = z.object({
-  title: z.string().min(1).max(100),
-  content: z.string().min(10).max(10000),
-  status: z.enum(["draft", "published"]),
-});
+import { ZodError } from "zod";
+import { pageDataSchema } from "@/app/lib/validation";
 
 // POST /api/dashboard/pages
 export async function POST(req: Request) {
