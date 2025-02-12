@@ -75,6 +75,7 @@ model users {
   lastlogin DateTime? @default(now()) @db.Timestamptz(6)
   media     media[]
   post      post[]
+  role      String
 }
 
 enum post_status {

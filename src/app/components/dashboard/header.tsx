@@ -1,6 +1,7 @@
 import { Menu } from "lucide-react";
 import { signOut } from "next-auth/react";
-
+import { Rocket } from "lucide-react";
+import { cn } from "../../lib/utils";
 interface HeaderProps {
   onMenuClick: () => void;
   isSidebarOpen: boolean;
@@ -8,7 +9,7 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   return (
-    <header className="fixed top-0 z-50 w-full bg-white shadow-sm">
+    <header className=" w-full bg-white shadow-sm">
       <div className="flex h-16 items-center justify-between px-4">
         <button
           onClick={onMenuClick}
@@ -17,9 +18,21 @@ export function Header({ onMenuClick }: HeaderProps) {
         >
           <Menu className="h-6 w-6" />
         </button>
-
+        <div className="flex h-16 items-center px-4">
+          <Rocket className="h-6 w-6 text-primary" />
+          <span
+            className={cn("ml-2 font-bold transition-opacity duration-300")}
+          >
+            GROW CMS
+          </span>
+        </div>
         <div className="flex items-center gap-4">
-          <button onClick={() => signOut()}>Logout</button>
+          <button
+            className="border p-2 cursor-pointer"
+            onClick={() => signOut({ redirectTo: "/login" })}
+          >
+            Logout
+          </button>
         </div>
       </div>
     </header>

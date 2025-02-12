@@ -24,11 +24,7 @@ async function BlogPost() {
   return (
     <ul>
       {articles.map((article: Article) => (
-        <li key={article.id}>
-          <Link href={`/dashboard/articles/${article.id}`}>
-            {article.title}
-          </Link>
-        </li>
+        <li key={article.id}>{article.title}</li>
       ))}
     </ul>
   );

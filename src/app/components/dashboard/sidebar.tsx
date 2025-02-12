@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "../../lib/utils";
 import {
-  Rocket,
   LayoutDashboard,
   FileText,
   Files,
@@ -53,22 +52,10 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-64 transform bg-white transition-all duration-300",
+        " h-[calc(100vh-4rem)] w-64 transform bg-white transition-all duration-300",
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0 md:w-20"
       )}
     >
-      <div className="flex h-16 items-center border-b px-4">
-        <Rocket className="h-6 w-6 text-primary" />
-        <span
-          className={cn(
-            "ml-2 font-bold transition-opacity duration-300",
-            isOpen ? "opacity-100" : "md:opacity-0"
-          )}
-        >
-          GROW CMS
-        </span>
-      </div>
-
       <nav className="space-y-1 p-4">
         {menuItems.map((item) => (
           <Link
@@ -77,7 +64,7 @@ export function Sidebar({ isOpen }: { isOpen: boolean }) {
             className={cn(
               "flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors",
               pathname === item.href
-                ? "bg-primary text-white"
+                ? "bg-primary "
                 : "text-gray-600 hover:bg-gray-100",
               !isOpen && "md:justify-center"
             )}

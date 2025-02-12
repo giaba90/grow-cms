@@ -42,7 +42,7 @@ declare global {
     email: string;
     name?: string;
     image?: string;
-    role: "ADMIN" | "USER";
+    role?: string;
   }
 
   interface Session {
