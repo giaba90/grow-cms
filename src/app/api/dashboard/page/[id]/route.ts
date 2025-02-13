@@ -40,9 +40,8 @@ export async function PUT(
   if (!data) {
     return NextResponse.json({ error: "Missing page data" }, { status: 400 });
   }
-  // Perform validation here if necessary
+  // Check if the data is valid according to the schema
   if (!pageDataSchema.safeParse(data).success) {
-    // Check if the data is valid according to the schema
     return NextResponse.json(
       // Return validation errors as a response
       { errors: pageDataSchema.safeParse(data).error },
