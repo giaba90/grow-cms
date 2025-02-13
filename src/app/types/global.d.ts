@@ -18,6 +18,13 @@ declare global {
     status: post_status | null | undefined;
   };
 
+  type TaxonomyData = {
+    name: string;
+    slug: string;
+    type: string;
+    description: string;
+  };
+
   type Article = {
     id: string;
     title: string;

@@ -33,3 +33,11 @@ export const pageDataSchema = z.object({
   content: z.string().min(10).max(10000),
   status: z.enum(["draft", "published"]),
 });
+
+// zod schema for taxonomy data
+export const taxonomyDataSchema = z.object({
+  name: z.string().min(1).max(100),
+  slug: z.string().min(1).max(100),
+  type: z.string().min(1).max(100),
+  description: z.string().min(1).max(1000),
+});
