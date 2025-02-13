@@ -63,7 +63,6 @@ export async function PUT(
     );
   }
 }
-
 // DELETE api/dashboard/pages/[id]
 export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
