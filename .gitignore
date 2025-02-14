@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 *.txt
 *.sql
-/src/scrpip.ts
+/src/script.ts
