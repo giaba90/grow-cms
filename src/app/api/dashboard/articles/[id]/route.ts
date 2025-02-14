@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 // GET /api/dashboard/articles/[id]
 export async function GET(
-  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const id = (await params).id;

@@ -1,14 +1,14 @@
 // app/dashboard/articles/page.tsx
 import { Suspense } from "react";
-import Link from "next/link";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function BlogPost() {
   let error: string | null = null;
   let articles: Article[] = [];
 
   try {
-    const res = await fetch(`${API_BASE_URL}/articles`);
+    const res = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/dashboard/articles`
+    );
     if (!res.ok) {
       throw new Error("Failed to fetch articles");
     }
