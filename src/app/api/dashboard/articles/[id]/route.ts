@@ -1,6 +1,6 @@
 import prisma from "@/app/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
+import { postSchema } from "@/app/lib/validation";
 /**
  * Extracts the article ID from a given URL.
  *
@@ -60,7 +60,16 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const data = await req.json();
+    const data: PostData = await req.json();
+    // check zod schema
+    const validationResult = postSchema.safeParse(data);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { errors: validationResult.error.errors },
+        { status: 400 }
+      );
+    }
+
     const { title, content, url, description, status, featured, author_id } =
       data;
 

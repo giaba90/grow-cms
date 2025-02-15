@@ -1,17 +1,41 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { pageDataSchema } from "@/app/lib/validation";
-// GET api/dashboard/pages/:page
-export async function GET({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id;
+import slugify from "slugify";
 
-  if (!id) {
-    return NextResponse.json({ error: "Missing page ID" }, { status: 400 });
+/**
+ * Extracts the numeric ID from a given URL string.
+ *
+ * @param url - The URL string to extract the ID from.
+ * @returns The extracted ID as a number, or `null` if the ID is not found or is not a valid number.
+ */
+function getId(url: string) {
+  const regex = /pages\/(\d+)/;
+  const match = url.match(regex);
+  if (match && match.length > 0) {
+    const id = parseInt(match[1], 10);
+    if (isNaN(id)) {
+      return null;
+    } else {
+      return id;
+    }
+  } else {
+    return null;
   }
+}
 
+// GET api/dashboard/pages/[id]
+export async function GET(req: NextRequest) {
+  const id = getId(req.url);
+  if (!id) {
+    return NextResponse.json(
+      { error: "Bad request : Missing page ID" },
+      { status: 400 }
+    );
+  }
   try {
     const page = await prisma.page.findUnique({
-      where: { id: parseInt(id, 10) },
+      where: { id: id },
     });
 
     if (!page) {
@@ -27,32 +51,37 @@ export async function GET({ params }: { params: Promise<{ id: string }> }) {
   }
 }
 // PUT api/dashboard/pages/[id]
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const id = (await params).id;
-  const data: PageData = await request.json();
-
+export async function PUT(req: NextRequest) {
+  const id = getId(req.url);
   if (!id) {
-    return NextResponse.json({ error: "Missing page ID" }, { status: 400 });
-  }
-  if (!data) {
-    return NextResponse.json({ error: "Missing page data" }, { status: 400 });
-  }
-  // Check if the data is valid according to the schema
-  if (!pageDataSchema.safeParse(data).success) {
     return NextResponse.json(
-      // Return validation errors as a response
-      { errors: pageDataSchema.safeParse(data).error },
+      { error: "Bad request : Missing page ID" },
       { status: 400 }
     );
   }
 
   try {
+    const data: PageData = await req.json();
+    // check zod schema
+    const validationResult = pageDataSchema.safeParse(data);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { errors: validationResult.error.errors },
+        { status: 400 }
+      );
+    }
+
+    const { title, content, status, url, description } = data;
+
     const updatedPage = await prisma.page.update({
-      where: { id: parseInt(id, 10) },
-      data: data,
+      where: { id: id },
+      data: {
+        title,
+        content,
+        status,
+        url: url || slugify(title, { lower: true, strict: true }),
+        description: description || content.slice(0, 200),
+      },
     });
 
     return NextResponse.json(updatedPage);
@@ -64,15 +93,17 @@ export async function PUT(
   }
 }
 // DELETE api/dashboard/pages/[id]
-export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id;
-
+export async function DELETE(req: NextRequest) {
+  const id = getId(req.url);
   if (!id) {
-    return NextResponse.json({ error: "Missing page ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Bad request : Missing page ID" },
+      { status: 400 }
+    );
   }
 
   try {
-    await prisma.page.delete({ where: { id: parseInt(id, 10) } });
+    await prisma.page.delete({ where: { id: id } });
     return NextResponse.json({ message: "Page deleted" });
   } catch {
     return NextResponse.json(

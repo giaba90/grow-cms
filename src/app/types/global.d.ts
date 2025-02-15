@@ -4,8 +4,8 @@ declare global {
   type PostData = {
     title: string;
     content: string;
-    url?: string | null;
-    description?: string | null;
+    url?: string | "";
+    description?: string | "";
     status?: post_status | null | undefined;
     featured?: boolean | null;
     author_id: string | null | undefined;
@@ -14,7 +14,8 @@ declare global {
   type PageData = {
     title: string;
     content: string;
-    url: string;
+    url?: string | "";
+    description?: string | "";
     status: post_status | null | undefined;
   };
 
