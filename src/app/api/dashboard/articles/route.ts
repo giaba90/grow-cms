@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import slugify from "slugify";
+import { postSchema } from "@/app/lib/validation";
+import { ZodError } from "zod";
 
 // GET /api/dashboard/articles
 export async function GET() {
@@ -23,7 +25,15 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const data: PostData = await req.json();
-    const { title, content, description, status, featured, author_id } = data;
+    // check zod schema
+    const validationResult = postSchema.safeParse(data);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { errors: validationResult.error.errors },
+        { status: 400 }
+      );
+    }
+    const { title, content, status, featured, author_id } = data;
 
     if (!title || !content || !author_id) {
       return NextResponse.json(
@@ -37,7 +47,7 @@ export async function POST(req: Request) {
         title,
         content,
         url,
-        description,
+        description: content.slice(0, 200),
         status,
         featured,
         author_id,
@@ -48,9 +58,12 @@ export async function POST(req: Request) {
       status: 201,
     });
   } catch (error) {
-    console.error("Error creating post:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json({ errors: error.errors }, { status: 400 });
+    }
+    // Return a 500 Internal Server Error if something went wrong
     return NextResponse.json(
-      { error: "Internal Server Error", details: (error as Error).message },
+      { error: "Failed to create post" },
       { status: 500 }
     );
   }

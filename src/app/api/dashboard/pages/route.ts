@@ -2,6 +2,24 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { ZodError } from "zod";
 import { pageDataSchema } from "@/app/lib/validation";
+import slugify from "slugify";
+
+// GET /api/dashboard/pages
+export async function GET() {
+  try {
+    const pages = await prisma.page.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
+    return NextResponse.json(pages);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch pages" },
+      { status: 500 }
+    );
+  }
+}
 
 // POST /api/dashboard/pages
 export async function POST(req: Request) {
@@ -17,7 +35,7 @@ export async function POST(req: Request) {
       );
     }
     const { title, content, status } = data;
-    const url = title.toLowerCase().replace(/\s+/g, "-");
+    const url = slugify(title, { lower: true, strict: true });
 
     const page = await prisma.page.create({
       data: {
@@ -37,18 +55,6 @@ export async function POST(req: Request) {
     // Return a 500 Internal Server Error if something went wrong
     return NextResponse.json(
       { error: "Failed to create page" },
-      { status: 500 }
-    );
-  }
-}
-// GET /api/dashboard/pages
-export async function GET() {
-  try {
-    const pages = await prisma.page.findMany();
-    return NextResponse.json(pages);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch pages" },
       { status: 500 }
     );
   }

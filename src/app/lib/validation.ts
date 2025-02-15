@@ -27,6 +27,14 @@ export const signInSchema = object({
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
 });
+// zod schema for post data
+export const postSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required"),
+  status: z.enum(["draft", "published"]),
+  featured: z.boolean().optional(),
+  author_id: z.number().int(),
+});
 // zod schema for page data
 export const pageDataSchema = z.object({
   title: z.string().min(1).max(100),
