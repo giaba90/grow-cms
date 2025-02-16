@@ -1,6 +1,6 @@
 import { Rocket } from "lucide-react";
 import { SignIn } from "../components/auth/sign-in";
-import { cn } from "../lib/utils";
+import { cn } from "../utils/utils";
 
 export default function LoginPage() {
   return (
