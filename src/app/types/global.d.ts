@@ -28,6 +28,16 @@ declare global {
     description: string;
   };
 
+  type UserData = {
+    name: string;
+    surname: string;
+    email: string;
+    password: string;
+    // Optional properties
+    role?: string | null | undefined;
+    lastlogin?: Date;
+  };
+
   type Article = {
     id: string;
     title: string;
