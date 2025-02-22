@@ -1,6 +1,8 @@
 declare global {
   type post_status = "draft" | "published" | "archived";
 
+  type taxonomy_type = "category" | "tag";
+
   type PostData = {
     title: string;
     content: string;
@@ -22,7 +24,7 @@ declare global {
   type TaxonomyData = {
     name: string;
     slug: string;
-    type: string;
+    type: taxonomy_type;
     description: string;
   };
 
