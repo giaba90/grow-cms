@@ -3,23 +3,20 @@ declare global {
 
   type taxonomy_type = "category" | "tag";
 
-  type PostData = {
-    title: string;
-    content: string;
-    url?: string | "";
-    description?: string | "";
-    status?: post_status | null | undefined;
-    featured?: boolean | null;
-    author_id: string | null | undefined;
-  };
-
-  type PageData = {
+  interface BaseData {
     title: string;
     content: string;
     url?: string | "";
     description?: string | "";
     status: post_status | null | undefined;
-  };
+  }
+
+  interface PostData extends BaseData {
+    featured?: boolean | null;
+    author_id: string | null | undefined;
+  }
+
+  interface PageData extends BaseData {}
 
   type TaxonomyData = {
     name: string;
@@ -38,11 +35,9 @@ declare global {
     lastlogin?: Date;
   };
 
-  type Article = {
+  interface Article extends BaseData {
     id: string;
-    title: string;
-    content: string;
-  };
+  }
 
   interface SignupState {
     errors?: {
