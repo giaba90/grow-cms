@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { ZodError } from "zod";
 import { userDataSchema } from "@/app/lib/validation";
-
+import bcrypt from "bcryptjs";
 // GET api/dashboard/users
 export async function GET(req: Request) {
   try {
@@ -31,20 +31,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const { name, surname, email, password, role } = data;
-    /*     if (!name || !surname || !email || !password || !role) {
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
-      );
-    } */
+    const { name, surname, email, role } = data;
     const lastlogin = new Date();
+    // Hash the password before saving it to the database
+    const salt = bcrypt.genSaltSync(10);
+    const passwordHash = bcrypt.hashSync(data.password, salt);
+
     const users = await prisma.users.create({
       data: {
         name,
         surname,
         email,
-        password,
+        password: passwordHash,
         role: role as string,
         lastlogin,
       },

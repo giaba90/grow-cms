@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { userDataSchema } from "@/app/lib/validation";
-
+import bcrypt from "bcryptjs";
 function getId(url: string) {
   const regex = /users\/(\d+)/;
   const match = url.match(regex);
@@ -58,8 +58,12 @@ export async function PUT(req: NextRequest) {
       { status: 400 }
     );
   }
-  const { name, surname, email, password, role } = data;
+  const { name, surname, email, role } = data;
   const lastlogin = new Date();
+  // Hash the password before saving it to the database
+  const salt = bcrypt.genSaltSync(10);
+  const passwordHash = bcrypt.hashSync(data.password, salt);
+
   try {
     const users = await prisma.users.update({
       where: { id: id },
@@ -67,7 +71,7 @@ export async function PUT(req: NextRequest) {
         name: name,
         surname: surname,
         email: email,
-        password: password,
+        password: passwordHash,
         role: role as string,
         lastlogin: lastlogin,
       },

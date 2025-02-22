@@ -69,7 +69,10 @@ export const authOptions: NextAuthConfig = {
           if (!user) throw new Error("Utente non trovato");
           if (!user.password) throw new Error("Password non valida");
 
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          const passwordsMatch = await bcrypt.compareSync(
+            password,
+            user.password
+          );
           if (!passwordsMatch) throw new Error("Credenziali errate");
 
           return {
