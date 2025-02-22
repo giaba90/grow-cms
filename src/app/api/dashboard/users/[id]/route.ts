@@ -7,8 +7,12 @@ function getId(url: string) {
   const regex = /users\/(\d+)/;
   const match = url.match(regex);
   if (match && match.length > 0) {
-    const id = match[1];
-    return id;
+    const id = parseInt(match[1], 10);
+    if (isNaN(id)) {
+      return null;
+    } else {
+      return id;
+    }
   } else {
     return null;
   }
