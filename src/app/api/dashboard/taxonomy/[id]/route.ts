@@ -1,14 +1,11 @@
-import prisma from "@/app/prisma/client";
+// api/dashboard/taxonomy/[id]route.ts
+
 import { NextRequest, NextResponse } from "next/server";
-import { postSchema } from "@/app/lib/validation";
-/**
- * Extracts the article ID from a given URL.
- *
- * @param url - The URL string to extract the article ID from.
- * @returns The extracted article ID as a number, or null if the ID is not found or is not a valid number.
- */
+import prisma from "@/app/prisma/client";
+import { taxonomyDataSchema } from "@/app/lib/validation";
+
 function getId(url: string) {
-  const regex = /articles\/(\d+)/;
+  const regex = /taxonomy\/(\d+)/;
   const match = url.match(regex);
   if (match && match.length > 0) {
     const id = parseInt(match[1], 10);
@@ -22,25 +19,28 @@ function getId(url: string) {
   }
 }
 
-// GET /api/dashboard/articles/[id]
+// GET api/dashboard/taxonomy/[id]
 export async function GET(req: NextRequest) {
   const id = getId(req.url);
   if (!id) {
     return NextResponse.json(
-      { error: "Bad request : Missing post ID" },
+      { error: "Bad request : Missing taxonomy ID" },
       { status: 400 }
     );
   }
   try {
-    const post = await prisma.post.findUnique({
+    const taxonomy = await prisma.taxonomy.findUnique({
       where: { id: id },
     });
 
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    if (!taxonomy) {
+      return NextResponse.json(
+        { error: "taxonomy not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json(post);
+    return NextResponse.json(taxonomy);
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -49,20 +49,20 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// PUT /api/dashboard/articles/[id]
+// PUT api/dashboard/taxonomy/[id]
 export async function PUT(req: NextRequest) {
   const id = getId(req.url);
   if (!id) {
     return NextResponse.json(
-      { error: "Bad request : Missing post ID" },
+      { error: "Bad request : Missing taxonomy ID" },
       { status: 400 }
     );
   }
 
   try {
-    const data: PostData = await req.json();
+    const data: TaxonomyData = await req.json();
     // check zod schema
-    const validationResult = postSchema.safeParse(data);
+    const validationResult = taxonomyDataSchema.safeParse(data);
     if (!validationResult.success) {
       return NextResponse.json(
         { errors: validationResult.error.errors },
@@ -70,29 +70,19 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const { title, content, url, description, status, featured, author_id } =
-      data;
+    const { name, slug, type, description } = data;
 
-    if (!title || !content) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    const updatedPost = await prisma.post.update({
+    const updatedtaxonomy = await prisma.taxonomy.update({
       where: { id: id },
       data: {
-        title,
-        content,
-        url,
+        name,
+        slug,
+        type,
         description,
-        status,
-        featured,
-        author_id,
       },
     });
-    return NextResponse.json(updatedPost);
+
+    return NextResponse.json(updatedtaxonomy);
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -100,20 +90,19 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
-
-// DELETE /api/dashboard/articles/[id]
+// DELETE api/dashboard/taxonomy/[id]
 export async function DELETE(req: NextRequest) {
   const id = getId(req.url);
   if (!id) {
     return NextResponse.json(
-      { error: "Bad request : Missing post ID" },
+      { error: "Bad request : Missing taxonomy ID" },
       { status: 400 }
     );
   }
 
   try {
-    await prisma.post.delete({ where: { id: id } });
-    return NextResponse.json({ message: "Post deleted" });
+    await prisma.taxonomy.delete({ where: { id: id } });
+    return NextResponse.json({ message: "taxonomy deleted" });
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },

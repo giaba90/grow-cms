@@ -6,18 +6,15 @@ export default function WelcomePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-white p-4">
       {/* Main Content Container */}
-      <div className="mx-auto w-full max-w-2xl text-center">
+      <div className="mx-auto w-full max-w-3xl text-center">
         {/* Logo and Title Section */}
         <div className="mb-8 space-y-4">
-          <div className="flex justify-center">
-            <Rocket className="h-16 w-16" />
-          </div>
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl flex items-center justify-center gap-4">
-            Welcome to GROW CMS
+            Welcome to GROW CMS <Rocket className="h-16 w-16" />
           </h1>
-          <p className="text-lg text-gray-600">
+          <span className="text-lg text-gray-600 bg-gray-200 p-2">
             The custom management system to takeoff
-          </p>
+          </span>
         </div>
 
         {/* Buttons Container */}
@@ -25,8 +22,9 @@ export default function WelcomePage() {
           {/* Login Button */}
           <Link href="/login">
             <Button
+              variant="outline"
               size="lg"
-              className="w-full min-w-[200px] gap-2 bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
+              className="w-full min-w-[200px] gap-2 bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto cursor-pointer"
             >
               <LogIn className="h-5 w-5" />
               Log in to your account
@@ -35,14 +33,14 @@ export default function WelcomePage() {
 
           {/* GitHub Button */}
           <Link
-            href="https://github.com/growcms"
+            href="https://github.com/giaba90/grow-cms/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <Button
               variant="outline"
               size="lg"
-              className="w-full min-w-[200px] gap-2 sm:w-auto"
+              className="cursor-pointer w-full min-w-[200px] gap-2 sm:w-auto"
             >
               <Github className="h-5 w-5" />
               Visit our GitHub

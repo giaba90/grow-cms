@@ -1,56 +1,51 @@
 declare global {
   type post_status = "draft" | "published" | "archived";
 
-  type PostData = {
+  type taxonomy_type = "category" | "tag";
+
+  interface BaseData {
     title: string;
     content: string;
-    url?: string | null;
-    description?: string | null;
-    status?: post_status | null | undefined;
+    url?: string | "";
+    description?: string | "";
+    status: post_status | null | undefined;
+  }
+
+  interface PostData extends BaseData {
     featured?: boolean | null;
     author_id: string | null | undefined;
-  };
-
-  type Article = {
-    id: string;
-    title: string;
-    content: string;
-  };
-
-  interface CookieOptions {
-    httpOnly: boolean;
-    secure: boolean;
-    sameSite: "lax" | "strict" | "none";
-    path: string;
-    expires?: Date;
-    domain?: string;
   }
 
-  interface Cookie {
+  interface PageData extends BaseData {}
+
+  type TaxonomyData = {
     name: string;
-    options: CookieOptions;
-    duration: number;
-  }
+    slug: string;
+    type: taxonomy_type;
+    description: string;
+  };
 
-  interface LoginFormData {
+  type UserData = {
+    name: string;
+    surname: string;
     email: string;
     password: string;
-  }
+    // Optional properties
+    role?: string | null | undefined;
+    lastlogin?: Date;
+  };
 
-  interface User {
+  interface Article extends BaseData {
     id: string;
-    email: string;
-    name?: string;
-    image?: string;
-    role: "ADMIN" | "USER";
   }
 
-  interface Session {
-    userId: string;
-    expiresAt: Date;
-  }
-  interface ArticlesListProps {
-    articles: Article[];
+  interface SignupState {
+    errors?: {
+      name?: string;
+      email?: string;
+      password?: string[];
+    };
+    message?: string;
   }
 }
 
