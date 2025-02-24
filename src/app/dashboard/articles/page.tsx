@@ -11,6 +11,8 @@ import {
 } from "@components/ui/table";
 import Link from "next/link";
 import { formatDate } from "@/app/utils/utils";
+import { NewButton } from "@/app/components/ui/newbutton";
+import { EditButton } from "@/app/components/ui/editbutton";
 
 export default async function ArticlesPage() {
   const res = await fetch("http://localhost:3000/api/dashboard/articles");
@@ -21,16 +23,7 @@ export default async function ArticlesPage() {
       <h1 className="text-3xl font-bold">Articles</h1>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex flex-col items-start">
-          {" "}
-          <Link href="/dashboard/articles/create">
-            <Button
-              className="cursor-pointer mt-2 bg-black text-white"
-              size="sm"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              New
-            </Button>{" "}
-          </Link>
+          <NewButton url="create" />
         </div>
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -71,10 +64,7 @@ export default async function ArticlesPage() {
                 </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
-                    <Button variant="ghost" size="icon">
-                      <PenSquare className="h-4 w-4" />
-                      <span className="sr-only">Edit</span>
-                    </Button>
+                    <EditButton url={`articles/edit/${article.id}`} />
                     <Button variant="ghost" size="icon">
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete</span>
