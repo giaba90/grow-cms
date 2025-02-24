@@ -10,36 +10,12 @@ import {
   TableRow,
 } from "@components/ui/table";
 import Link from "next/link";
+import { formatDate } from "@/app/utils/utils";
 
-interface Article {
-  id: number;
-  title: string;
-  created_at?: string;
-  status: "draft" | "published";
-}
+export default async function ArticlesPage() {
+  const res = await fetch("http://localhost:3000/api/dashboard/articles");
+  const articles: Article[] = await res.json();
 
-const articles: Article[] = [
-  {
-    id: 1,
-    title: "Getting Started with Next.js",
-    created_at: "02-04-2025",
-    status: "draft",
-  },
-  {
-    id: 2,
-    title: "Understanding React Hooks",
-    created_at: "06-04-2025",
-    status: "published",
-  },
-  {
-    id: 3,
-    title: "Building Modern UIs",
-    created_at: "21-04-2025",
-    status: "draft",
-  },
-];
-
-export default function ArticlesPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-3xl font-bold">Articles</h1>
@@ -78,13 +54,15 @@ export default function ArticlesPage() {
               <TableRow key={article.id}>
                 <TableCell className="font-medium">{article.id}</TableCell>
                 <TableCell>{article.title}</TableCell>
-                <TableCell>{article.created_at}</TableCell>
+                <TableCell>{formatDate(article.created_at)}</TableCell>
                 <TableCell>
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                       article.status === "published"
                         ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
+                        : article.status === "draft"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-blue-300 text-blue-800"
                     }`}
                   >
                     {article.status.charAt(0).toUpperCase() +

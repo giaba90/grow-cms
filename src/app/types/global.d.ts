@@ -8,11 +8,12 @@ declare global {
     content: string;
     url?: string | "";
     description?: string | "";
-    status: post_status | null | undefined;
+    status: post_status;
+    created_at: string;
   }
 
   interface PostData extends BaseData {
-    featured?: boolean | null;
+    featured?: boolean;
     author_id: string | null | undefined;
   }
 
