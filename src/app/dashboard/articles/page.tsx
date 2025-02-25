@@ -31,15 +31,15 @@ export default async function ArticlesPage() {
         </div>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border bg-white">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-gray-50">
             <TableRow>
-              <TableHead className="w-20">ID</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Created at</TableHead>
-              <TableHead className="w-32">Status</TableHead>
-              <TableHead className="w-32">Operations</TableHead>
+              <TableHead className="w-20 font-bold">ID</TableHead>
+              <TableHead className="font-bold">Title</TableHead>
+              <TableHead className="font-bold">Created at</TableHead>
+              <TableHead className="w-32 font-bold">Status</TableHead>
+              <TableHead className="w-32 font-bold">Operations</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
