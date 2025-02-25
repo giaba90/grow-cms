@@ -37,7 +37,7 @@ declare global {
   };
 
   interface Article extends BaseData {
-    id: string;
+    id: number;
   }
 
   interface SignupState {

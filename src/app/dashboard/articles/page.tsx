@@ -1,17 +1,7 @@
-import { Search, Trash2 } from "lucide-react";
-import { Button } from "@components/ui/button";
+import { Search } from "lucide-react";
 import { Input } from "@components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@components/ui/table";
-import { formatDate } from "@/app/utils/utils";
 import { NewButton } from "@/app/components/ui/newbutton";
-import { EditButton } from "@/app/components/ui/editbutton";
+import MyTable from "@/app/components/ui/mytable";
 
 export default async function ArticlesPage() {
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard/articles`);
@@ -29,51 +19,8 @@ export default async function ArticlesPage() {
           <Input placeholder="Cerca articoli..." className="pl-8" />
         </div>
       </div>
-
       <div className="border bg-white">
-        <Table>
-          <TableHeader className="bg-gray-50">
-            <TableRow>
-              <TableHead className="w-20 font-bold">ID</TableHead>
-              <TableHead className="font-bold">Titolo</TableHead>
-              <TableHead className="font-bold">Creato il</TableHead>
-              <TableHead className="w-32 font-bold">Stato</TableHead>
-              <TableHead className="w-32 font-bold">Operazioni</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {articles.map((article) => (
-              <TableRow key={article.id}>
-                <TableCell className="font-medium">{article.id}</TableCell>
-                <TableCell>{article.title}</TableCell>
-                <TableCell>{formatDate(article.created_at)}</TableCell>
-                <TableCell>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      article.status === "published"
-                        ? "bg-green-100 text-green-800"
-                        : article.status === "draft"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-blue-300 text-blue-800"
-                    }`}
-                  >
-                    {article.status.charAt(0).toUpperCase() +
-                      article.status.slice(1)}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <div className="flex space-x-2">
-                    <EditButton url={`articles/edit/${article.id}`} />
-                    <Button variant="ghost" size="icon">
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Elimina</span>
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <MyTable initialData={articles} />
       </div>
     </div>
   );
