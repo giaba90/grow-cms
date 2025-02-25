@@ -15,7 +15,7 @@ import { NewButton } from "@/app/components/ui/newbutton";
 import { EditButton } from "@/app/components/ui/editbutton";
 
 export default async function ArticlesPage() {
-  const res = await fetch("http://localhost:3000/api/dashboard/articles");
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard/articles`);
   const articles: Article[] = await res.json();
 
   return (
