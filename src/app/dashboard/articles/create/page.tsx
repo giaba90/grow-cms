@@ -7,6 +7,7 @@ import { ExternalLink, Upload } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
+import Tiptap from "@/app/components/ui/Tiptap";
 import {
   Select,
   SelectContent,
@@ -40,7 +41,7 @@ export default function NewArticlePage() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Contenuto</label>
-          <Textarea placeholder="Type here" className="min-h-[200px]" />
+          <Tiptap />
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
