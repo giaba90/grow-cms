@@ -6,8 +6,15 @@ import Link from "next/link";
 import { ExternalLink, Upload } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import Tiptap from "@/app/components/ui/Tiptap";
 import { Progress } from "@/app/components/ui/progress";
+import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
+
+import PostTaxonomySelect from "@/app/components/ui/PostTaxonomySelect";
+import Tiptap from "@/app/components/ui/Tiptap";
+
+const handleStatusChange = (status: "draft" | "published" | "archived") => {
+  console.log("Selected status:", status);
+};
 
 export default function NewArticlePage() {
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -19,8 +26,8 @@ export default function NewArticlePage() {
         {/* col 1 */}
         <div className="w-2/3">
           <div className="mb-6">
-            <label className="text-sm font-medium">Titolo</label>
-            <div className="flex gap-4 items-cente">
+            <label className="text-sm font-medium ">Titolo</label>
+            <div className="flex gap-4 items-center">
               <Input
                 className="bg-white"
                 placeholder="Inserisci il titolo..."
@@ -56,21 +63,15 @@ export default function NewArticlePage() {
         {/* col 2 */}
         <div className="w-1/3 ml-4">
           <div className="flex flex-col">
-            <div className="mb-6">
-              <label className="text-sm font-medium">Stato</label>
-              <select className="w-full border bg-white p-2">
-                <option value="draft">Bozza</option>
-                <option value="published">Pubblicato</option>
-                <option value="archived">Archiviato</option>
-              </select>
+            <div className="mb-8">
+              <PostStatusSelect
+                initialStatus="draft"
+                onChange={handleStatusChange}
+              />
             </div>
 
             <div className="mb-6">
-              <label className="text-sm font-medium">Tassonomia</label>
-              <select className="w-full border bg-white p-2">
-                <option value="category">Categoria</option>
-                <option value="tag">Tag</option>
-              </select>
+              <PostTaxonomySelect />
             </div>
           </div>
 
