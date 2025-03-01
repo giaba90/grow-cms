@@ -7,15 +7,6 @@ import { ExternalLink, Upload } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/app/components/ui/select";
 import { Progress } from "@/app/components/ui/progress";
 
 export default function NewArticlePage() {
@@ -23,7 +14,6 @@ export default function NewArticlePage() {
 
   return (
     <>
-      {" "}
       <h1 className="text-2xl font-bold mb-6">Nuovo articolo</h1>
       <div className="flex w-full direction-row justify-between aligm-start flex-nowrap">
         {/* col 1 */}
@@ -65,42 +55,26 @@ export default function NewArticlePage() {
         </div>
         {/* col 2 */}
         <div className="w-1/3 ml-4">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="flex flex-col">
+            <div className="mb-6">
               <label className="text-sm font-medium">Stato</label>
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a fruit" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Fruits</SelectLabel>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="banana">Banana</SelectItem>
-                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                    <SelectItem value="grapes">Grapes</SelectItem>
-                    <SelectItem value="pineapple">Pineapple</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <select className="w-full border bg-white p-2">
+                <option value="draft">Bozza</option>
+                <option value="published">Pubblicato</option>
+                <option value="archived">Archiviato</option>
+              </select>
             </div>
 
-            <div className="space-y-2">
+            <div className="mb-6">
               <label className="text-sm font-medium">Tassonomia</label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleziona tassonomia" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="news">News</SelectItem>
-                  <SelectItem value="blog">Blog</SelectItem>
-                  <SelectItem value="tutorial">Tutorial</SelectItem>
-                </SelectContent>
-              </Select>
+              <select className="w-full border bg-white p-2">
+                <option value="category">Categoria</option>
+                <option value="tag">Tag</option>
+              </select>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="">
             <label className="text-sm font-medium">Carica immagine</label>
             <div className="border-2 border-dashed rounded-lg p-8 text-center">
               <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
