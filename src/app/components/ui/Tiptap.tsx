@@ -17,7 +17,16 @@ const Tiptap = () => {
   const [headingLevel, setHeadingLevel] = useState(1);
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
+
+      Underline,
+    ],
+
     content: "<p>Hello World!</p>",
     editorProps: {
       attributes: {
@@ -41,9 +50,8 @@ const Tiptap = () => {
   return (
     <>
       <div className="flex flex-col">
-        <div className="w-full p-2">
-          <h2>Editor</h2>
-          <div className="flex space-x-2 mb-2">
+        <div className="w-full">
+          <div className="flex space-x-2 mb-2 border bg-white">
             <div className="relative">
               <button className={`p-2`}>
                 <FaHeading />
@@ -107,13 +115,7 @@ const Tiptap = () => {
               <FaListOl />
             </button>
           </div>
-          <EditorContent editor={editor} className="border rounded-lg p-2" />
-          <button
-            onClick={saveContent}
-            className="mt-2 p-2 bg-blue-500 text-white rounded"
-          >
-            Save
-          </button>
+          <EditorContent editor={editor} className="border p-2 bg-white" />
         </div>
       </div>
     </>
