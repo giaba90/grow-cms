@@ -71,7 +71,11 @@ export default function NewArticlePage() {
             </div>
 
             <div className="mb-6">
-              <PostTaxonomySelect />
+              <PostTaxonomySelect
+                type={"category"}
+                initialStatus={["nessuna"]}
+              />
+              <PostTaxonomySelect type={"tag"} initialStatus={["nessuna"]} />
             </div>
           </div>
 
