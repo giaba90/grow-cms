@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Progress } from "@/app/components/ui/progress";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
-
+import { useEdgeStore } from "src/app/lib/edgestore";
 import PostTaxonomySelect from "@/app/components/ui/PostTaxonomySelect";
 import Tiptap from "@/app/components/ui/Tiptap";
 
@@ -17,7 +17,8 @@ const handleStatusChange = (status: "draft" | "published" | "archived") => {
 };
 
 export default function NewArticlePage() {
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [file, setFile] = useState<File>();
+  const { edgestore } = useEdgeStore();
 
   return (
     <>
@@ -81,13 +82,39 @@ export default function NewArticlePage() {
 
           <div className="">
             <label className="text-sm font-medium">Carica immagine</label>
-            <div className="border-2 border-dashed rounded-lg p-8 text-center">
+            {/*  <div className="border-2 border-dashed rounded-lg p-8 text-center">
               <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
               <p className="text-sm text-gray-600">
                 Trascina un file qui o clicca per selezionare
               </p>
+            </div> */}
+            <div>
+              <input
+                type="file"
+                onChange={(e) => {
+                  setFile(e.target.files?.[0]);
+                }}
+              />
+              <button
+                onClick={async () => {
+                  if (file) {
+                    const res = await edgestore.publicFiles.upload({
+                      file,
+                      onProgressChange: (progress) => {
+                        // you can use this to show a progress bar
+                        console.log(progress);
+                      },
+                    });
+                    // you can run some server action or api here
+                    // to add the necessary data to your database
+                    console.log(res);
+                  }
+                }}
+              >
+                Upload
+              </button>
             </div>
-            <div className="space-y-2">
+            {/*   <div className="space-y-2">
               <Progress value={uploadProgress} />
               <div className="flex justify-between text-sm">
                 <span>progress.jpg</span>
@@ -95,7 +122,7 @@ export default function NewArticlePage() {
                   Gestisci
                 </Link>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
