@@ -6,13 +6,6 @@ import bcrypt from "bcryptjs";
 import { ZodError } from "zod";
 import { signInSchema } from "@/app/lib/validation";
 
-/**
- * Retrieves a user from the database based on the provided email.
- *
- * @param {string} email - The email of the user to retrieve.
- * @returns {Promise<{ id: string, email: string, password: string, role: string } | null>}
- * A promise that resolves to the user object if found, or null if not found or an error occurs.
- */
 async function getUserFromDb(email: string) {
   try {
     const user = await prisma.users.findUnique({
@@ -26,33 +19,12 @@ async function getUserFromDb(email: string) {
   }
 }
 
-/**
- * Configuration options for NextAuth.
- *
- * @type {NextAuthConfig}
- *
- * @property {PrismaAdapter} adapter - The Prisma adapter for NextAuth.
- * @property {Object} session - Session configuration.
- * @property {string} session.strategy - The session strategy, set to "jwt".
- * @property {Array} providers - List of authentication providers.
- *
- * @property {Object} providers.Credentials - Credentials provider configuration.
- * @property {Object} providers.Credentials.credentials - Credentials fields.
- * @property {Object} providers.Credentials.credentials.email - Email field configuration.
- * @property {string} providers.Credentials.credentials.email.label - Label for the email field.
- * @property {string} providers.Credentials.credentials.email.type - Type of the email field.
- * @property {Object} providers.Credentials.credentials.password - Password field configuration.
- * @property {string} providers.Credentials.credentials.password.label - Label for the password field.
- * @property {string} providers.Credentials.credentials.password.type - Type of the password field.
- * @property {Function} providers.Credentials.authorize - Function to authorize user credentials.
- *
- * @property {Object} callbacks - Callback functions for NextAuth.
- * @property {Function} callbacks.session - Callback to handle session.
- * @property {Function} callbacks.jwt - Callback to handle JWT.
- */
 export const authOptions: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60, // Durata della sessione (1 ora)
+  },
   providers: [
     Credentials({
       credentials: {
@@ -69,14 +41,11 @@ export const authOptions: NextAuthConfig = {
           if (!user) throw new Error("Utente non trovato");
           if (!user.password) throw new Error("Password non valida");
 
-          const passwordsMatch = await bcrypt.compareSync(
-            password,
-            user.password
-          );
+          const passwordsMatch = bcrypt.compareSync(password, user.password);
           if (!passwordsMatch) throw new Error("Credenziali errate");
 
           return {
-            id: user.id,
+            id: String(user.id),
             email: user.email ?? "",
             role: user.role,
           };
@@ -91,14 +60,18 @@ export const authOptions: NextAuthConfig = {
     async session({ session, token }) {
       if (session.user) {
         session.user.role = token.role as string;
+        session.expires = new Date(token.exp! * 1000) as Date & string; // Allinea la scadenza della sessione
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
+        token.exp = Math.floor(Date.now() / 1000) + 60 * 60; // Token (e sessione) scadono in 1 ora
       }
       return token;
     },
   },
 };
+
+// Ora la sessione scadrà esattamente quando scade il token! Dimmi se vuoi modificare la durata o fare altri miglioramenti. 🚀

@@ -49,7 +49,7 @@ export const taxonomyDataSchema = z.object({
   type: z.string().min(1).max(100),
   description: z.string().min(1).max(1000),
 });
-
+// zod schema for user data
 export const userDataSchema = z.object({
   name: z.string().min(1).max(100),
   surname: z.string().min(1).max(100),
@@ -57,4 +57,12 @@ export const userDataSchema = z.object({
   password: z.string().min(6),
   role: z.string().optional(),
   lastlogin: z.date().optional(),
+});
+
+// zod schema for media data
+export const mediaDataSchema = z.object({
+  file_name: z.string().min(1).max(100),
+  file_path: z.string().min(1).max(1000),
+  size: z.number().int(),
+  user_id: z.number().int(),
 });
