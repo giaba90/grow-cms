@@ -1,42 +1,27 @@
-// app/dashboard/articles/page.tsx
-import { Suspense } from "react";
+import { Search } from "lucide-react";
+import { Input } from "@components/ui/input";
+import { NewButton } from "@/app/components/ui/newbutton";
+import MyTable from "@/app/components/ui/mytable";
 
-async function BlogPost() {
-  let error: string | null = null;
-  let articles: Article[] = [];
-
-  try {
-    const res = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/dashboard/articles`
-    );
-    if (!res.ok) {
-      throw new Error("Failed to fetch articles");
-    }
-    articles = await res.json();
-  } catch (err) {
-    error = (err as Error).message;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+export default async function ArticlesPage() {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard/articles`);
+  const articles: Article[] = await res.json();
 
   return (
-    <ul>
-      {articles.map((article: Article) => (
-        <li key={article.id}>{article.title}</li>
-      ))}
-    </ul>
-  );
-}
-
-export default function ArticlesPage() {
-  return (
-    <div>
-      <h1>Articles</h1>
-      <Suspense fallback={<div>Loading articles...</div>}>
-        <BlogPost />
-      </Suspense>
+    <div className="container mx-auto py-6 space-y-6">
+      <h1 className="text-3xl font-bold">Articoli</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex flex-col items-start">
+          <NewButton url="create" />
+        </div>
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Cerca articoli..." className="pl-8" />
+        </div>
+      </div>
+      <div className="border bg-white">
+        <MyTable initialData={articles} />
+      </div>
     </div>
   );
 }
