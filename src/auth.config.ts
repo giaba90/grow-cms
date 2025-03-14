@@ -59,19 +59,17 @@ export const authOptions: NextAuthConfig = {
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role as string;
+        //    session.user.role = token.role as string;
         session.expires = new Date(token.exp! * 1000) as Date & string; // Allinea la scadenza della sessione
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        //      token.role = user.role;
         token.exp = Math.floor(Date.now() / 1000) + 60 * 60; // Token (e sessione) scadono in 1 ora
       }
       return token;
     },
   },
 };
-
-// Ora la sessione scadrà esattamente quando scade il token! Dimmi se vuoi modificare la durata o fare altri miglioramenti. 🚀
