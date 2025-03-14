@@ -14,7 +14,7 @@ declare global {
 
   interface PostData extends BaseData {
     featured?: boolean;
-    author_id: string | null | undefined;
+    author_id: number;
   }
 
   interface PageData extends BaseData {}
