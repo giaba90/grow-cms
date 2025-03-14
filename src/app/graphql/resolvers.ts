@@ -1,5 +1,5 @@
 // resolvers.ts
-import prisma from "../lib/prisma"; // Assicurati di configurare Prisma correttamente
+import prisma from "../prisma/client"; // Assicurati di configurare Prisma correttamente
 
 export const resolvers = {
   Query: {
