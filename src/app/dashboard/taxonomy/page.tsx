@@ -3,7 +3,7 @@
 export default function TaxonomyPage() {
   return (
     <div>
-      <h1>Taxonomie</h1>
+      <h1>Tassonomie</h1>
       <p>Gestione delle categorie e tag</p>
     </div>
   );
