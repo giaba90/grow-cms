@@ -9,7 +9,7 @@ export interface InputProps
 
 export function Input({ className, error, ...props }: InputProps) {
   return (
-    <div className="relative">
+    <div className="relative" style={{ width: "100%" }}>
       <input
         className={cn(
           "flex h-10 w-full border border-input bg-background px-3 py-2",
