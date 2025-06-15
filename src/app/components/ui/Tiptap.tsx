@@ -13,7 +13,11 @@ import {
 } from "react-icons/fa";
 import { useState } from "react";
 
-const Tiptap = () => {
+interface TiptapProps {
+  onChange?: (content: string) => void;
+}
+
+const Tiptap = ({ onChange }: TiptapProps) => {
   const [headingLevel, setHeadingLevel] = useState(1);
 
   const editor = useEditor({
@@ -33,6 +37,12 @@ const Tiptap = () => {
         class:
           "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none min-h-[250px]",
       },
+    },
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      if (onChange) {
+        onChange(html);
+      }
     },
     immediatelyRender: false,
   });
