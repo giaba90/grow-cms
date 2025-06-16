@@ -1,37 +1,63 @@
-import { useState } from "react";
-import { ChangeEvent } from "react";
+"use client";
 
+import { useEffect, useState } from "react";
 
-interface CategorySelectProps {
-  initialValue?: string
-  onValueChange?: (value: string) => void
-}
+function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
- function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
-    const [status, setStatus] = useState(initialValue || "draft");
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch(
+                    "/api/dashboard/taxonomy/?type=category"
+                );
+                if (!response.ok) {
+                    throw new Error("Errore nel caricamento delle categorie");
+                }
+                const data = await response.json();
+                setCategories(data);
+            } catch (err) {
+                setError(
+                    err instanceof Error
+                        ? err.message
+                        : "Errore nel caricamento delle categorie"
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    function handleChange(event: ChangeEvent<HTMLSelectElement>): void {
-        const value = event.target.value;
-        setStatus(value);
-        if (onValueChange) {
-            onValueChange(value);
-        }
+        fetchCategories();
+    }, []);
+
+    if (loading) {
+        return <div>Caricamento categorie...</div>;
     }
 
-  return (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium">Categoria</label>
-      <select
-        id="postCategory"
-        value={status}
-        onChange={handleChange}
-        className="border p-2 bg-white"
-      >
-        <option value="draft">Draft</option>
-        <option value="published">Published</option>
-        <option value="archived">Archived</option>
-      </select>
-    </div>
-  )
+    if (error) {
+        return <div className="text-red-500">Errore: {error}</div>;
+    }
+
+    return (
+        <div className="flex flex-col">
+            <label className="text-sm font-medium">Categoria</label>
+            <select
+                id="categorySelect"
+                value={initialValue || ""}
+                onChange={(e) => onValueChange?.(e.target.value)}
+                className="border p-2 bg-white"
+            >
+                <option value="">Seleziona una categoria</option>
+                {categories.map((category) => (
+                    <option key={category.id} value={category.slug}>
+                        {category.name}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
 }
+
 export default CategorySelect;

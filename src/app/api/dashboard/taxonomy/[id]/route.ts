@@ -19,6 +19,8 @@ function getId(url: string) {
   }
 }
 
+
+
 // GET api/dashboard/taxonomy/[id]
 export async function GET(req: NextRequest) {
   const id = getId(req.url);

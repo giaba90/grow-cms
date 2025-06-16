@@ -132,13 +132,13 @@ export default function NewArticlePage() {
                   // gestisci il cambiamento della categoria
                 }}
               />
-             {/*  <div className="mt-4">
+              <div className="mt-4">
                 <TagSelect
                   onValueChange={(value) => {
                     // gestisci il cambiamento dei tag
                   }}
                 />
-              </div> */}
+              </div>
             </div>
           </div>
 

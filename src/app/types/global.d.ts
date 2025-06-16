@@ -17,7 +17,7 @@ declare global {
     author_id: number;
   }
 
-  interface PageData extends BaseData {}
+  interface PageData extends BaseData { }
 
   type TaxonomyData = {
     name: string;
@@ -57,6 +57,30 @@ declare global {
     };
     message?: string;
   }
+
+  interface Category {
+    id: number;
+    name: string;
+    type: string;
+    slug: string;
+  }
+
+  interface CategorySelectProps {
+    initialValue?: string;
+    onValueChange?: (value: string) => void;
+  }
+
+  interface Tag {
+    id: number
+    name: string
+    type: string
+    slug: string
+  }
+
+  interface TagSelectProps {
+    initialValue?: string
+    onValueChange?: (value: string) => void
+  }
 }
 
-export {};
+export { };

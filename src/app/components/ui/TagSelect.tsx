@@ -1,35 +1,57 @@
-import { useState } from "react";
-interface TagSelectProps {
-  initialValue?: string
-  onValueChange?: (value: string) => void
-}
+"use client"
+
+import { useEffect, useState } from "react"
 
 function TagSelect({ initialValue, onValueChange }: TagSelectProps) {
-    const [status, setStatus] = useState(initialValue || "draft");
+  const [tags, setTags] = useState<Tag[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-    function handleChange(event: React.ChangeEvent<HTMLSelectElement>): void {
-        const value = event.target.value;
-        setStatus(value);
-        if (onValueChange) {
-            onValueChange(value);
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await fetch('/api/dashboard/taxonomy/?type=tag')
+        if (!response.ok) {
+          throw new Error('Errore nel caricamento dei tag')
         }
+        const data = await response.json()
+        setTags(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Errore nel caricamento dei tag')
+      } finally {
+        setLoading(false)
+      }
     }
 
+    fetchTags()
+  }, [])
+
+  if (loading) {
+    return <div>Caricamento tag...</div>
+  }
+
+  if (error) {
+    return <div className="text-red-500">Errore: {error}</div>
+  }
+
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col">
       <label className="text-sm font-medium">Tag</label>
       <select
-        id="postStatus"
-        value={status}
-        onChange={handleChange}
+        id="tagSelect"
+        value={initialValue || ""}
+        onChange={(e) => onValueChange?.(e.target.value)}
         className="border p-2 bg-white"
       >
-        <option value="draft">Draft</option>
-        <option value="published">Published</option>
-        <option value="archived">Archived</option>
+        <option value="">Seleziona un Tag</option>
+        {tags.map((tag) => (
+          <option key={tag.id} value={tag.slug}>
+            {tag.name}
+          </option>
+        ))}
       </select>
     </div>
-  )
+  );
 }
 
-export default TagSelect;
+export default TagSelect
