@@ -1,61 +1,37 @@
-"use client";
+import { useState } from "react";
+import { ChangeEvent } from "react";
 
-import { useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/app/components/ui/select";
-
-interface Category {
-  id: number;
-  name: string;
-}
 
 interface CategorySelectProps {
-  onChange: (categoryId: number | null) => void;
-  initialValue?: number;
+  initialValue?: string
+  onValueChange?: (value: string) => void
 }
 
-export default function CategorySelect({ onChange, initialValue }: CategorySelectProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
+ function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
+    const [status, setStatus] = useState(initialValue || "draft");
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch('/api/dashboard/taxonomy?type=category');
-        if (!response.ok) throw new Error('Errore nel caricamento delle categorie');
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error('Errore nel caricamento delle categorie:', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+    function handleChange(event: ChangeEvent<HTMLSelectElement>): void {
+        const value = event.target.value;
+        setStatus(value);
+        if (onValueChange) {
+            onValueChange(value);
+        }
+    }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col">
       <label className="text-sm font-medium">Categoria</label>
-      <Select
-        defaultValue={initialValue?.toString()}
-        onValueChange={(value) => onChange(value ? parseInt(value, 10) : null)}
+      <select
+        id="postCategory"
+        value={status}
+        onChange={handleChange}
+        className="border p-2 bg-white"
       >
-        <SelectTrigger className="bg-white">
-          <SelectValue placeholder="Seleziona una categoria" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="">Nessuna categoria</SelectItem>
-          {categories.map((category) => (
-            <SelectItem key={category.id} value={category.id.toString()}>
-              {category.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <option value="draft">Draft</option>
+        <option value="published">Published</option>
+        <option value="archived">Archived</option>
+      </select>
     </div>
-  );
+  )
 }
+export default CategorySelect;

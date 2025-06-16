@@ -9,10 +9,10 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import { useEdgeStore } from "src/app/lib/edgestore";
-import CategorySelect from "@/app/components/ui/CategorySelect";
-import TagSelect from "@/app/components/ui/TagSelect";
 import Tiptap from "@/app/components/ui/Tiptap";
 import { toast } from "sonner";
+import CategorySelect from "@/app/components/ui/CategorySelect";
+import TagSelect from "@/app/components/ui/TagSelect";
 
 export default function NewArticlePage() {
   const router = useRouter();
@@ -25,8 +25,6 @@ export default function NewArticlePage() {
     status: "draft" as "draft" | "published" | "archived",
     featured: false,
     author_id: 3, // TODO: Get this from the authenticated user
-    category_id: null as number | null,
-    tag_ids: [] as number[],
   });
 
   const handleStatusChange = (status: "draft" | "published" | "archived") => {
@@ -35,14 +33,6 @@ export default function NewArticlePage() {
 
   const handleContentChange = (content: string) => {
     setFormData((prev) => ({ ...prev, content }));
-  };
-
-  const handleCategoryChange = (categoryId: number | null) => {
-    setFormData((prev) => ({ ...prev, category_id: categoryId }));
-  };
-
-  const handleTagsChange = (tagIds: number[]) => {
-    setFormData((prev) => ({ ...prev, tag_ids: tagIds }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -136,15 +126,17 @@ export default function NewArticlePage() {
               />
             </div>
 
-            <div className="mb-6">
+            <div className="mb-8">
               <CategorySelect
-                initialValue={formData.category_id || undefined}
-                onChange={handleCategoryChange}
+                onValueChange={(value) => {
+                  // gestisci il cambiamento della categoria
+                }}
               />
-           {/*    <div className="mt-4">
+             {/*  <div className="mt-4">
                 <TagSelect
-                  initialValues={formData.tag_ids}
-                  onChange={handleTagsChange}
+                  onValueChange={(value) => {
+                    // gestisci il cambiamento dei tag
+                  }}
                 />
               </div> */}
             </div>
