@@ -23,7 +23,7 @@ function TagSelect({ value, onChange }: TagSelectProps) {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch('/api/dashboard/taxonomy/tag')
+        const response = await fetch('/api/dashboard/taxonomy-type/tag')
         if (!response.ok) {
           throw new Error('Errore nel caricamento dei tag')
         }

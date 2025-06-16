@@ -24,7 +24,7 @@ function CategorySelect({ value, onChange }: CategorySelectProps) {
         const fetchCategories = async () => {
             try {
                 const response = await fetch(
-                    "/api/dashboard/taxonomy/category"
+                    "/api/dashboard/taxonomy-type/category"
                 );
                 if (!response.ok) {
                     throw new Error("Errore nel caricamento delle categorie");
