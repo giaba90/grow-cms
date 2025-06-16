@@ -2,16 +2,29 @@
 
 import { useEffect, useState } from "react";
 
-function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
+interface Category {
+    id: number;
+    name: string;
+    slug: string;
+    type: string;
+}
+
+interface CategorySelectProps {
+    value?: string;
+    onChange?: (value: string) => void;
+}
+
+function CategorySelect({ value, onChange }: CategorySelectProps) {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedValue, setSelectedValue] = useState(value || "");
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await fetch(
-                    "/api/dashboard/taxonomy/?type=category"
+                    "/api/dashboard/taxonomy/category"
                 );
                 if (!response.ok) {
                     throw new Error("Errore nel caricamento delle categorie");
@@ -32,6 +45,17 @@ function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
         fetchCategories();
     }, []);
 
+    // Aggiorna il valore selezionato quando cambia il prop value
+    useEffect(() => {
+        setSelectedValue(value || "");
+    }, [value]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newValue = e.target.value;
+        setSelectedValue(newValue);
+        onChange?.(newValue);
+    };
+
     if (loading) {
         return <div>Caricamento categorie...</div>;
     }
@@ -45,11 +69,11 @@ function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
             <label className="text-sm font-medium">Categoria</label>
             <select
                 id="categorySelect"
-                value={initialValue || ""}
-                onChange={(e) => onValueChange?.(e.target.value)}
+                value={selectedValue}
+                onChange={handleChange}
                 className="border p-2 bg-white"
             >
-                <option value="">Seleziona una categoria</option>
+                <option value="">Nessuna categoria selezionata</option>
                 {categories.map((category) => (
                     <option key={category.id} value={category.slug}>
                         {category.name}

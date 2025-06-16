@@ -25,6 +25,8 @@ export default function NewArticlePage() {
     status: "draft" as "draft" | "published" | "archived",
     featured: false,
     author_id: 3, // TODO: Get this from the authenticated user
+    category: "",
+    tag: "",
   });
 
   const handleStatusChange = (status: "draft" | "published" | "archived") => {
@@ -128,15 +130,17 @@ export default function NewArticlePage() {
 
             <div className="mb-8">
               <CategorySelect
-                onValueChange={(value) => {
-                  // gestisci il cambiamento della categoria
-                }}
+                value={formData.category}
+                onChange={(value) =>
+                  setFormData((prev) => ({ ...prev, category: value }))
+                }
               />
               <div className="mt-4">
                 <TagSelect
-                  onValueChange={(value) => {
-                    // gestisci il cambiamento dei tag
-                  }}
+                  value={formData.tag}
+                  onChange={(value) =>
+                    setFormData((prev) => ({ ...prev, tag: value }))
+                  }
                 />
               </div>
             </div>
