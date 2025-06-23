@@ -104,7 +104,7 @@ export default function EditArticlePage() {
         }
         try {
             const response = await fetch(`/api/dashboard/articles/${params.id}`, {
-                method: "PATCH",
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
