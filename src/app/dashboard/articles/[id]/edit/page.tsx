@@ -11,6 +11,10 @@ import { toast } from "sonner";
 import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
 
+// Tipi per categoria e tag (adatta se hai tipi globali)
+type Category = { id: number; name: string; };
+type Tag = { id: number; name: string; };
+
 export default function EditArticlePage() {
     const router = useRouter();
     const params = useParams();
@@ -26,9 +30,17 @@ export default function EditArticlePage() {
         category: "",
         tag: "",
     });
-    // Stato per categorie e tag
-    const [categories, setCategories] = useState([]);
-    const [tags, setTags] = useState([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [catLoading, setCatLoading] = useState(true);
+    const [tagLoading, setTagLoading] = useState(true);
+    const [catError, setCatError] = useState<string | null>(null);
+    const [tagError, setTagError] = useState<string | null>(null);
+
+    // Funzione generica per aggiornare i campi del form
+    const updateForm = (field: string, value: any) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -52,37 +64,39 @@ export default function EditArticlePage() {
         if (params.id) fetchArticle();
     }, [params.id]);
 
-    // Fetch categorie e tag
+    // Fetch categorie e tag in parallelo
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const res = await fetch("/api/dashboard/taxonomy-type/category");
-                if (!res.ok) throw new Error();
-                setCategories(await res.json());
-            } catch {
-                setCategories([]);
-            }
-        };
-        const fetchTags = async () => {
-            try {
-                const res = await fetch("/api/dashboard/taxonomy-type/tag");
-                if (!res.ok) throw new Error();
-                setTags(await res.json());
-            } catch {
-                setTags([]);
-            }
-        };
-        fetchCategories();
-        fetchTags();
+        Promise.all([
+            (async () => {
+                setCatLoading(true);
+                try {
+                    const res = await fetch("/api/dashboard/taxonomy-type/category");
+                    if (!res.ok) throw new Error();
+                    setCategories(await res.json());
+                    setCatError(null);
+                } catch {
+                    setCategories([]);
+                    setCatError("Errore nel caricamento delle categorie");
+                } finally {
+                    setCatLoading(false);
+                }
+            })(),
+            (async () => {
+                setTagLoading(true);
+                try {
+                    const res = await fetch("/api/dashboard/taxonomy-type/tag");
+                    if (!res.ok) throw new Error();
+                    setTags(await res.json());
+                    setTagError(null);
+                } catch {
+                    setTags([]);
+                    setTagError("Errore nel caricamento dei tag");
+                } finally {
+                    setTagLoading(false);
+                }
+            })(),
+        ]);
     }, []);
-
-    const handleStatusChange = (status: "draft" | "published" | "archived") => {
-        setFormData((prev) => ({ ...prev, status }));
-    };
-
-    const handleContentChange = (content: string) => {
-        setFormData((prev) => ({ ...prev, content }));
-    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -125,14 +139,14 @@ export default function EditArticlePage() {
                                 className="bg-white"
                                 placeholder="Inserisci il titolo..."
                                 value={formData.title}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                                onChange={(e) => updateForm("title", e.target.value)}
                                 required
                             />
                         </div>
                     </div>
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Contenuto</label>
-                        <Tiptap onChange={handleContentChange} />
+                        <Tiptap onChange={(val) => updateForm("content", val)} />
                     </div>
                     <div className="flex justify-between pt-6">
                         <Button type="button" className="cursor-pointer" variant="outline" onClick={() => router.back()}>
@@ -147,37 +161,38 @@ export default function EditArticlePage() {
                 <div className="w-1/3 ml-4">
                     <div className="flex flex-col">
                         <div className="mb-8">
-                            <PostStatusSelect initialStatus={formData.status} onChange={handleStatusChange} />
+                            <PostStatusSelect initialStatus={formData.status} onChange={(val) => updateForm("status", val)} />
                         </div>
                         <div className="mb-8">
-                            <CategorySelect initialValue={formData.category} onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))} />
-                            <div className="mt-4">
-                                <TagSelect initialValue={formData.tag} onValueChange={(value) => setFormData((prev) => ({ ...prev, tag: value }))} />
+                            <CategorySelect initialValue={formData.category} onValueChange={(val) => updateForm("category", val)} />
+                        </div>
+                        <div className="mt-4">
+                            <TagSelect initialValue={formData.tag} onValueChange={(val) => updateForm("tag", val)} />
+                        </div>
+                        <div className="mt-8">
+                            <label className="text-sm font-medium">Carica immagine</label>
+                            <div>
+                                <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
+                                {file && (
+                                    <Button type="button" onClick={async () => {
+                                        if (file) {
+                                            const res = await edgestore.publicFiles.upload({
+                                                file,
+                                                onProgressChange: (progress) => { console.log(progress); },
+                                            });
+                                            console.log(res);
+                                            toast.success("Immagine caricata con successo!");
+                                        }
+                                    }}>
+                                        Carica
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
-                    <div className="">
-                        <label className="text-sm font-medium">Carica immagine</label>
-                        <div>
-                            <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
-                            {file && (
-                                <Button type="button" onClick={async () => {
-                                    if (file) {
-                                        const res = await edgestore.publicFiles.upload({
-                                            file,
-                                            onProgressChange: (progress) => { console.log(progress); },
-                                        });
-                                        console.log(res);
-                                        toast.success("Immagine caricata con successo!");
-                                    }
-                                }}>
-                                    Carica
-                                </Button>
-                            )}
-                        </div>
-                    </div>
                 </div>
+
             </div>
-        </form>
+        </form >
     );
 }
