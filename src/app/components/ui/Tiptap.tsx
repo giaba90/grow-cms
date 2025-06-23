@@ -31,7 +31,7 @@ const Tiptap = ({ onChange }: TiptapProps) => {
       Underline,
     ],
 
-    content: "<p>Hello World!</p>",
+    content: "",
     editorProps: {
       attributes: {
         class:
@@ -94,33 +94,29 @@ const Tiptap = ({ onChange }: TiptapProps) => {
             </button>
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`p-2 ${
-                editor.isActive("italic") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("italic") ? "bg-gray-300" : ""
+                }`}
             >
               <FaItalic />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleUnderline().run()}
-              className={`p-2 ${
-                editor.isActive("underline") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("underline") ? "bg-gray-300" : ""
+                }`}
             >
               <FaUnderline />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`p-2 ${
-                editor.isActive("bulletList") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("bulletList") ? "bg-gray-300" : ""
+                }`}
             >
               <FaListUl />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`p-2 ${
-                editor.isActive("orderedList") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("orderedList") ? "bg-gray-300" : ""
+                }`}
             >
               <FaListOl />
             </button>

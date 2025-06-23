@@ -2,23 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-interface Category {
-    id: number;
-    name: string;
-    slug: string;
-    type: string;
-}
-
-interface CategorySelectProps {
-    value?: string;
-    onChange?: (value: string) => void;
-}
-
-function CategorySelect({ value, onChange }: CategorySelectProps) {
+function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedValue, setSelectedValue] = useState(value || "");
+    const [selectedValue, setSelectedValue] = useState(initialValue || "");
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -47,13 +35,13 @@ function CategorySelect({ value, onChange }: CategorySelectProps) {
 
     // Aggiorna il valore selezionato quando cambia il prop value
     useEffect(() => {
-        setSelectedValue(value || "");
-    }, [value]);
+        setSelectedValue(initialValue || "");
+    }, [initialValue]);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newValue = e.target.value;
         setSelectedValue(newValue);
-        onChange?.(newValue);
+        onValueChange?.(newValue);
     };
 
     if (loading) {

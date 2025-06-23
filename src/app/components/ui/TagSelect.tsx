@@ -1,24 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
+/* import { Tag } from "@/app/types/global"
+import { TagSelectProps } from "@/app/types/global" */
 
-interface Tag {
-  id: number;
-  name: string;
-  slug: string;
-  type: string;
-}
-
-interface TagSelectProps {
-  value?: string;
-  onChange?: (value: string) => void;
-}
-
-function TagSelect({ value, onChange }: TagSelectProps) {
+function TagSelect({ initialValue, onValueChange }: TagSelectProps) {
   const [tags, setTags] = useState<Tag[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedValue, setSelectedValue] = useState(value || "")
+  const [selectedValue, setSelectedValue] = useState(initialValue || "")
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -41,13 +31,13 @@ function TagSelect({ value, onChange }: TagSelectProps) {
 
   // Aggiorna il valore selezionato quando cambia il prop value
   useEffect(() => {
-    setSelectedValue(value || "");
-  }, [value]);
+    setSelectedValue(initialValue || "");
+  }, [initialValue]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = e.target.value;
     setSelectedValue(newValue);
-    onChange?.(newValue);
+    onValueChange?.(newValue);
   };
 
   if (loading) {

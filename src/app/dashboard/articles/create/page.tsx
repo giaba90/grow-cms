@@ -2,9 +2,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ExternalLink } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
@@ -130,15 +128,15 @@ export default function NewArticlePage() {
 
             <div className="mb-8">
               <CategorySelect
-                value={formData.category}
-                onChange={(value) =>
+                initialValue={formData.category}
+                onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, category: value }))
                 }
               />
               <div className="mt-4">
                 <TagSelect
-                  value={formData.tag}
-                  onChange={(value) =>
+                  initialValue={formData.tag}
+                  onValueChange={(value) =>
                     setFormData((prev) => ({ ...prev, tag: value }))
                   }
                 />
