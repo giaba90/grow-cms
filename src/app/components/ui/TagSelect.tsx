@@ -1,33 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-/* import { Tag } from "@/app/types/global"
-import { TagSelectProps } from "@/app/types/global" */
 
-function TagSelect({ initialValue, onValueChange }: TagSelectProps) {
-  const [tags, setTags] = useState<Tag[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+function TagSelect({ initialValue, onValueChange, tags, loading, error }: TagSelectProps & {
+  tags: Tag[];
+  loading: boolean;
+  error: string | null;
+}) {
   const [selectedValue, setSelectedValue] = useState(initialValue || "")
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await fetch('/api/dashboard/taxonomy-type/tag')
-        if (!response.ok) {
-          throw new Error('Errore nel caricamento dei tag')
-        }
-        const data = await response.json()
-        setTags(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Errore nel caricamento dei tag')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchTags()
-  }, [])
 
   // Aggiorna il valore selezionato quando cambia il prop value
   useEffect(() => {

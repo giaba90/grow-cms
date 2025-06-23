@@ -169,7 +169,13 @@ export default function EditArticlePage() {
                             />
                         </div>
                         <div className="mt-4">
-                            <TagSelect initialValue={formData.tag} onValueChange={(val) => updateForm("tag", val)} />
+                            <TagSelect
+                                initialValue={formData.tag}
+                                onValueChange={(val) => updateForm("tag", val)}
+                                tags={tags}
+                                loading={tagLoading}
+                                error={tagError}
+                            />
                         </div>
                         <div className="mt-8">
                             <label className="text-sm font-medium">Carica immagine</label>

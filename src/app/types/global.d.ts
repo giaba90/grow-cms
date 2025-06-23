@@ -58,14 +58,14 @@ declare global {
     message?: string;
   }
 
-  interface Category {
+  export interface Category {
     id: number;
     name: string;
     type: string;
     slug: string;
   }
 
-  interface Tag {
+  export interface Tag {
     id: number
     name: string
     type: string

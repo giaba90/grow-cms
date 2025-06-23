@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-//import type { Category } from "@/app/types/global";
 
 function CategorySelect({ initialValue, onValueChange, categories, loading, error }: CategorySelectProps & {
     categories: Category[];
