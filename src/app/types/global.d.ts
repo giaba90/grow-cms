@@ -65,16 +65,16 @@ declare global {
     slug: string;
   }
 
-  interface CategorySelectProps {
-    initialValue?: string;
-    onValueChange?: (value: string) => void;
-  }
-
   interface Tag {
     id: number
     name: string
     type: string
     slug: string
+  }
+
+  interface CategorySelectProps {
+    initialValue?: string;
+    onValueChange?: (value: string) => void;
   }
 
   interface TagSelectProps {

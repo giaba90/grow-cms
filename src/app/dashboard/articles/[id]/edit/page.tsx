@@ -11,10 +11,6 @@ import { toast } from "sonner";
 import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
 
-// Tipi per categoria e tag (adatta se hai tipi globali)
-type Category = { id: number; name: string; };
-type Tag = { id: number; name: string; };
-
 export default function EditArticlePage() {
     const router = useRouter();
     const params = useParams();
@@ -164,7 +160,13 @@ export default function EditArticlePage() {
                             <PostStatusSelect initialStatus={formData.status} onChange={(val) => updateForm("status", val)} />
                         </div>
                         <div className="mb-8">
-                            <CategorySelect initialValue={formData.category} onValueChange={(val) => updateForm("category", val)} />
+                            <CategorySelect
+                                initialValue={formData.category}
+                                onValueChange={(val) => updateForm("category", val)}
+                                categories={categories}
+                                loading={catLoading}
+                                error={catError}
+                            />
                         </div>
                         <div className="mt-4">
                             <TagSelect initialValue={formData.tag} onValueChange={(val) => updateForm("tag", val)} />

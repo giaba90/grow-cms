@@ -1,37 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+//import type { Category } from "@/app/types/global";
 
-function CategorySelect({ initialValue, onValueChange }: CategorySelectProps) {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+function CategorySelect({ initialValue, onValueChange, categories, loading, error }: CategorySelectProps & {
+    categories: Category[];
+    loading: boolean;
+    error: string | null;
+}) {
     const [selectedValue, setSelectedValue] = useState(initialValue || "");
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await fetch(
-                    "/api/dashboard/taxonomy-type/category"
-                );
-                if (!response.ok) {
-                    throw new Error("Errore nel caricamento delle categorie");
-                }
-                const data = await response.json();
-                setCategories(data);
-            } catch (err) {
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : "Errore nel caricamento delle categorie"
-                );
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCategories();
-    }, []);
 
     // Aggiorna il valore selezionato quando cambia il prop value
     useEffect(() => {
