@@ -146,7 +146,7 @@ export default function EditArticlePage() {
                     </div>
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Contenuto</label>
-                        <Tiptap onChange={(val) => updateForm("content", val)} />
+                        <Tiptap content={formData.content} onChange={(val) => updateForm("content", val)} />
                     </div>
                     <div className="flex justify-between pt-6">
                         <Button type="button" className="cursor-pointer" variant="outline" onClick={() => router.back()}>

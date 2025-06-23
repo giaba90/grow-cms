@@ -38,20 +38,19 @@ export default function MyTableRow({
       <TableCell>{formatDate(data.created_at)}</TableCell>
       <TableCell>
         <span
-          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            data.status === "published"
-              ? "bg-green-100 text-green-800"
-              : data.status === "draft"
+          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${data.status === "published"
+            ? "bg-green-100 text-green-800"
+            : data.status === "draft"
               ? "bg-yellow-100 text-yellow-800"
               : "bg-blue-300 text-blue-800"
-          }`}
+            }`}
         >
           {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
         </span>
       </TableCell>
       <TableCell>
         <div className="flex space-x-2">
-          <EditButton url={`articles/edit/${data.id}`} />
+          <EditButton url={`articles/${data.id}/edit/`} />
           <Button onClick={handleDelete} variant="ghost" size="icon">
             <Trash2 className="h-4 w-4" />
             <span className="sr-only">Elimina</span>

@@ -11,13 +11,14 @@ import {
   FaListUl,
   FaHeading,
 } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface TiptapProps {
+  content?: string;
   onChange?: (content: string) => void;
 }
 
-const Tiptap = ({ onChange }: TiptapProps) => {
+const Tiptap = ({ content = "", onChange }: TiptapProps) => {
   const [headingLevel, setHeadingLevel] = useState(1);
 
   const editor = useEditor({
@@ -31,7 +32,7 @@ const Tiptap = ({ onChange }: TiptapProps) => {
       Underline,
     ],
 
-    content: "",
+    content,
     editorProps: {
       attributes: {
         class:
@@ -46,6 +47,13 @@ const Tiptap = ({ onChange }: TiptapProps) => {
     },
     immediatelyRender: false,
   });
+
+  // Aggiorna il contenuto dell'editor se la prop content cambia
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content || "");
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;
