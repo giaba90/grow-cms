@@ -5,10 +5,10 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
-import { useEdgeStore } from "src/app/lib/edgestore";
 import Tiptap from "@/app/components/ui/Tiptap";
 import { toast } from "sonner";
+import { useEdgeStore } from "src/app/lib/edgestore";
+import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
 
@@ -97,7 +97,6 @@ export default function NewArticlePage() {
             <Tiptap onChange={handleContentChange} />
           </div>
 
-          {/* button functional */}
           <div className="flex justify-between pt-6">
             <Button
               type="button"
@@ -129,17 +128,11 @@ export default function NewArticlePage() {
             <div className="mb-8">
               <CategorySelect
                 initialValue={formData.category}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, category: value }))
-                }
-              />
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))} categories={[]} loading={false} error={null} />
               <div className="mt-4">
                 <TagSelect
                   initialValue={formData.tag}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, tag: value }))
-                  }
-                />
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, tag: value }))} tags={[]} loading={false} error={null} />
               </div>
             </div>
           </div>
