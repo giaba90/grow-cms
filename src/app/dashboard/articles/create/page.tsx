@@ -1,7 +1,6 @@
-//dashboard/articles/create/page.tsx
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -11,21 +10,30 @@ import { useEdgeStore } from "src/app/lib/edgestore";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
+import { useSession } from "next-auth/react";
 
 export default function NewArticlePage() {
   const router = useRouter();
   const [file, setFile] = useState<File>();
   const { edgestore } = useEdgeStore();
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
+
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     status: "draft" as "draft" | "published" | "archived",
     featured: false,
-    author_id: 3, // TODO: Get this from the authenticated user
     category: "",
     tag: "",
   });
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [catLoading, setCatLoading] = useState(true);
+  const [tagLoading, setTagLoading] = useState(true);
+  const [catError, setCatError] = useState<string | null>(null);
+  const [tagError, setTagError] = useState<string | null>(null);
 
   const handleStatusChange = (status: "draft" | "published" | "archived") => {
     setFormData((prev) => ({ ...prev, status }));
@@ -45,13 +53,23 @@ export default function NewArticlePage() {
       return;
     }
 
+    const numericAuthorId = Number(session?.user?.id);
+    if (!session || isNaN(numericAuthorId)) {
+      toast.error("Utente non autenticato o ID non valido");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/dashboard/articles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          author_id: numericAuthorId,
+        }),
       });
 
       if (!response.ok) {
@@ -70,6 +88,39 @@ export default function NewArticlePage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    setCatLoading(true);
+    setTagLoading(true);
+    Promise.all([
+      (async () => {
+        try {
+          const res = await fetch("/api/dashboard/taxonomy-type/category");
+          if (!res.ok) throw new Error();
+          setCategories(await res.json());
+          setCatError(null);
+        } catch {
+          setCategories([]);
+          setCatError("Errore nel caricamento delle categorie");
+        } finally {
+          setCatLoading(false);
+        }
+      })(),
+      (async () => {
+        try {
+          const res = await fetch("/api/dashboard/taxonomy-type/tag");
+          if (!res.ok) throw new Error();
+          setTags(await res.json());
+          setTagError(null);
+        } catch {
+          setTags([]);
+          setTagError("Errore nel caricamento dei tag");
+        } finally {
+          setTagLoading(false);
+        }
+      })(),
+    ]);
+  }, []);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -115,6 +166,7 @@ export default function NewArticlePage() {
             </Button>
           </div>
         </div>
+
         {/* col 2 */}
         <div className="w-1/3 ml-4">
           <div className="flex flex-col">
@@ -128,11 +180,19 @@ export default function NewArticlePage() {
             <div className="mb-8">
               <CategorySelect
                 initialValue={formData.category}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))} categories={[]} loading={false} error={null} />
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
+                categories={categories}
+                loading={catLoading}
+                error={catError}
+              />
               <div className="mt-4">
                 <TagSelect
                   initialValue={formData.tag}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, tag: value }))} tags={[]} loading={false} error={null} />
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, tag: value }))}
+                  tags={tags}
+                  loading={tagLoading}
+                  error={tagError}
+                />
               </div>
             </div>
           </div>

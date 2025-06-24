@@ -50,7 +50,7 @@ export async function POST(req: Request) {
         description: content.slice(0, 200),
         status,
         featured,
-        author_id,
+        author_id: Number(author_id),
       },
     });
 

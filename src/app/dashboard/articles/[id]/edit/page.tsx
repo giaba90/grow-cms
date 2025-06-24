@@ -10,11 +10,13 @@ import Tiptap from "@/app/components/ui/Tiptap";
 import { toast } from "sonner";
 import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
+import { useSession } from "next-auth/react";
 
 export default function EditArticlePage() {
     const router = useRouter();
     const params = useParams();
     const { edgestore } = useEdgeStore();
+    const { data: session } = useSession();
     const [file, setFile] = useState<File>();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -22,7 +24,7 @@ export default function EditArticlePage() {
         content: "",
         status: "draft" as "draft" | "published" | "archived",
         featured: false,
-        author_id: 3, // TODO: Get this from the authenticated user
+        author_id: session?.user?.id || 3,
         category: "",
         tag: "",
     });
@@ -49,7 +51,7 @@ export default function EditArticlePage() {
                     content: data.content || "",
                     status: data.status || "draft",
                     featured: data.featured || false,
-                    author_id: data.author_id || 3,
+                    author_id: session?.user?.id ? String(session.user.id) : "1",
                     category: data.category || "",
                     tag: data.tag || "",
                 });
@@ -93,6 +95,7 @@ export default function EditArticlePage() {
             })(),
         ]);
     }, []);
+
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
