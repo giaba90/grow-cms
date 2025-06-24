@@ -31,7 +31,7 @@ export const signInSchema = object({
 export const postSchema = z.object({
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "published", "archived"]),
   featured: z.boolean().optional(),
   author_id: z.number().int(),
 });
@@ -39,7 +39,7 @@ export const postSchema = z.object({
 export const pageDataSchema = z.object({
   title: z.string().min(1).max(100),
   content: z.string().min(10).max(10000),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "published", "archived"]),
 });
 
 // zod schema for taxonomy data
