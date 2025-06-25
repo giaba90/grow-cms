@@ -32,9 +32,18 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
+
     const post = await prisma.post.findUnique({
       where: { id: id },
+      include: {
+        content_taxonomy: {
+          include: {
+            taxonomy: true, // opzionale, se vuoi accedere anche ai dettagli della tassonomia
+          },
+        },
+      },
     });
+
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
