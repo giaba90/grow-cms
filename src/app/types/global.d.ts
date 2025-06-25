@@ -15,6 +15,12 @@ declare global {
   interface PostData extends BaseData {
     featured?: boolean;
     author_id: number;
+    content_taxonomy?: Array<{
+      id: number;
+      content_id: number | null;
+      taxonomy_id: number | null;
+    }>;
+
   }
 
   interface PageData extends BaseData { }

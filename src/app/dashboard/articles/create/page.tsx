@@ -60,6 +60,17 @@ export default function NewArticlePage() {
       return;
     }
 
+    // Costruisci content_taxonomy dai valori delle select
+    const content_taxonomy = [];
+    const selectedCategory = categories.find((c) => c.slug === formData.category);
+    if (selectedCategory) {
+      content_taxonomy.push({ taxonomy_id: selectedCategory.id });
+    }
+    const selectedTag = tags.find((t) => t.slug === formData.tag);
+    if (selectedTag) {
+      content_taxonomy.push({ taxonomy_id: selectedTag.id });
+    }
+
     try {
       const response = await fetch("/api/dashboard/articles", {
         method: "POST",
@@ -69,6 +80,7 @@ export default function NewArticlePage() {
         body: JSON.stringify({
           ...formData,
           author_id: numericAuthorId,
+          content_taxonomy,
         }),
       });
 
