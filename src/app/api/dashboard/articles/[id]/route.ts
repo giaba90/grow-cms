@@ -32,7 +32,6 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
-
     const post = await prisma.post.findUnique({
       where: { id: id },
       include: {
@@ -43,7 +42,6 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -79,7 +77,7 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const { title, content, url, description, status, featured, author_id } =
+    const { title, content, url, description, status, featured, author_id, content_taxonomy } =
       data;
 
     if (!title || !content) {
@@ -87,6 +85,15 @@ export async function PUT(req: NextRequest) {
         { error: "Missing required fields" },
         { status: 400 }
       );
+    }
+
+    // Aggiorna i taxonomy: elimina i vecchi e crea i nuovi
+    await prisma.content_taxonomy.deleteMany({ where: { content_id: id } });
+    let contentTaxonomyData = undefined;
+    if (content_taxonomy && Array.isArray(content_taxonomy)) {
+      contentTaxonomyData = {
+        create: content_taxonomy.map((ct) => ({ taxonomy_id: ct.taxonomy_id })),
+      };
     }
 
     const updatedPost = await prisma.post.update({
@@ -99,6 +106,14 @@ export async function PUT(req: NextRequest) {
         status,
         featured,
         author_id,
+        content_taxonomy: contentTaxonomyData,
+      },
+      include: {
+        content_taxonomy: {
+          include: {
+            taxonomy: true,
+          },
+        },
       },
     });
     return NextResponse.json(updatedPost);
