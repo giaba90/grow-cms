@@ -156,7 +156,7 @@ export default function EditArticlePage() {
                         <Tiptap content={formData.content} onChange={(val) => updateForm("content", val)} />
                     </div>
                     <div className="flex justify-between pt-6">
-                        <Button type="button" className="cursor-pointer" variant="outline" onClick={() => router.back()}>
+                        <Button type="button" className="cursor-pointer" onClick={() => router.back()}>
                             Indietro
                         </Button>
                         <Button type="submit" className="cursor-pointer mt-2 bg-black text-white" disabled={isLoading}>
