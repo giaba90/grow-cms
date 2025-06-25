@@ -152,7 +152,6 @@ export default function NewArticlePage() {
             <Button
               type="button"
               className="cursor-pointer"
-              variant="outline"
               onClick={() => router.back()}
             >
               Indietro
