@@ -5,10 +5,7 @@ interface PostStatusSelectProps {
   onChange?: (status: post_status) => void;
 }
 
-const PostStatusSelect: React.FC<PostStatusSelectProps> = ({
-  initialStatus = "draft",
-  onChange,
-}) => {
+function PostStatusSelect({ initialStatus = "draft", onChange, }: PostStatusSelectProps) {
   const [status, setStatus] = useState<post_status>(initialStatus);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

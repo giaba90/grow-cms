@@ -11,9 +11,14 @@ import {
   FaListUl,
   FaHeading,
 } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const Tiptap = () => {
+interface TiptapProps {
+  content?: string;
+  onChange?: (content: string) => void;
+}
+
+const Tiptap = ({ content = "", onChange }: TiptapProps) => {
   const [headingLevel, setHeadingLevel] = useState(1);
 
   const editor = useEditor({
@@ -27,15 +32,28 @@ const Tiptap = () => {
       Underline,
     ],
 
-    content: "<p>Hello World!</p>",
+    content,
     editorProps: {
       attributes: {
         class:
           "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none min-h-[250px]",
       },
     },
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      if (onChange) {
+        onChange(html);
+      }
+    },
     immediatelyRender: false,
   });
+
+  // Aggiorna il contenuto dell'editor se la prop content cambia
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content || "");
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;
@@ -84,33 +102,29 @@ const Tiptap = () => {
             </button>
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`p-2 ${
-                editor.isActive("italic") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("italic") ? "bg-gray-300" : ""
+                }`}
             >
               <FaItalic />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleUnderline().run()}
-              className={`p-2 ${
-                editor.isActive("underline") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("underline") ? "bg-gray-300" : ""
+                }`}
             >
               <FaUnderline />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`p-2 ${
-                editor.isActive("bulletList") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("bulletList") ? "bg-gray-300" : ""
+                }`}
             >
               <FaListUl />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`p-2 ${
-                editor.isActive("orderedList") ? "bg-gray-300" : ""
-              }`}
+              className={`p-2 ${editor.isActive("orderedList") ? "bg-gray-300" : ""
+                }`}
             >
               <FaListOl />
             </button>
