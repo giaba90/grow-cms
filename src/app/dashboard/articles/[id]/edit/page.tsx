@@ -51,7 +51,7 @@ export default function EditArticlePage() {
                     content: data.content || "",
                     status: data.status || "draft",
                     featured: data.featured || false,
-                    author_id: session?.user?.id ? String(session.user.id) : "1",
+                    author_id: data.author_id ?? session?.user?.id ?? 3,
                     category: data.category || "",
                     tag: data.tag || "",
                 });
@@ -105,6 +105,14 @@ export default function EditArticlePage() {
             setIsLoading(false);
             return;
         }
+
+        const numericAuthorId = Number(session?.user?.id);
+        if (!session || isNaN(numericAuthorId)) {
+            toast.error("Utente non autenticato o ID non valido");
+            setIsLoading(false);
+            return;
+        }
+
         try {
             const response = await fetch(`/api/dashboard/articles/${params.id}`, {
                 method: "PUT",
