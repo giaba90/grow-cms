@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/app/components/ui/button";
@@ -11,6 +11,8 @@ import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
 import { toast } from "sonner";
 import { useEdgeStore } from "src/app/lib/edgestore";
+import { buildContentTaxonomy } from "@/app/utils/taxonomy";
+import { useTaxonomy } from "@/hooks/useTaxonomy";
 
 interface ArticleFormData {
   title: string;
@@ -38,52 +40,18 @@ export default function NewArticlePage() {
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [catLoading, setCatLoading] = useState(true);
-  const [tagLoading, setTagLoading] = useState(true);
-  const [catError, setCatError] = useState<string | null>(null);
-  const [tagError, setTagError] = useState<string | null>(null);
+  // Usa il nuovo hook per taxonomy
+  const {
+    categories,
+    tags,
+    catLoading,
+    tagLoading,
+    catError,
+    tagError,
+  } = useTaxonomy();
 
   const updateForm = (field: keyof ArticleFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const fetchTaxonomy = async (
-    endpoint: string,
-    setter: (data: any[]) => void,
-    setError: (error: string | null) => void,
-    setLoading: (state: boolean) => void
-  ) => {
-    setLoading(true);
-    try {
-      const res = await fetch(endpoint);
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setter(data);
-      setError(null);
-    } catch {
-      setter([]);
-      setError("Errore nel caricamento");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTaxonomy("/api/dashboard/taxonomy-type/category", setCategories, setCatError, setCatLoading);
-    fetchTaxonomy("/api/dashboard/taxonomy-type/tag", setTags, setTagError, setTagLoading);
-  }, []);
-
-  const buildContentTaxonomy = () => {
-    const result = [];
-    const category = categories.find((c) => c.slug === formData.category);
-    if (category) result.push({ taxonomy_id: category.id });
-
-    const tag = tags.find((t) => t.slug === formData.tag);
-    if (tag) result.push({ taxonomy_id: tag.id });
-
-    return result;
   };
 
   const handleFileUpload = async () => {
@@ -120,7 +88,12 @@ export default function NewArticlePage() {
         body: JSON.stringify({
           ...formData,
           author_id: numericAuthorId,
-          content_taxonomy: buildContentTaxonomy(),
+          content_taxonomy: buildContentTaxonomy(
+            categories,
+            tags,
+            formData.category,
+            formData.tag
+          ),
         }),
       });
 
