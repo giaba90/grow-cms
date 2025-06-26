@@ -1,46 +1,67 @@
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
-import { toast } from "sonner";
-import { useEdgeStore } from "src/app/lib/edgestore";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import CategorySelect from "@/app/components/ui/CategorySelect";
 import TagSelect from "@/app/components/ui/TagSelect";
-import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { useEdgeStore } from "src/app/lib/edgestore";
+import { buildContentTaxonomy } from "@/app/utils/taxonomy";
+import { useTaxonomy } from "@/hooks/useTaxonomy";
+
+interface ArticleFormData {
+  title: string;
+  content: string;
+  status: "draft" | "published" | "archived";
+  featured: boolean;
+  category: string;
+  tag: string;
+}
 
 export default function NewArticlePage() {
   const router = useRouter();
-  const [file, setFile] = useState<File>();
-  const { edgestore } = useEdgeStore();
-  const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
+  const { edgestore } = useEdgeStore();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
     content: "",
-    status: "draft" as "draft" | "published" | "archived",
+    status: "draft",
     featured: false,
     category: "",
     tag: "",
   });
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [catLoading, setCatLoading] = useState(true);
-  const [tagLoading, setTagLoading] = useState(true);
-  const [catError, setCatError] = useState<string | null>(null);
-  const [tagError, setTagError] = useState<string | null>(null);
+  const [file, setFile] = useState<File>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleStatusChange = (status: "draft" | "published" | "archived") => {
-    setFormData((prev) => ({ ...prev, status }));
+  // Usa il nuovo hook per taxonomy
+  const {
+    categories,
+    tags,
+    catLoading,
+    tagLoading,
+    catError,
+    tagError,
+  } = useTaxonomy();
+
+  const updateForm = (field: keyof ArticleFormData, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleContentChange = (content: string) => {
-    setFormData((prev) => ({ ...prev, content }));
+  const handleFileUpload = async () => {
+    if (!file) return;
+    const res = await edgestore.publicFiles.upload({
+      file,
+      onProgressChange: (progress) => console.log(progress),
+    });
+    console.log(res);
+    toast.success("Immagine caricata con successo!");
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -63,12 +84,16 @@ export default function NewArticlePage() {
     try {
       const response = await fetch("/api/dashboard/articles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           author_id: numericAuthorId,
+          content_taxonomy: buildContentTaxonomy(
+            categories,
+            tags,
+            formData.category,
+            formData.tag
+          ),
         }),
       });
 
@@ -81,52 +106,17 @@ export default function NewArticlePage() {
       router.push("/dashboard/articles");
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Errore durante la creazione dell'articolo"
-      );
+      toast.error(error instanceof Error ? error.message : "Errore durante la creazione dell'articolo");
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    setCatLoading(true);
-    setTagLoading(true);
-    Promise.all([
-      (async () => {
-        try {
-          const res = await fetch("/api/dashboard/taxonomy-type/category");
-          if (!res.ok) throw new Error();
-          setCategories(await res.json());
-          setCatError(null);
-        } catch {
-          setCategories([]);
-          setCatError("Errore nel caricamento delle categorie");
-        } finally {
-          setCatLoading(false);
-        }
-      })(),
-      (async () => {
-        try {
-          const res = await fetch("/api/dashboard/taxonomy-type/tag");
-          if (!res.ok) throw new Error();
-          setTags(await res.json());
-          setTagError(null);
-        } catch {
-          setTags([]);
-          setTagError("Errore nel caricamento dei tag");
-        } finally {
-          setTagLoading(false);
-        }
-      })(),
-    ]);
-  }, []);
-
   return (
     <form onSubmit={handleSubmit}>
       <h1 className="text-2xl font-bold mb-6">Nuovo articolo</h1>
-      <div className="flex w-full direction-row justify-between aligm-start flex-nowrap">
-        {/* col 1 */}
+      <div className="flex w-full flex-row justify-between items-start flex-nowrap">
+        {/* colonna sinistra */}
         <div className="w-2/3">
           <div className="mb-6">
             <label className="text-sm font-medium">Titolo</label>
@@ -135,25 +125,24 @@ export default function NewArticlePage() {
                 className="bg-white"
                 placeholder="Inserisci il titolo..."
                 value={formData.title}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, title: e.target.value }))
-                }
+                onChange={(e) => updateForm("title", e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Contenuto</label>
-            <Tiptap onChange={handleContentChange} />
+            <Tiptap onChange={(value) => updateForm("content", value)} />
           </div>
 
           <div className="flex justify-between pt-6">
             <Button
               type="button"
-              className="cursor-pointer"
-              variant="outline"
+              className="cursor-pointer mt-2 bg-gray-200 text-black"
               onClick={() => router.back()}
+              disabled={isLoading}
             >
               Indietro
             </Button>
@@ -167,20 +156,20 @@ export default function NewArticlePage() {
           </div>
         </div>
 
-        {/* col 2 */}
+        {/* colonna destra */}
         <div className="w-1/3 ml-4">
           <div className="flex flex-col">
             <div className="mb-8">
               <PostStatusSelect
                 initialStatus={formData.status}
-                onChange={handleStatusChange}
+                onChange={(value) => updateForm("status", value)}
               />
             </div>
 
             <div className="mb-8">
               <CategorySelect
                 initialValue={formData.category}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
+                onValueChange={(value) => updateForm("category", value)}
                 categories={categories}
                 loading={catLoading}
                 error={catError}
@@ -188,43 +177,24 @@ export default function NewArticlePage() {
               <div className="mt-4">
                 <TagSelect
                   initialValue={formData.tag}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, tag: value }))}
+                  onValueChange={(value) => updateForm("tag", value)}
                   tags={tags}
                   loading={tagLoading}
                   error={tagError}
                 />
               </div>
             </div>
-          </div>
 
-          <div className="">
-            <label className="text-sm font-medium">Carica immagine</label>
-            <div>
-              <input
-                type="file"
-                onChange={(e) => {
-                  setFile(e.target.files?.[0]);
-                }}
-              />
-              {file && (
-                <Button
-                  type="button"
-                  onClick={async () => {
-                    if (file) {
-                      const res = await edgestore.publicFiles.upload({
-                        file,
-                        onProgressChange: (progress) => {
-                          console.log(progress);
-                        },
-                      });
-                      console.log(res);
-                      toast.success("Immagine caricata con successo!");
-                    }
-                  }}
-                >
-                  Carica
-                </Button>
-              )}
+            <div className="mt-8">
+              <label className="text-sm font-medium">Carica immagine</label>
+              <div>
+                <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
+                {file && (
+                  <Button type="button" onClick={handleFileUpload}>
+                    Carica
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

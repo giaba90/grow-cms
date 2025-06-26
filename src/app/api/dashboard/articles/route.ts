@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { title, content, status, featured, author_id } = data;
+    const { title, content, status, featured, author_id, content_taxonomy } = data;
 
     if (!title || !content || !author_id) {
       return NextResponse.json(
@@ -51,7 +51,15 @@ export async function POST(req: Request) {
         status,
         featured,
         author_id: Number(author_id),
+        content_taxonomy: content_taxonomy && Array.isArray(content_taxonomy)
+          ? {
+            create: content_taxonomy.map((ct) => ({
+              taxonomy_id: ct.taxonomy_id,
+            })),
+          }
+          : undefined,
       },
+      include: { content_taxonomy: true },
     });
 
     return NextResponse.json(newPost, {

@@ -6,15 +6,17 @@ declare global {
   interface BaseData {
     title: string;
     content: string;
-    url?: string | "";
-    description?: string | "";
+    url?: string;
+    description?: string;
     status: post_status;
-    created_at: string;
   }
+
 
   interface PostData extends BaseData {
     featured?: boolean;
     author_id: number;
+    category: string;
+    tag: string;
   }
 
   interface PageData extends BaseData { }
