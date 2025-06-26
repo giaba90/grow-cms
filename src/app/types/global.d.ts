@@ -6,22 +6,17 @@ declare global {
   interface BaseData {
     title: string;
     content: string;
-    url?: string; // ✅ rimosso `| ""`
+    url?: string;
     description?: string;
     status: post_status;
-    created_at: string;
   }
 
 
   interface PostData extends BaseData {
     featured?: boolean;
     author_id: number;
-    content_taxonomy?: Array<{
-      id: number;
-      content_id: number | null;
-      taxonomy_id: number | null;
-    }>;
-
+    category: string;
+    tag: string;
   }
 
   interface PageData extends BaseData { }

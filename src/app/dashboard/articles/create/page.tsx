@@ -163,7 +163,7 @@ export default function NewArticlePage() {
           <div className="flex justify-between pt-6">
             <Button
               type="button"
-              className="cursor-pointer"
+              className="cursor-pointer mt-2 bg-gray-200 text-black"
               onClick={() => router.back()}
             >
               Indietro
