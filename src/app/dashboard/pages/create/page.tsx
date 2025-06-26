@@ -10,9 +10,10 @@ import { toast } from "sonner";
 export default function CreatePage() {
     const router = useRouter();
     const [formData, setFormData] = useState<PageData>({
+        id: 0,
         title: "",
         content: "",
-        status: "draft",
+        status: "draft"
     });
     const [isLoading, setIsLoading] = useState(false);
 

@@ -19,7 +19,9 @@ declare global {
     tag: string;
   }
 
-  interface PageData extends BaseData { }
+  interface PageData extends BaseData {
+    id: number;
+  }
 
   type TaxonomyData = {
     name: string;
