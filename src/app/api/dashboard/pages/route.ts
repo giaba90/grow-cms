@@ -35,7 +35,16 @@ export async function POST(req: Request) {
       );
     }
     const { title, content, status } = data;
-    const url = slugify(title, { lower: true, strict: true });
+
+    // Determine the URL to use
+    let url: string;
+    if (data.url && data.url.length > 0) {
+      // If a URL is provided, use it directly
+      url = data.url;
+    } else {
+      url = slugify(title, { lower: true, strict: true });
+    }
+
 
     const page = await prisma.page.create({
       data: {

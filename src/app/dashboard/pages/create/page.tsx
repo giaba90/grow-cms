@@ -14,7 +14,8 @@ export default function CreatePage() {
         id: 0,
         title: "",
         content: "",
-        status: "draft"
+        status: "draft",
+        url: ""
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -34,10 +35,10 @@ export default function CreatePage() {
             const response = await fetch("/api/dashboard/pages", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ ...formData }),
             });
+            const data = await response.json();
             if (!response.ok) {
-                const data = await response.json();
                 throw new Error(data.error || "Errore durante la creazione della pagina");
             }
             toast.success("Pagina creata con successo!");
@@ -97,6 +98,17 @@ export default function CreatePage() {
                         <PostStatusSelect
                             initialStatus={formData.status}
                             onChange={(value) => updateForm("status", value)}
+                        />
+                    </div>
+                    <div className="mb-8">
+                        <label className="text-sm font-medium">Url</label>
+                        <Input
+                            className="bg-white"
+                            placeholder="inserisci url..."
+                            value={formData.url}
+                            onChange={(e) => updateForm("url", e.target.value)}
+
+                            disabled={isLoading}
                         />
                     </div>
                 </div>
