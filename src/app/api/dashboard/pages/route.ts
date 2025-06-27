@@ -35,13 +35,24 @@ export async function POST(req: Request) {
       );
     }
     const { title, content, status, url } = data;
+    // check if pages exist into database
+    const existingPage = await prisma.page.findFirst({
+      where: { url },
+    });
 
+    let newUrl: string = "";
+    if (existingPage) {
+      // If a page with the same URL already exists add number to the URL
+      newUrl = `${url}-${existingPage.id}`;
+    } else {
+      newUrl = url || slugify(title, { lower: true, strict: true })
+    }
 
     const page = await prisma.page.create({
       data: {
         title,
         content,
-        url: url || slugify(title, { lower: true, strict: true }),
+        url: newUrl,
         status,
         description: content.slice(0, 200),
       },
