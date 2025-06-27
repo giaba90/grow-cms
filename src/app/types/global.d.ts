@@ -51,6 +51,7 @@ declare global {
 
   interface Article extends BaseData {
     id: number;
+    created_at: string;
   }
 
   interface SignupState {

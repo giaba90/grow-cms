@@ -6,6 +6,7 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
 import { toast } from "sonner";
+import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 
 export default function CreatePage() {
     const router = useRouter();
@@ -92,18 +93,11 @@ export default function CreatePage() {
                 </div>
                 {/* colonna destra */}
                 <div className="w-1/3 ml-4">
-                    <div className="mb-6">
-                        <label className="text-sm font-medium">Stato</label>
-                        <select
-                            className="w-full border rounded px-2 py-2"
-                            value={formData.status}
-                            onChange={(e) => updateForm("status", e.target.value)}
-                            disabled={isLoading}
-                        >
-                            <option value="draft">Bozza</option>
-                            <option value="published">Pubblicata</option>
-                            <option value="archived">Archiviata</option>
-                        </select>
+                    <div className="mb-8">
+                        <PostStatusSelect
+                            initialStatus={formData.status}
+                            onChange={(value) => updateForm("status", value)}
+                        />
                     </div>
                 </div>
             </div>

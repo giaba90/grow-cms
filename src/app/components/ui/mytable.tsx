@@ -30,45 +30,7 @@ export default function MyTable({ initialData, type = "articles" }: MyTableProps
         </TableHeader>
         <TableBody>
           {(rows as PageData[]).map((page) => (
-            <TableRow key={page.id}>
-              <TableCell className="font-medium">{page.id}</TableCell>
-              <TableCell>{page.title}</TableCell>
-              <TableCell>
-                <a
-                  href={"/pages/" + page.url}
-                  className="text-blue-600 underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  /pages/{page.url}
-                </a>
-              </TableCell>
-              <TableCell>
-                <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${page.status === "published"
-                    ? "bg-green-100 text-green-800"
-                    : page.status === "draft"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-blue-300 text-blue-800"
-                    }`}
-                >
-                  {page.status.charAt(0).toUpperCase() + page.status.slice(1)}
-                </span>
-              </TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <a href={`/dashboard/pages/${page.id}/edit`}>
-                    <button className="border rounded px-2 py-1 text-xs hover:bg-gray-100">Modifica</button>
-                  </a>
-                  <button
-                    className="border rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
-                    onClick={() => handleDelete(page.id)}
-                  >
-                    Elimina
-                  </button>
-                </div>
-              </TableCell>
-            </TableRow>
+            <MyTableRow key={page.id} data={page} onDelete={handleDelete} type="pages" />
           ))}
         </TableBody>
       </Table>

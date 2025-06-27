@@ -14,7 +14,7 @@ export default async function PageList() {
       <h1 className="text-3xl font-bold">Pagine</h1>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex flex-col items-start">
-          <NewButton url="create" />
+          <NewButton url="create" type="pages" />
         </div>
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -22,7 +22,7 @@ export default async function PageList() {
         </div>
       </div>
       <div className="border bg-white">
-        <MyTable initialData={pages} />
+        <MyTable initialData={pages} type="pages" />
       </div>
     </div>
   );
