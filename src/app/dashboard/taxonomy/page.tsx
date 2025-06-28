@@ -2,14 +2,11 @@
 
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "@/app/components/ui/button";
 import { NewButton } from "@/app/components/ui/newbutton";
 import { useTaxonomy } from "@/hooks/useTaxonomy";
 import MyTable from "@/app/components/ui/mytable";
 
 export default function TaxonomyPage() {
-  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // Usa l'hook useTaxonomy per ottenere tutte le tassonomie (categorie + tag)
   const { categories, tags, catLoading, tagLoading, catError, tagError } = useTaxonomy();
@@ -21,27 +18,6 @@ export default function TaxonomyPage() {
   ];
   const loading = catLoading || tagLoading;
   const error = catError || tagError;
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Sei sicuro di voler eliminare questa tassonomia?")) return;
-    setDeletingId(id);
-    try {
-      const res = await fetch(`/api/dashboard/taxonomy/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error();
-      setRefreshKey((k) => k + 1); // forza il refetch dell'hook
-    } catch {
-      alert("Errore durante l'eliminazione della tassonomia");
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  // Forza il refetch dopo una cancellazione
-  useEffect(() => {
-    // non fa nulla, serve solo per triggerare l'hook
-  }, [refreshKey]);
 
   return (
     <div className="container mx-auto py-6 space-y-6">
