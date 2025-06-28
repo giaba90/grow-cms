@@ -174,7 +174,7 @@ export default function NewArticlePage() {
                 loading={catLoading}
                 error={catError}
               />
-              <div className="mt-4">
+              <div className="mb-8">
                 <TagSelect
                   initialValue={formData.tag}
                   onValueChange={(value) => updateForm("tag", value)}
@@ -185,7 +185,7 @@ export default function NewArticlePage() {
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mb-8">
               <label className="text-sm font-medium">Carica immagine</label>
               <div>
                 <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
