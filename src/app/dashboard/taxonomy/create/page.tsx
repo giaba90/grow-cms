@@ -55,6 +55,7 @@ export default function CreateTaxonomyPage() {
                     <div className="mb-6">
                         <label className="text-sm font-medium">Nome</label>
                         <Input
+                            className="bg-white"
                             value={formData.name}
                             onChange={(e) => updateForm("name", e.target.value)}
                             placeholder="Nome tassonomia"
@@ -65,6 +66,7 @@ export default function CreateTaxonomyPage() {
                     <div className="mb-6">
                         <label className="text-sm font-medium">Slug</label>
                         <Input
+                            className="bg-white"
                             value={formData.slug}
                             onChange={(e) => updateForm("slug", e.target.value)}
                             placeholder="Slug (es: categoria-news)"
@@ -75,7 +77,7 @@ export default function CreateTaxonomyPage() {
                     <div className="mb-6">
                         <label className="text-sm font-medium">Tipo</label>
                         <select
-                            className="w-full border px-2 py-2"
+                            className="w-full border px-2 py-2 bg-white"
                             value={formData.type}
                             onChange={(e) => updateForm("type", e.target.value)}
                             required
@@ -88,7 +90,7 @@ export default function CreateTaxonomyPage() {
                     <div className="mb-6">
                         <label className="text-sm font-medium">Descrizione</label>
                         <textarea
-                            className="w-full border p-2 min-h-[80px]"
+                            className="w-full border p-2 min-h-[80px] bg-white"
                             value={formData.description}
                             onChange={(e) => updateForm("description", e.target.value)}
                             placeholder="Descrizione della tassonomia"
