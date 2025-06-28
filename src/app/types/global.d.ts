@@ -11,6 +11,13 @@ declare global {
     status: post_status;
   }
 
+  interface TaxonomyData {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    type: taxonomy_type;
+  }
 
   interface PostData extends BaseData {
     featured?: boolean;
@@ -21,6 +28,14 @@ declare global {
 
   interface PageData extends BaseData {
     id: number;
+  }
+
+  interface category extends TaxonomyData {
+    type: "category";
+  }
+
+  interface tag extends TaxonomyData {
+    type: "tag";
   }
 
   type TaxonomyData = {
@@ -63,19 +78,6 @@ declare global {
     message?: string;
   }
 
-  interface Category {
-    id: number;
-    name: string;
-    type: string;
-    slug: string;
-  }
-
-  interface Tag {
-    id: number
-    name: string
-    type: string
-    slug: string
-  }
 
   interface CategorySelectProps {
     initialValue?: string;
