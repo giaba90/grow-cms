@@ -46,7 +46,7 @@ model post {
   status           post_status?       @default(draft)
   featured         Boolean?           @default(false)
   created_at       DateTime?          @default(now()) @db.Timestamp(6)
-  author_id        Int? // Cambiato da String? a Int? per corrispondere al tipo di `id` in `users`
+  author_id        Int? 
   content_taxonomy content_taxonomy[]
   media            media[]
   users            users?             @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
