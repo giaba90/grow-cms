@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const taxonomy = await prisma.taxonomy.create({
       data: {
         name,
-        slug,
+        slug: slug || name.toLowerCase().replace(/\s+/g, "-"),
         type,
         description,
       },

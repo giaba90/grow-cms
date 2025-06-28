@@ -22,7 +22,7 @@ export default function CreateTaxonomyPage() {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        if (!formData.name || !formData.slug || !formData.type) {
+        if (!formData.name || !formData.type) {
             toast.error("Tutti i campi sono obbligatori");
             setIsLoading(false);
             return;
@@ -70,7 +70,7 @@ export default function CreateTaxonomyPage() {
                             value={formData.slug}
                             onChange={(e) => updateForm("slug", e.target.value)}
                             placeholder="Slug (es: categoria-news)"
-                            required
+
                             disabled={isLoading}
                         />
                     </div>
