@@ -40,21 +40,21 @@ export async function POST(req: Request) {
       where: { title },
     });
 
-    let newUrl: string = "";
+    let Url: string = "";
 
     if (existingPage) {
       // If a page with the same URL already exists add number to the URL
       const randomNum = Math.floor(Math.random() * 10000);
-      newUrl = `${slugify(title, { lower: true, strict: true })}-${randomNum}`;
+      Url = `${slugify(title, { lower: true, strict: true })}-${randomNum}`;
     } else {
-      newUrl = url || slugify(title, { lower: true, strict: true })
+      Url = url || slugify(title, { lower: true, strict: true })
     }
 
     const page = await prisma.page.create({
       data: {
         title,
         content,
-        url: newUrl,
+        url: Url,
         status,
         description: content.slice(0, 200),
       },
