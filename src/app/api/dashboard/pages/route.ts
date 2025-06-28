@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { title, content, status, url } = data;
+    const { title, content, status, url, description } = data;
     // check if pages exist into database
     const existingPage = await prisma.page.findFirst({
       where: { title },
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         content,
         url: Url,
         status,
-        description: content.slice(0, 200),
+        description: description || content.slice(0, 200),
       },
     });
     // Return the created page as a response

@@ -43,13 +43,19 @@ export const postSchema = z.object({
     )
     .optional(),
   url: z.string().optional(),
-  description: z.string().optional(),
+  description: z.string()
+    .min(50, { message: "La descrizione deve contenere almeno 50 caratteri." })
+    .max(160, { message: "La descrizione non può superare i 160 caratteri." }).optional(),
 });
 // zod schema for page data
 export const pageDataSchema = z.object({
   title: z.string().min(1).max(100),
   content: z.string().min(10).max(10000),
   status: z.enum(["draft", "published", "archived"]),
+  url: z.string().optional(),
+  description: z.string()
+    .min(50, { message: "La descrizione deve contenere almeno 50 caratteri." })
+    .max(160, { message: "La descrizione non può superare i 160 caratteri." }).optional(),
 });
 
 // zod schema for taxonomy data
