@@ -34,16 +34,29 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { title, content, status } = data;
-    const url = slugify(title, { lower: true, strict: true });
+    const { title, content, status, url, description } = data;
+    // check if pages exist into database
+    const existingPage = await prisma.page.findFirst({
+      where: { title },
+    });
+
+    let Url: string = "";
+
+    if (existingPage) {
+      // If a page with the same URL already exists add number to the URL
+      const randomNum = Math.floor(Math.random() * 10000);
+      Url = `${slugify(title, { lower: true, strict: true })}-${randomNum}`;
+    } else {
+      Url = url || slugify(title, { lower: true, strict: true })
+    }
 
     const page = await prisma.page.create({
       data: {
         title,
         content,
-        url,
+        url: Url,
         status,
-        description: content.slice(0, 200),
+        description: description || content.slice(0, 200),
       },
     });
     // Return the created page as a response

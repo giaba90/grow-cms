@@ -19,7 +19,9 @@ declare global {
     tag: string;
   }
 
-  interface PageData extends BaseData { }
+  interface PageData extends BaseData {
+    id: number;
+  }
 
   type TaxonomyData = {
     name: string;
@@ -49,6 +51,7 @@ declare global {
 
   interface Article extends BaseData {
     id: number;
+    created_at: string;
   }
 
   interface SignupState {
@@ -60,14 +63,14 @@ declare global {
     message?: string;
   }
 
-  export interface Category {
+  interface Category {
     id: number;
     name: string;
     type: string;
     slug: string;
   }
 
-  export interface Tag {
+  interface Tag {
     id: number
     name: string
     type: string
