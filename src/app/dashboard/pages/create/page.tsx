@@ -15,7 +15,8 @@ export default function CreatePage() {
         title: "",
         content: "",
         status: "draft",
-        url: ""
+        url: "",
+        description: ""
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -104,10 +105,19 @@ export default function CreatePage() {
                         <label className="text-sm font-medium">Url</label>
                         <Input
                             className="bg-white"
-                            placeholder="inserisci url..."
+                            placeholder="inserisci url personalizzato..."
                             value={formData.url}
                             onChange={(e) => updateForm("url", e.target.value)}
-
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="mb-8">
+                        <label className="text-sm font-medium">Descrizione SEO</label>
+                        <textarea
+                            className="bg-white w-full border p-2 min-h-[80px]"
+                            placeholder="Scrivi una descrizione SEO..."
+                            value={formData.description}
+                            onChange={(e) => updateForm("description", e.target.value)}
                             disabled={isLoading}
                         />
                     </div>

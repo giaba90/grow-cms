@@ -146,6 +146,16 @@ export default function EditPagePage() {
                                 disabled={isLoading}
                             />
                         </div>
+                        <div className="mb-8">
+                            <label className="text-sm font-medium">Descrizione SEO</label>
+                            <textarea
+                                className="bg-white w-full border rounded p-2 min-h-[80px]"
+                                placeholder="Scrivi una descrizione SEO..."
+                                value={(formData.description ?? "").replace(/<[^>]+>/g, "")}
+                                onChange={(e) => updateForm("description", e.target.value.replace(/<[^>]+>/g, ""))}
+                                disabled={isLoading}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
