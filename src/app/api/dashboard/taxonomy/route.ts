@@ -32,7 +32,24 @@ export async function POST(req: Request) {
     }
 
     const { name, slug, type, description } = data;
+    // check if name or type already exists
+    const existingTaxonomy = await prisma.taxonomy.findFirst({
+      where: {
+        AND: [
+          { name: name },
+          { type: type },
+        ],
+      },
+    });
 
+    if (existingTaxonomy) {
+      return NextResponse.json(
+        { error: "Taxonomy with this name or type already exists" },
+        { status: 409 }
+      );
+    }
+
+    // Create a new taxonomy entry in the database
     const taxonomy = await prisma.taxonomy.create({
       data: {
         name,
