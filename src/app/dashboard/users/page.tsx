@@ -1,9 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { PenSquare, Trash2 } from "lucide-react";
-import { Button } from "@/app/components/ui/button";
 import MyTable from "@/app/components/ui/mytable";
 import { NewButton } from "@/app/components/ui/newbutton";
 
@@ -29,18 +26,6 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Sei sicuro di voler eliminare questo utente?")) return;
-    try {
-      const res = await fetch(`/api/dashboard/users/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error();
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-    } catch {
-      setError("Errore durante l'eliminazione dell'utente");
-    }
-  };
 
   if (loading) {
     return (
