@@ -69,7 +69,6 @@ export const userDataSchema = z.object({
   name: z.string().min(1).max(100),
   surname: z.string().min(1).max(100),
   email: z.string().email(),
-  password: z.string().min(6),
   role: z.string().optional(),
   lastlogin: z.date().optional(),
 });
