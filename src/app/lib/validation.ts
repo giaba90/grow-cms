@@ -61,7 +61,6 @@ export const pageDataSchema = z.object({
 // zod schema for taxonomy data
 export const taxonomyDataSchema = z.object({
   name: z.string().min(1).max(100),
-  slug: z.string().min(1).max(100),
   type: z.string().min(1).max(100),
   description: z.string().min(1).max(1000),
 });
