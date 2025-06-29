@@ -1,7 +1,6 @@
 // app/dashboard/taxonomy/page.tsx
 
 "use client";
-import { useEffect, useState } from "react";
 import { NewButton } from "@/app/components/ui/newbutton";
 import { useTaxonomy } from "@/hooks/useTaxonomy";
 import MyTable from "@/app/components/ui/mytable";
@@ -10,7 +9,6 @@ export default function TaxonomyPage() {
 
   // Usa l'hook useTaxonomy per ottenere tutte le tassonomie (categorie + tag)
   const { categories, tags, catLoading, tagLoading, catError, tagError } = useTaxonomy();
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const allTaxonomies = [
     ...categories.map((c) => ({ ...c, type: "category", description: c.description ?? "" })),
