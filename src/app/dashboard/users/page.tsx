@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PenSquare, Trash2 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
+import MyTable from "@/app/components/ui/mytable";
+import { NewButton } from "@/app/components/ui/newbutton";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserData[]>([]);
@@ -70,44 +72,14 @@ export default function UsersPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-3xl font-bold">Utenti</h1>
+      <div className="flex flex-col items-start">
+        <NewButton url="create" type="users" />
+      </div>
       <div className="overflow-x-auto border bg-white">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="p-2">ID</th>
-              <th className="p-2">Nome e Cognome</th>
-              <th className="p-2">Email</th>
-              <th className="p-2">Ruolo</th>
-              <th className="p-2">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="border-t hover:bg-gray-50">
-                <td className="p-2">{user.id}</td>
-                <td className="p-2">{user.name} {user.surname}</td>
-                <td className="p-2">{user.email}</td>
-                <td className="p-2">{user.role}</td>
-                <td className="p-2">
-                  <Link href={`/dashboard/users/${user.id}/edit`} passHref>
-                    <Button size="icon" variant="ghost">
-                      <PenSquare className="h-4 w-4" />
-                      <span className="sr-only">Modifica</span>
-                    </Button>
-                  </Link>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => handleDelete(user.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-600" />
-                    <span className="sr-only">Elimina</span>
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <MyTable
+          initialData={users}
+          type="users"
+        />
       </div>
     </div>
   );

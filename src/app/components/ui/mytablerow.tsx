@@ -7,9 +7,9 @@ import { Button } from "./button";
 import { Trash2 } from "lucide-react";
 
 interface MyTableRowProps {
-  data: Article | PageData | TaxonomyData;
+  data: Article | PageData | TaxonomyData | UserData;
   onDelete: (id: number) => void;
-  type?: "articles" | "pages" | "taxonomy";
+  type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
 export default function MyTableRow({
@@ -83,6 +83,22 @@ export default function MyTableRow({
         </TableCell>
         <TableCell>
           <RowActions url={`taxonomy/${taxonomy.id}/edit`} onDelete={handleDelete} />
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  // --- RENDER: Users ---
+  if (type === "users") {
+    const user = data as unknown as UserData;
+    return (
+      <TableRow>
+        <TableCell>{user.id}</TableCell>
+        <TableCell>{user.name} {user.surname}</TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>{user.role}</TableCell>
+        <TableCell>
+          <RowActions url={`users/${user.id}/edit`} onDelete={handleDelete} />
         </TableCell>
       </TableRow>
     );

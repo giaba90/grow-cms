@@ -12,11 +12,12 @@ import { useState } from "react";
 import MyTableRow from "./mytablerow";
 
 // Tipi supportati in una sola unione coerente
-type TableData = Article | PageData | TaxonomyData;
+// Aggiungi UserData all'unione
+type TableData = Article | PageData | TaxonomyData | UserData;
 
 interface MyTableProps {
   initialData: TableData[];
-  type?: "articles" | "pages" | "taxonomy";
+  type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
 export default function MyTable({ initialData, type = "articles" }: MyTableProps) {
@@ -46,6 +47,18 @@ export default function MyTable({ initialData, type = "articles" }: MyTableProps
           <TableHead className="font-bold">Nome</TableHead>
           <TableHead className="font-bold">Slug</TableHead>
           <TableHead className="w-32 font-bold">Tipo</TableHead>
+          <TableHead className="w-32 font-bold">Operazioni</TableHead>
+        </TableRow>
+      );
+    }
+
+    if (type === "users") {
+      return (
+        <TableRow>
+          <TableHead className="w-20 font-bold">ID</TableHead>
+          <TableHead className="font-bold">Nome e Cognome</TableHead>
+          <TableHead className="font-bold">Email</TableHead>
+          <TableHead className="font-bold">Ruolo</TableHead>
           <TableHead className="w-32 font-bold">Operazioni</TableHead>
         </TableRow>
       );
