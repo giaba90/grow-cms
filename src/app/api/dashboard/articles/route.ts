@@ -49,7 +49,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { title, content, status, featured, author_id, content_taxonomy } = data;
+    const { title, content, status, featured, author_id, category, tag } = data;
 
     if (!title || !content || !author_id) {
       return NextResponse.json(

@@ -75,6 +75,7 @@ export default function EditArticlePage() {
 
     useEffect(() => {
         const fetchTaxonomies = async () => {
+            let dataCat, dataTag;
             try {
                 const [catRes, tagRes] = await Promise.all([
                     fetch("/api/dashboard/taxonomy-type/category"),
@@ -82,8 +83,10 @@ export default function EditArticlePage() {
                 ]);
 
                 if (!catRes.ok || !tagRes.ok) throw new Error();
-                setCategories(await catRes.json());
-                setTags(await tagRes.json());
+                dataCat = await catRes.json();
+                dataTag = await tagRes.json();
+                setCategories(dataCat.taxonomies);
+                setTags(dataTag.taxonomies);
                 setCatError(null);
                 setTagError(null);
             } catch {
