@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { ZodError } from "zod";
 import { taxonomyDataSchema } from "@/app/lib/validation";
-import { stat } from "fs";
 
 // GET api/dashboard/taxonomy
 export async function GET(req: Request) {
@@ -13,7 +12,6 @@ export async function GET(req: Request) {
       {
         message: `Fetched ${taxonomies.length} taxonomies`,
         taxonomies
-
       },
       { status: 200 }
     );

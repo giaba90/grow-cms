@@ -2,24 +2,13 @@
 import { NewButton } from "@/app/components/ui/newbutton";
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
-import TaxonomyTable from "./taxonomy-table";
+import MyTable from "@/app/components/ui/mytable";
 
-// Funzione asincrona eseguita lato server
-async function getTaxonomies() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`, {
-    cache: "no-store", // oppure "force-cache" se vuoi caching
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch taxonomies");
-  }
-
-  const data = await res.json();
-  return data.taxonomies;
-}
 
 export default async function TaxonomyPage() {
-  const taxonomies = await getTaxonomies();
+  // Fetch Taxonomy data from the API
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`);
+  const data = await res.json();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -32,11 +21,11 @@ export default async function TaxonomyPage() {
 
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Cerca..." className="pl-8" />
+          <Input placeholder="Cerca tassonomia..." className="pl-8" />
         </div>
       </div>
 
-      <TaxonomyTable initialData={taxonomies} />
+      <MyTable initialData={data.taxonomies} type="taxonomy" />
     </div>
   );
 }

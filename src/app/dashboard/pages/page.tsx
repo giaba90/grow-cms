@@ -6,7 +6,7 @@ import MyTable from "@/app/components/ui/mytable";
 
 export default async function PageList() {
   // Fetch pages data from the API
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard/pages`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages`);
   const data = await res.json();
 
   return (
