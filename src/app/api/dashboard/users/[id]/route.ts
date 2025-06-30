@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { userDataSchema } from "@/app/lib/validation";
-import bcrypt from "bcryptjs";
 function getId(url: string) {
   const regex = /users\/(\d+)/;
   const match = url.match(regex);
@@ -36,7 +35,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "users not found" }, { status: 404 });
     }
 
-    return NextResponse.json(users);
+    return NextResponse.json({ message: "users found", users }, { status: 200 });
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -64,9 +63,6 @@ export async function PUT(req: NextRequest) {
   }
   const { name, surname, email, role } = data;
   const lastlogin = new Date();
-  // Hash the password before saving it to the database
-  const salt = bcrypt.genSaltSync(10);
-  const passwordHash = bcrypt.hashSync(data.password, salt);
 
   try {
     const users = await prisma.users.update({
@@ -75,13 +71,15 @@ export async function PUT(req: NextRequest) {
         name: name,
         surname: surname,
         email: email,
-        password: passwordHash,
         role: role as string,
         lastlogin: lastlogin,
       },
     });
 
-    return NextResponse.json(users);
+    return NextResponse.json(
+      { message: "users updated", users },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -99,10 +97,17 @@ export async function DELETE(req: NextRequest) {
       { status: 400 }
     );
   }
+  // Check if the user exists
+  const existingUser = await prisma.users.findUnique({
+    where: { id: id },
+  });
+  if (!existingUser) {
+    return NextResponse.json({ error: "users not found" }, { status: 404 });
+  }
 
   try {
     await prisma.users.delete({ where: { id: id } });
-    return NextResponse.json({ message: "users deleted" });
+    return NextResponse.json({ message: "users deleted" }, { status: 200 });
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },

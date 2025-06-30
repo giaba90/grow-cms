@@ -30,6 +30,11 @@ declare global {
     id: number;
   }
 
+  interface Article extends BaseData {
+    id: number;
+    created_at: string;
+  }
+
   interface category extends TaxonomyData {
     type: "category";
   }
@@ -45,15 +50,18 @@ declare global {
     description: string;
   };
 
-  type UserData = {
+  interface UserData {
+    id: number;
     name: string;
     surname: string;
     email: string;
-    password: string;
-    // Optional properties
-    role?: string | null | undefined;
-    lastlogin?: Date;
+    role: string;
   };
+
+  interface User extends UserData {
+    password: string;
+    lastlogin?: Date;
+  }
 
   type MediaData = {
     user_id: number;
@@ -63,11 +71,6 @@ declare global {
     size: number;
     created_at: Date;
   };
-
-  interface Article extends BaseData {
-    id: number;
-    created_at: string;
-  }
 
   interface SignupState {
     errors?: {

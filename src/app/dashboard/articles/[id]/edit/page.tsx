@@ -22,8 +22,8 @@ export default function EditArticlePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<PostData | null>(null);
 
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [tags, setTags] = useState<Tag[]>([]);
+    const [categories, setCategories] = useState<category[]>([]);
+    const [tags, setTags] = useState<tag[]>([]);
     const [catLoading, setCatLoading] = useState(true);
     const [tagLoading, setTagLoading] = useState(true);
     const [catError, setCatError] = useState<string | null>(null);

@@ -67,11 +67,11 @@ model taxonomy {
 }
 
 model users {
-  id        Int       @id @default(autoincrement()) // ID cambiato da String a Int con autoincrement
+  id        Int       @id @default(autoincrement()) 
   name      String    @db.VarChar(500)
   surname   String    @db.VarChar(500)
   email     String?   @unique @db.VarChar(500)
-  password  String?   @db.VarChar(500) // Modificato per essere Stringa, non Bytes
+  password  String?   @db.VarChar(500) 
   lastlogin DateTime? @default(now()) @db.Timestamptz(6)
   media     media[]
   post      post[]
