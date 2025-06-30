@@ -8,27 +8,27 @@ datasource db {
 }
 
 model post {
-  id          Int             @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   title       String
   content     String
-  url         String?         @db.VarChar(255) // per creare url custom
-  description String?         @db.VarChar(255) // descrizione seo
-  status      post_status?    @default(draft)
-  featured    Boolean?        @default(false)
-  created_at  DateTime?       @default(now()) @db.Timestamp(6)
+  url         String?        @db.VarChar(255) // per creare url custom
+  description String?        @db.VarChar(255) // descrizione seo
+  status      post_status?   @default(draft)
+  featured    Boolean?       @default(false)
+  created_at  DateTime?      @default(now()) @db.Timestamp(6)
   author_id   Int?
-  users       users?          @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
-  taxonomies  post_taxonomy[]
+  users       users?         @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
+  taxonomies  postTaxonomy[]
   media       media[]
 }
 
 model taxonomy {
-  id          Int             @id @default(autoincrement())
-  title       String          @db.VarChar(255)
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(255)
   description String? //descrizione opzionale
   type        taxonomy_type
   parent_id   Int? // utile per creare sotto categorie
-  posts       post_taxonomy[]
+  posts       postTaxonomy[]
 }
 
 model page {
@@ -65,7 +65,7 @@ model media {
   users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk") // Relazione con `users`
 }
 
-model post_taxonomy {
+model postTaxonomy {
   post_id     Int
   taxonomy_id Int
 

@@ -4,32 +4,38 @@ import slugify from "slugify";
 import { postSchema } from "@/app/lib/validation";
 import { ZodError } from "zod";
 
+type PostData = {
+  title: string;
+  content: string;
+  status?: "draft" | "published" | "archived";
+  url?: string;              // URL personalizzato, se non fornito viene generato da slugify
+  description?: string;      // Descrizione del post, se non fornita viene gener
+  featured?: boolean;
+  author_id: number;
+  category?: number;         // ID categoria (taxonomy_type = category)
+  tag?: number[];            // array di ID tag (taxonomy_type = tag)
+};
+
 // GET /api/dashboard/articles
 export async function GET() {
   try {
     const articles = await prisma.post.findMany({
-      orderBy: {
-        id: "asc",
+      orderBy: { id: "asc" },
+      include: {
+        taxonomies: {
+          include: { taxonomy: true },
+        },
       },
     });
+
     return NextResponse.json(
       {
         message: `Fetched ${articles.length} articles`,
-        articles: articles.map((article) => ({
-          id: article.id,
-          title: article.title,
-          content: article.content,
-          url: article.url,
-          status: article.status,
-          description: article.description,
-          featured: article.featured,
-          author_id: article.author_id,
-          created_at: article.created_at,
-        })),
+        articles
       },
       { status: 200 }
     );
-  } catch {
+  } catch (err) {
     return NextResponse.json(
       { error: "Failed to fetch articles" },
       { status: 500 }
@@ -41,7 +47,8 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const data: PostData = await req.json();
-    // check zod schema
+
+    // Validate with Zod
     const validationResult = postSchema.safeParse(data);
     if (!validationResult.success) {
       return NextResponse.json(
@@ -49,7 +56,9 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { title, content, status, featured, author_id, category, tag } = data;
+
+    const { title, content, status, featured, author_id, category, tag, url: customUrl,
+      description, } = data;
 
     if (!title || !content || !author_id) {
       return NextResponse.json(
@@ -57,47 +66,47 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const url = slugify(title, { lower: true, strict: true });
+
+    const url = customUrl || slugify(title, { lower: true, strict: true });
+    const finalDescription = description || content.slice(0, 160);
+
     const newPost = await prisma.post.create({
       data: {
         title,
         content,
         url,
-        description: content.slice(0, 200),
+        description: finalDescription,
         status,
         featured,
-        author_id: Number(author_id),
+        author_id,
       },
     });
 
-    // Crea relazioni content_taxonomy per category e tag
+    const taxonomyRelations: { post_id: number; taxonomy_id: number }[] = [];
+
     if (category) {
-      await prisma.content_taxonomy.create({
-        data: {
-          content_id: newPost.id,
-          taxonomy_id: Number(category),
-        },
-      });
+      taxonomyRelations.push({ post_id: newPost.id, taxonomy_id: category });
     }
-    if (tag && Array.isArray(tag)) {
+
+    if (tag?.length) {
       for (const tagId of tag) {
-        await prisma.content_taxonomy.create({
-          data: {
-            content_id: newPost.id,
-            taxonomy_id: Number(tagId),
-          },
-        });
+        taxonomyRelations.push({ post_id: newPost.id, taxonomy_id: tagId });
       }
     }
 
-    return NextResponse.json(newPost, {
-      status: 201,
-    });
+    if (taxonomyRelations.length) {
+      await prisma.postTaxonomy.createMany({
+        data: taxonomyRelations,
+        skipDuplicates: true,
+      });
+    }
+
+    return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.errors }, { status: 400 });
     }
-    // Return a 500 Internal Server Error if something went wrong
+
     return NextResponse.json(
       { error: "Failed to create post" },
       { status: 500 }

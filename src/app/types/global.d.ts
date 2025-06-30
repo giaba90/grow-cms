@@ -3,52 +3,6 @@ declare global {
 
   type taxonomy_type = "category" | "tag";
 
-  interface BaseData {
-    title: string;
-    content: string;
-    url?: string;
-    description?: string;
-    status: post_status;
-  }
-
-  interface TaxonomyData {
-    id: number;
-    name: string;
-    slug: string;
-    description?: string;
-    type: taxonomy_type;
-  }
-
-  interface PostData extends BaseData {
-    featured?: boolean;
-    author_id: number;
-    category: string;
-    tag: string;
-  }
-
-  interface PageData extends BaseData {
-    id: number;
-  }
-
-  interface Article extends BaseData {
-    id: number;
-    created_at: string;
-  }
-
-  interface category extends TaxonomyData {
-    type: "category";
-  }
-
-  interface tag extends TaxonomyData {
-    type: "tag";
-  }
-
-  type TaxonomyData = {
-    name: string;
-    slug: string;
-    type: taxonomy_type;
-    description: string;
-  };
 
   interface UserData {
     id: number;
@@ -82,15 +36,6 @@ declare global {
   }
 
 
-  interface CategorySelectProps {
-    initialValue?: string;
-    onValueChange?: (value: string) => void;
-  }
-
-  interface TagSelectProps {
-    initialValue?: string
-    onValueChange?: (value: string) => void
-  }
 }
 
 export { }
