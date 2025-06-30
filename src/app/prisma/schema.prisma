@@ -7,12 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model content_taxonomy {
-  id          Int       @id @default(autoincrement())
-  content_id  Int?
-  taxonomy_id Int?
-  post        post?     @relation(fields: [content_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "content_taxonomy_content_id_fk")
-  taxonomy    taxonomy? @relation(fields: [taxonomy_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "content_taxonomy_taxonomy_id_fk")
+model post {
+  id          Int             @id @default(autoincrement())
+  title       String
+  content     String
+  url         String?         @db.VarChar(255) // per creare url custom
+  description String?         @db.VarChar(255) // descrizione seo
+  status      post_status?    @default(draft)
+  featured    Boolean?        @default(false)
+  created_at  DateTime?       @default(now()) @db.Timestamp(6)
+  author_id   Int?
+  users       users?          @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
+  taxonomies  post_taxonomy[]
+  media       media[]
+}
+
+model taxonomy {
+  id          Int             @id @default(autoincrement())
+  title       String          @db.VarChar(255)
+  description String? //descrizione opzionale
+  type        taxonomy_type
+  parent_id   Int? // utile per creare sotto categorie
+  posts       post_taxonomy[]
+}
+
+model page {
+  id          Int          @id @default(autoincrement())
+  title       String?
+  content     String?
+  url         String?      @db.VarChar(255)
+  description String       @db.VarChar(255)
+  status      post_status? @default(draft)
+}
+
+model users {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(500)
+  surname   String    @db.VarChar(500)
+  email     String?   @unique @db.VarChar(500)
+  password  String?   @db.VarChar(500)
+  role      String
+  lastlogin DateTime? @default(now()) @db.Timestamptz(6)
+  post      post[]
+  media     media[]
 }
 
 model media {
@@ -28,54 +65,14 @@ model media {
   users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk") // Relazione con `users`
 }
 
-model page {
-  id          Int          @id @default(autoincrement())
-  title       String?
-  content     String?
-  url         String?      @db.VarChar(255)
-  description String       @db.VarChar(255)
-  status      post_status? @default(draft)
-}
+model post_taxonomy {
+  post_id     Int
+  taxonomy_id Int
 
-model post {
-  id               Int                @id @default(autoincrement())
-  title            String
-  content          String
-  url              String?            @db.VarChar(255)
-  description      String?            @db.VarChar(255)
-  status           post_status?       @default(draft)
-  featured         Boolean?           @default(false)
-  created_at       DateTime?          @default(now()) @db.Timestamp(6)
-  author_id        Int? 
-  content_taxonomy content_taxonomy[]
-  media            media[]
-  users            users?             @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
-}
+  post     post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  taxonomy taxonomy @relation(fields: [taxonomy_id], references: [id], onDelete: Cascade)
 
-model taxonomy {
-  id               Int                @id @default(autoincrement())
-  name             String             @db.VarChar(255)
-  slug             String             @unique @db.VarChar(255)
-  description      String?
-  type             taxonomy_type
-  parent_id        Int?
-  created_at       DateTime?          @default(now()) @db.Timestamp(6)
-  updated_at       DateTime?          @default(now()) @db.Timestamp(6)
-  content_taxonomy content_taxonomy[]
-  taxonomy         taxonomy?          @relation("taxonomyTotaxonomy", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  other_taxonomy   taxonomy[]         @relation("taxonomyTotaxonomy")
-}
-
-model users {
-  id        Int       @id @default(autoincrement()) 
-  name      String    @db.VarChar(500)
-  surname   String    @db.VarChar(500)
-  email     String?   @unique @db.VarChar(500)
-  password  String?   @db.VarChar(500) 
-  lastlogin DateTime? @default(now()) @db.Timestamptz(6)
-  media     media[]
-  post      post[]
-  role      String
+  @@id([post_id, taxonomy_id]) // chiave primaria composta
 }
 
 enum post_status {
