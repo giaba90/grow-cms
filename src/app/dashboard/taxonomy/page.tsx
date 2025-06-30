@@ -4,6 +4,8 @@
 import { NewButton } from "@/app/components/ui/newbutton";
 import { useTaxonomy } from "@/hooks/useTaxonomy";
 import MyTable from "@/app/components/ui/mytable";
+import { Input } from "@/app/components/ui/input";
+import { Search } from "lucide-react";
 
 export default function TaxonomyPage() {
 
@@ -20,19 +22,17 @@ export default function TaxonomyPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-3xl font-bold">Tassonomie</h1>
-      <div className="flex flex-col items-start">
-        <NewButton url="create" type="taxonomy" />
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex flex-col items-start">
+          <NewButton url="create" type="taxonomy" />
+        </div>
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Cerca..." className="pl-8" />
+        </div>
       </div>
       <div className="border bg-white">
-        {loading ? (
-          <p className="p-4">Caricamento...</p>
-        ) : error ? (
-          <p className="p-4 text-red-500">{error}</p>
-        ) : allTaxonomies.length === 0 ? (
-          <p className="p-4">Nessuna tassonomia trovata.</p>
-        ) : (
-          <MyTable initialData={allTaxonomies} type="taxonomy" />
-        )}
+        <MyTable initialData={allTaxonomies} type="taxonomy" />
       </div>
     </div>
   );

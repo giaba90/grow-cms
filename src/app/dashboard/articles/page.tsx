@@ -5,7 +5,7 @@ import MyTable from "@/app/components/ui/mytable";
 
 export default async function ArticlesPage() {
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard/articles`);
-  const articles: Article[] = await res.json();
+  const data = await res.json();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -20,7 +20,7 @@ export default async function ArticlesPage() {
         </div>
       </div>
       <div className="border bg-white">
-        <MyTable initialData={articles} />
+        <MyTable initialData={data.articles} />
       </div>
     </div>
   );

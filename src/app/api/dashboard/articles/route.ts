@@ -12,7 +12,23 @@ export async function GET() {
         id: "asc",
       },
     });
-    return NextResponse.json(articles);
+    return NextResponse.json(
+      {
+        message: `Fetched ${articles.length} articles`,
+        articles: articles.map((article) => ({
+          id: article.id,
+          title: article.title,
+          content: article.content,
+          url: article.url,
+          status: article.status,
+          description: article.description,
+          featured: article.featured,
+          author_id: article.author_id,
+          created_at: article.created_at,
+        })),
+      },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch articles" },

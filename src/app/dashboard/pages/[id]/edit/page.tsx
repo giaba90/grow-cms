@@ -14,7 +14,7 @@ export default function EditPagePage() {
     const router = useRouter();
     const params = useParams();
 
-    const { data: session } = useSession();
+    useSession();
 
     const [formData, setFormData] = useState<PageData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ export default function EditPagePage() {
                 const res = await fetch(`/api/dashboard/pages/${params.id}`);
                 if (!res.ok) throw new Error();
                 const data = await res.json();
-                setFormData(createInitialFormData(data));
+                setFormData(createInitialFormData(data.page));
                 hasFetchedPage.current = true;
             } catch {
                 toast.error("Impossibile caricare la pagina");

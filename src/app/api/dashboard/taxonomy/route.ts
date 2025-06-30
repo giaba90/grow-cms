@@ -3,12 +3,20 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { ZodError } from "zod";
 import { taxonomyDataSchema } from "@/app/lib/validation";
+import { stat } from "fs";
 
 // GET api/dashboard/taxonomy
 export async function GET(req: Request) {
   try {
     const taxonomies = await prisma.taxonomy.findMany();
-    return NextResponse.json(taxonomies);
+    return NextResponse.json(
+      {
+        message: `Fetched ${taxonomies.length} taxonomies`,
+        taxonomies
+
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch taxonomies" },
@@ -58,7 +66,13 @@ export async function POST(req: Request) {
         description,
       },
     });
-    return NextResponse.json(taxonomy);
+    return NextResponse.json(
+      {
+        message: "Taxonomy created successfully",
+        taxonomy
+      },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(

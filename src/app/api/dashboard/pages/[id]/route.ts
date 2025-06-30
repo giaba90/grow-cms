@@ -42,7 +42,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "page not found" }, { status: 404 });
     }
 
-    return NextResponse.json(page);
+    return NextResponse.json(
+      {
+        message: "Page fetched successfully",
+        page: {
+          id: page.id,
+          title: page.title,
+          content: page.content,
+          url: page.url,
+          status: page.status,
+          description: page.description,
+        },
+      },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -84,7 +97,20 @@ export async function PUT(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(updatedPage);
+    return NextResponse.json(
+      {
+        message: "Page updated successfully",
+        page: {
+          id: updatedPage.id,
+          title: updatedPage.title,
+          content: updatedPage.content,
+          url: updatedPage.url,
+          status: updatedPage.status,
+          description: updatedPage.description,
+        },
+      },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },

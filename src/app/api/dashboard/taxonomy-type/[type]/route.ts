@@ -29,7 +29,18 @@ export async function GET(req: NextRequest) {
             orderBy: { name: "asc" },
         });
 
-        return NextResponse.json(taxonomies);
+        return NextResponse.json(
+            {
+                message: `Fetched ${taxonomies.length} taxonomies of type ${type}`,
+                taxonomies: taxonomies.map((taxonomy) => ({
+                    id: taxonomy.id,
+                    name: taxonomy.name,
+                    description: taxonomy.description || "",
+                    type: taxonomy.type,
+                })),
+            },
+            { status: 200 }
+        );
     } catch (error) {
         console.error("Error fetching taxonomies:", error);
         return NextResponse.json(

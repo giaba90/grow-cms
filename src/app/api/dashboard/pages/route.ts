@@ -12,7 +12,21 @@ export async function GET() {
         id: "asc",
       },
     });
-    return NextResponse.json(pages);
+    return NextResponse.json(
+      {
+        message: `Fetched ${pages.length} pages`,
+        pages: pages.map((page) => ({
+          id: page.id,
+          title: page.title,
+          content: page.content,
+          url: page.url,
+          status: page.status,
+          description: page.description,
+
+        })),
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch pages" },
@@ -60,7 +74,13 @@ export async function POST(req: Request) {
       },
     });
     // Return the created page as a response
-    return NextResponse.json(page);
+    return NextResponse.json(
+      {
+        message: "Page created successfully",
+        page,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.errors }, { status: 400 });
