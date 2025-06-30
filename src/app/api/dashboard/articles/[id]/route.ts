@@ -111,7 +111,10 @@ export async function PUT(req: NextRequest) {
     });
 
     return NextResponse.json(
-      updatedPost,
+      {
+        message: "Post updated successfully",
+        post: updatedPost,
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -129,7 +132,7 @@ export async function DELETE(req: NextRequest) {
 
   try {
     await prisma.post.delete({ where: { id } });
-    return NextResponse.json({ message: "Post deleted" });
+    return NextResponse.json({ message: "Post deleted" }, { status: 200 });
   } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
