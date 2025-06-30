@@ -67,16 +67,28 @@ export async function POST(req: Request) {
         status,
         featured,
         author_id: Number(author_id),
-        content_taxonomy: content_taxonomy && Array.isArray(content_taxonomy)
-          ? {
-            create: content_taxonomy.map((ct) => ({
-              taxonomy_id: ct.taxonomy_id,
-            })),
-          }
-          : undefined,
       },
-      include: { content_taxonomy: true },
     });
+
+    // Crea relazioni content_taxonomy per category e tag
+    if (category) {
+      await prisma.content_taxonomy.create({
+        data: {
+          content_id: newPost.id,
+          taxonomy_id: Number(category),
+        },
+      });
+    }
+    if (tag && Array.isArray(tag)) {
+      for (const tagId of tag) {
+        await prisma.content_taxonomy.create({
+          data: {
+            content_id: newPost.id,
+            taxonomy_id: Number(tagId),
+          },
+        });
+      }
+    }
 
     return NextResponse.json(newPost, {
       status: 201,

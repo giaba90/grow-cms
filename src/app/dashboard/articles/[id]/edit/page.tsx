@@ -70,7 +70,7 @@ export default function EditArticlePage() {
         };
 
         fetchArticle();
-    }, [params.id, session?.user?.id]);
+    }, []);
 
 
     useEffect(() => {

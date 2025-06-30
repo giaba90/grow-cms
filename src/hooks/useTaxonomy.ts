@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 
 export function useTaxonomy() {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [tags, setTags] = useState<Tag[]>([]);
+    const [categories, setCategories] = useState<category[]>([]);
+    const [tags, setTags] = useState<tag[]>([]);
     const [catLoading, setCatLoading] = useState(true);
     const [tagLoading, setTagLoading] = useState(true);
     const [catError, setCatError] = useState<string | null>(null);
@@ -21,7 +21,7 @@ export function useTaxonomy() {
             const res = await fetch(endpoint);
             if (!res.ok) throw new Error();
             const data = await res.json();
-            setter(data);
+            setter(data.taxonomies || []);
             setError(null);
         } catch {
             setter([]);
