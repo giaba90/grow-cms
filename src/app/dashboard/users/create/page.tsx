@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
+import { toast } from "sonner";
 
 const initialForm = {
     name: "",
@@ -45,14 +46,18 @@ export default function UserCreatePage() {
             const data = await res.json();
 
             if (!res.ok) {
-                setError(data?.errors ? JSON.stringify(data.errors) : "Errore nella creazione dell'utente");
+                const msg = data?.errors ? JSON.stringify(data.errors) : "Errore nella creazione dell'utente";
+                setError(msg);
+                toast.error(msg);
                 return;
             }
 
             setSuccess(true);
+            toast.success("Utente creato con successo!");
             setTimeout(() => router.push("/dashboard/users"), 1000);
         } catch {
             setError("Errore nella creazione dell'utente");
+            toast.error("Errore nella creazione dell'utente");
         } finally {
             setIsLoading(false);
         }
@@ -131,8 +136,8 @@ export default function UserCreatePage() {
 
 
 
-                    {error && <p className="text-sm text-red-500">{error}</p>}
-                    {success && <p className="text-sm text-green-600">Utente creato con successo!</p>}
+                    {error && <p className="text-sm text-red-500" style={{ display: 'none' }}>{error}</p>}
+                    {success && <p className="text-sm text-green-600" style={{ display: 'none' }}>Utente creato con successo!</p>}
 
                     <div className="flex justify-between pt-6">
                         <Button

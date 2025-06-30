@@ -15,14 +15,13 @@ interface MyTableRowProps {
 export default function MyTableRow({
   data,
   onDelete,
-  type = "articles",
+  type,
 }: MyTableRowProps) {
   const handleDelete = async () => {
     if (!window.confirm("Sei sicuro di voler eliminare questa voce?")) return;
 
     try {
       let url = "";
-
       switch (type) {
         case "pages":
           url = `/api/dashboard/pages/${data.id}`;
@@ -30,8 +29,11 @@ export default function MyTableRow({
         case "taxonomy":
           url = `/api/dashboard/taxonomy/${data.id}`;
           break;
+        case "users":
+          url = `/api/dashboard/users/${data.id}`;
+          break;
         default:
-          url = `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles/${data.id}`;
+          url = `/api/dashboard/articles/${data.id}`;
           break;
       }
 

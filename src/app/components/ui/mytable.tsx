@@ -6,13 +6,11 @@ import {
   TableHeader,
   TableRow,
   TableHead,
-  TableCell,
 } from "./table";
 import { useState } from "react";
 import MyTableRow from "./mytablerow";
 
-// Tipi supportati in una sola unione coerente
-// Aggiungi UserData all'unione
+
 type TableData = Article | PageData | TaxonomyData | UserData;
 
 interface MyTableProps {
@@ -20,7 +18,7 @@ interface MyTableProps {
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
-export default function MyTable({ initialData, type = "articles" }: MyTableProps) {
+export default function MyTable({ initialData, type }: MyTableProps) {
   const [rows, setRows] = useState<TableData[]>(initialData);
 
   const handleDelete = (id: number) => {
