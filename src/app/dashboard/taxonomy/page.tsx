@@ -24,8 +24,9 @@ export default async function TaxonomyPage() {
           <Input placeholder="Cerca tassonomia..." className="pl-8" />
         </div>
       </div>
-
-      <MyTable initialData={data.taxonomies} type="taxonomy" />
+      <div className="border bg-white">
+        <MyTable initialData={data.taxonomies} type="taxonomy" />
+      </div>
     </div>
   );
 }

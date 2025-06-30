@@ -7,7 +7,13 @@ import { taxonomyDataSchema } from "@/app/lib/validation";
 // GET api/dashboard/taxonomy
 export async function GET(req: Request) {
   try {
-    const taxonomies = await prisma.taxonomy.findMany();
+    const taxonomies = await prisma.taxonomy.findMany(
+      {
+        orderBy: {
+          id: "asc",
+        },
+      }
+    );
     return NextResponse.json(
       {
         message: `Fetched ${taxonomies.length} taxonomies`,
