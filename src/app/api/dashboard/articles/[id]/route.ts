@@ -1,44 +1,31 @@
-import prisma from "@/app/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/app/prisma/client";
 import { postSchema } from "@/app/lib/validation";
-/**
- * Extracts the article ID from a given URL.
- *
- * @param url - The URL string to extract the article ID from.
- * @returns The extracted article ID as a number, or null if the ID is not found or is not a valid number.
- */
-function getId(url: string) {
+
+// Utilità per estrarre ID dalla URL
+function getId(url: string): number | null {
   const regex = /articles\/(\d+)/;
   const match = url.match(regex);
-  if (match && match.length > 0) {
+  if (match?.[1]) {
     const id = parseInt(match[1], 10);
-    if (isNaN(id)) {
-      return null;
-    } else {
-      return id;
-    }
-  } else {
-    return null;
+    return isNaN(id) ? null : id;
   }
+  return null;
 }
 
 // GET /api/dashboard/articles/[id]
 export async function GET(req: NextRequest) {
   const id = getId(req.url);
   if (!id) {
-    return NextResponse.json(
-      { error: "Bad request : Missing post ID" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
   }
+
   try {
     const post = await prisma.post.findUnique({
-      where: { id: id },
+      where: { id },
       include: {
-        content_taxonomy: {
-          include: {
-            taxonomy: true, // opzionale, se vuoi accedere anche ai dettagli della tassonomia
-          },
+        taxonomies: {
+          include: { taxonomy: true },
         },
       },
     });
@@ -47,12 +34,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    return NextResponse.json(post);
-  } catch {
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      post,
+      { status: 200 }
     );
+  } catch (err) {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -83,22 +70,28 @@ export async function PUT(req: NextRequest) {
     status,
     featured,
     author_id,
-    content_taxonomy,
+    category,
+    tags,
   } = validation.data;
 
   try {
-    // Aggiorna i taxonomy solo se presenti
-    if (Array.isArray(content_taxonomy)) {
-      await prisma.content_taxonomy.deleteMany({ where: { content_id: id } });
+    // ✅ Aggiorna le tassonomie collegate
+    await prisma.postTaxonomy.deleteMany({ where: { post_id: id } });
 
-      await prisma.content_taxonomy.createMany({
-        data: content_taxonomy.map((ct) => ({
-          content_id: id,
-          taxonomy_id: ct.taxonomy_id,
-        })),
-      });
+    const taxonomyData: { post_id: number; taxonomy_id: number }[] = [];
+
+    if (category) {
+      taxonomyData.push({ post_id: id, taxonomy_id: category });
+    }
+    if (tags?.length) {
+      tags.forEach((tagId) => taxonomyData.push({ post_id: id, taxonomy_id: tagId }));
     }
 
+    if (taxonomyData.length > 0) {
+      await prisma.postTaxonomy.createMany({ data: taxonomyData });
+    }
+
+    // ✅ Aggiorna il post
     const updatedPost = await prisma.post.update({
       where: { id },
       data: {
@@ -111,39 +104,33 @@ export async function PUT(req: NextRequest) {
         author_id,
       },
       include: {
-        content_taxonomy: {
-          include: {
-            taxonomy: true,
-          },
+        taxonomies: {
+          include: { taxonomy: true },
         },
       },
     });
 
-    return NextResponse.json(updatedPost);
+    return NextResponse.json(
+      updatedPost,
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error updating post:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
-
 // DELETE /api/dashboard/articles/[id]
 export async function DELETE(req: NextRequest) {
   const id = getId(req.url);
   if (!id) {
-    return NextResponse.json(
-      { error: "Bad request : Missing post ID" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
   }
 
   try {
-    await prisma.post.delete({ where: { id: id } });
+    await prisma.post.delete({ where: { id } });
     return NextResponse.json({ message: "Post deleted" });
   } catch {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

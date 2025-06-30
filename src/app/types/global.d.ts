@@ -3,6 +3,17 @@ declare global {
 
   type taxonomy_type = "category" | "tag";
 
+  type PostData = {
+    title: string;
+    content: string;
+    status?: "draft" | "published" | "archived";
+    url?: string;              // URL personalizzato, se non fornito viene generato da slugify
+    description?: string;      // Descrizione del post, se non fornita viene gener
+    featured?: boolean;
+    author_id: number;
+    category?: number;         // ID categoria (taxonomy_type = category)
+    tag?: number[];            // array di ID tag (taxonomy_type = tag)
+  };
 
   interface UserData {
     id: number;
