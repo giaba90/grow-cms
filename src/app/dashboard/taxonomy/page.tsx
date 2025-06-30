@@ -1,40 +1,25 @@
-"use client";
 
-import { useEffect, useState } from "react";
 import { NewButton } from "@/app/components/ui/newbutton";
-import MyTable from "@/app/components/ui/mytable";
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
+import TaxonomyTable from "./taxonomy-table";
 
-export default function TaxonomyPage() {
-  const [allTaxonomies, setAllTaxonomies] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// Funzione asincrona eseguita lato server
+async function getTaxonomies() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`, {
+    cache: "no-store", // oppure "force-cache" se vuoi caching
+  });
 
-  const fetchTaxonomies = async () => {
-    try {
-      const res = await fetch("/api/dashboard/taxonomy");
+  if (!res.ok) {
+    throw new Error("Failed to fetch taxonomies");
+  }
 
-      if (!res.ok) {
-        throw new Error(`Failed to fetch taxonomies: ${res.status}`);
-      }
+  const data = await res.json();
+  return data.taxonomies;
+}
 
-      const data = await res.json();
-
-      if (!Array.isArray(data.taxonomies)) {
-        throw new Error("API response does not contain an array");
-      }
-      setAllTaxonomies(data.taxonomies);
-    } catch (err: any) {
-      setError(err.message || "Errore sconosciuto");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTaxonomies();
-  }, []);
+export default async function TaxonomyPage() {
+  const taxonomies = await getTaxonomies();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -51,22 +36,7 @@ export default function TaxonomyPage() {
         </div>
       </div>
 
-      {loading && (
-        <div className="text-gray-500 p-4 bg-white border">Caricamento...</div>
-      )}
-
-      {error && (
-        <div className="text-red-600 p-4 bg-white border">Errore: {error}</div>
-      )}
-
-      {!loading && !error && (
-        <>
-
-          <div className="border bg-white">
-            <MyTable initialData={allTaxonomies} type="taxonomy" />
-          </div>
-        </>
-      )}
+      <TaxonomyTable initialData={taxonomies} />
     </div>
   );
 }
