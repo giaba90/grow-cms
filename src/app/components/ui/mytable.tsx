@@ -11,6 +11,16 @@ import { useState } from "react";
 import MyTableRow from "./mytablerow";
 
 
+// Import or define the required types above
+// Example import (adjust the path as needed):
+// import { Article, PageData, TaxonomyData, UserData } from "../../types";
+
+// Temporary type definitions if you don't have them yet:
+type Article = { id: number; titolo: string; creatoIl: string; stato: string };
+type PageData = { id: number; titolo: string; url: string; stato: string };
+type TaxonomyData = { id: number; nome: string; slug: string; tipo: string };
+type UserData = { id: number; nome: string; email: string; ruolo: string };
+
 type TableData = Article | PageData | TaxonomyData | UserData;
 
 interface MyTableProps {

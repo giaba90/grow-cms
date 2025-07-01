@@ -1,4 +1,3 @@
-import { url } from "inspector";
 import z, { object, string } from "zod";
 
 // Define the schema for the login request payload.
@@ -59,9 +58,9 @@ export const pageDataSchema = z.object({
 
 // zod schema for taxonomy data
 export const taxonomyDataSchema = z.object({
-  name: z.string().min(1).max(100),
-  type: z.string().min(1).max(100),
-  description: z.string().min(1).max(1000),
+  title: z.string().min(1).max(100),
+  type: z.enum(["category", "tag"]),
+  description: z.string().min(1).max(1000).optional(),
 });
 // zod schema for user data
 export const userDataSchema = z.object({

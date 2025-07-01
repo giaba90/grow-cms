@@ -7,12 +7,10 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
-import CategorySelect from "@/app/components/ui/CategorySelect";
-import TagSelect from "@/app/components/ui/TagSelect";
 import { toast } from "sonner";
 import { useEdgeStore } from "src/app/lib/edgestore";
-import { buildContentTaxonomy } from "@/app/utils/taxonomy";
-import { useTaxonomy } from "@/hooks/useTaxonomy";
+import CategoryMultiSelect from "@/app/components/ui/CategoryMultiSelect";
+import { set } from "zod";
 
 interface ArticleFormData {
   title: string;
@@ -29,7 +27,10 @@ export default function NewArticlePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const { edgestore } = useEdgeStore();
-
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  // Definisci lo stato del form
+  // Inizializza lo stato del form con i campi richiesti
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
     content: "",
@@ -184,9 +185,40 @@ export default function NewArticlePage() {
               />
             </div>
 
-          </div>
+            <div className="mb-8">
+              <label className="text-sm font-medium">Descrizione</label>
+              <Input
+                className="bg-white"
+                placeholder="Inserisci una breve descrizione..."
+                value={formData.description}
+                onChange={(e) => updateForm("description", e.target.value)}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                (opzionale, ma consigliato per SEO)
+              </p>
 
-          {/*   <div className="mb-8">
+            </div>
+            <div className="mb-8">
+              <CategoryMultiSelect
+                selected={selectedCategories}
+                onChange={setSelectedCategories}
+                disabled={isLoading}
+                endpoint="/api/dashboard/taxonomy-type/category"
+                label="Categorie"
+              />
+            </div>
+            <div className="mb-8">
+              <label className="text-sm font-medium">Tag</label>
+              <CategoryMultiSelect
+                selected={selectedTags}
+                onChange={setSelectedTags}
+                disabled={isLoading}
+                endpoint="/api/dashboard/taxonomy-type/tag"
+                label="Tag"
+              />
+
+
+              {/*   <div className="mb-8">
               <CategorySelect
                 initialValue={formData.category}
                 onValueChange={(value) => updateForm("category", value)}
@@ -205,15 +237,17 @@ export default function NewArticlePage() {
               </div>
             </div> */}
 
-          <div className="mb-8">
-            <label className="text-sm font-medium">Carica immagine</label>
-            <div>
-              <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
-              {file && (
-                <Button type="button" onClick={handleFileUpload}>
-                  Carica
-                </Button>
-              )}
+              <div className="mb-8">
+                <label className="text-sm font-medium">Carica immagine</label>
+                <div>
+                  <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
+                  {file && (
+                    <Button type="button" onClick={handleFileUpload}>
+                      Carica
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     try {
         const taxonomies = await prisma.taxonomy.findMany({
             where: { type: type },
-            orderBy: { name: "asc" },
+            orderBy: { title: "asc" },
         });
 
         return NextResponse.json(
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
                 message: `Fetched ${taxonomies.length} taxonomies of type ${type}`,
                 taxonomies: taxonomies.map((taxonomy) => ({
                     id: taxonomy.id,
-                    name: taxonomy.name,
+                    name: taxonomy.title,
                     description: taxonomy.description || "",
                     type: taxonomy.type,
                 })),

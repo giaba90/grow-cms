@@ -4,6 +4,12 @@ import prisma from "@/app/prisma/client";
 import { ZodError } from "zod";
 import { taxonomyDataSchema } from "@/app/lib/validation";
 
+type TaxonomyData = {
+  title: string;  // Name of the taxonomy
+  type: "category" | "tag";  // Type of taxonomy
+  description?: string;  // Optional description of the taxonomy
+};
+
 // GET api/dashboard/taxonomy
 export async function GET(req: Request) {
   try {
@@ -33,7 +39,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const data: TaxonomyData = await req.json();
-
     if (!taxonomyDataSchema.safeParse(data).success) {
       // Check if the data is valid according to the schema
       return NextResponse.json(
@@ -43,12 +48,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const { name, slug, type, description } = data;
-    // check if name or type already exists
+    const { title, type, description } = data;
+    // check if title or type already exists
     const existingTaxonomy = await prisma.taxonomy.findFirst({
       where: {
         AND: [
-          { name: name },
+          { title: title },
           { type: type },
         ],
       },
@@ -56,7 +61,7 @@ export async function POST(req: Request) {
 
     if (existingTaxonomy) {
       return NextResponse.json(
-        { error: "Taxonomy with this name or type already exists" },
+        { error: "Taxonomy with this title or type already exists" },
         { status: 409 }
       );
     }
@@ -64,8 +69,7 @@ export async function POST(req: Request) {
     // Create a new taxonomy entry in the database
     const taxonomy = await prisma.taxonomy.create({
       data: {
-        name,
-        slug: slug || name.toLowerCase().replace(/\s+/g, "-"),
+        title,
         type,
         description,
       },
