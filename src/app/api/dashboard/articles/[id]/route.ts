@@ -62,17 +62,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ errors: validation.error.flatten() }, { status: 400 });
   }
 
-  const {
-    title,
-    content,
-    url,
-    description,
-    status,
-    featured,
-    author_id,
-    category,
-    tags,
-  } = validation.data;
+  const { title, content, url, description, status, featured, author_id, category, tags } = validation.data;
 
   try {
     // ✅ Aggiorna le tassonomie collegate

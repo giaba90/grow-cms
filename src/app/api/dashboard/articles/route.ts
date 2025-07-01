@@ -91,7 +91,10 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json(newPost, { status: 201 });
+    return NextResponse.json(
+      { message: "Post created successfully", post: newPost },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.errors }, { status: 400 });
