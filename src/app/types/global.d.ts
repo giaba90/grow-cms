@@ -6,7 +6,7 @@ declare global {
   type PostData = {
     title: string;
     content: string;
-    status?: "draft" | "published" | "archived";
+    status?: post_status; // default: "draft"
     url?: string;              // URL personalizzato, se non fornito viene generato da slugify
     description?: string;      // Descrizione del post, se non fornita viene gener
     featured?: boolean;
@@ -14,6 +14,31 @@ declare global {
     category?: number[];         // ID categoria (taxonomy_type = category)
     tag?: number[];            // array di ID tag (taxonomy_type = tag)
   };
+
+  interface ArticleFormData {
+    title: string;
+    content: string;
+    status: "draft" | "published" | "archived";
+    featured: boolean;
+    url?: string;
+    description?: string;
+  }
+
+  interface FormDataToSubmit extends ArticleFormData {
+    author_id: number;
+    category?: number[];
+    tags?: number[];
+    image?: string;
+  }
+
+  interface ArticleFormProps {
+    userId: string;
+    initialValues?: Partial<ArticleFormData>;
+    onSubmit: (values: FormDataToSubmit) => Promise<void>;
+    submitLabel?: string;
+    defaultSelectedCategories?: number[];
+    defaultSelectedTags?: number[];
+  }
 
   interface UserData {
     id: number;
