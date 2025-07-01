@@ -10,12 +10,16 @@ interface CategoryMultiSelectProps {
   selected: number[];
   onChange: (selected: number[]) => void;
   disabled?: boolean;
+  endpoint?: string; // endpoint API per fetch categorie
+  label?: string;
 }
 
 export default function CategoryMultiSelect({
   selected,
   onChange,
   disabled = false,
+  endpoint = "/api/dashboard/taxonomy-type/category",
+  label = "Categorie",
 }: CategoryMultiSelectProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +29,7 @@ export default function CategoryMultiSelect({
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/dashboard/taxonomy-type/category");
+        const res = await fetch(endpoint);
         if (!res.ok) throw new Error("Errore nel caricamento delle categorie");
         const data = await res.json();
         setCategories(data.taxonomies || []);
@@ -38,7 +42,7 @@ export default function CategoryMultiSelect({
       }
     };
     fetchCategories();
-  }, []);
+  }, [endpoint]);
 
   const handleCheckboxChange = (id: number) => {
     if (selected.includes(id)) {
@@ -53,7 +57,7 @@ export default function CategoryMultiSelect({
 
   return (
     <div>
-      <label className="text-sm font-medium mb-2 block">Categorie</label>
+      <label className="text-sm font-medium mb-2 block">{label}</label>
       <div className="flex flex-col gap-2">
         {categories.map((cat) => (
           <label key={cat.id} className="flex items-center gap-2">

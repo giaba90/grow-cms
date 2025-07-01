@@ -75,7 +75,13 @@ export async function POST(req: Request) {
     const taxonomyRelations: { post_id: number; taxonomy_id: number }[] = [];
 
     if (category) {
-      taxonomyRelations.push({ post_id: newPost.id, taxonomy_id: category });
+      if (Array.isArray(category)) {
+        for (const catId of category) {
+          taxonomyRelations.push({ post_id: newPost.id, taxonomy_id: catId });
+        }
+      } else {
+        taxonomyRelations.push({ post_id: newPost.id, taxonomy_id: category });
+      }
     }
 
     if (tag?.length) {

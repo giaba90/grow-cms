@@ -11,7 +11,7 @@ declare global {
     description?: string;      // Descrizione del post, se non fornita viene gener
     featured?: boolean;
     author_id: number;
-    category?: number;         // ID categoria (taxonomy_type = category)
+    category?: number[];         // ID categoria (taxonomy_type = category)
     tag?: number[];            // array di ID tag (taxonomy_type = tag)
   };
 

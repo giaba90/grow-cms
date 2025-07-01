@@ -10,7 +10,6 @@ import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import { toast } from "sonner";
 import { useEdgeStore } from "src/app/lib/edgestore";
 import CategoryMultiSelect from "@/app/components/ui/CategoryMultiSelect";
-import { set } from "zod";
 
 interface ArticleFormData {
   title: string;
@@ -91,7 +90,8 @@ export default function NewArticlePage() {
         body: JSON.stringify({
           ...formData,
           author_id: numericAuthorId,
-
+          category: selectedCategories.length > 0 ? selectedCategories : undefined,
+          tags: selectedTags,
         }),
       });
 
@@ -129,7 +129,29 @@ export default function NewArticlePage() {
               />
             </div>
           </div>
+          <div className="mb-8">
+            <label className="text-sm font-medium">URL personalizzato</label>
+            <Input
+              className="bg-white"
+              placeholder="Inserisci un URL personalizzato..."
+              value={formData.url}
+              onChange={(e) => updateForm("url", e.target.value)}
+            />
+          </div>
 
+          <div className="mb-8">
+            <label className="text-sm font-medium">Descrizione</label>
+            <Input
+              className="bg-white"
+              placeholder="Inserisci una breve descrizione..."
+              value={formData.description}
+              onChange={(e) => updateForm("description", e.target.value)}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              (opzionale, ma consigliato per SEO)
+            </p>
+
+          </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Contenuto</label>
             <Tiptap onChange={(value) => updateForm("content", value)} />
@@ -175,29 +197,7 @@ export default function NewArticlePage() {
                 onChange={(value) => updateForm("status", value)}
               />
             </div>
-            <div className="mb-8">
-              <label className="text-sm font-medium">URL personalizzato</label>
-              <Input
-                className="bg-white"
-                placeholder="Inserisci un URL personalizzato..."
-                value={formData.url}
-                onChange={(e) => updateForm("url", e.target.value)}
-              />
-            </div>
 
-            <div className="mb-8">
-              <label className="text-sm font-medium">Descrizione</label>
-              <Input
-                className="bg-white"
-                placeholder="Inserisci una breve descrizione..."
-                value={formData.description}
-                onChange={(e) => updateForm("description", e.target.value)}
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                (opzionale, ma consigliato per SEO)
-              </p>
-
-            </div>
             <div className="mb-8">
               <CategoryMultiSelect
                 selected={selectedCategories}
@@ -208,7 +208,6 @@ export default function NewArticlePage() {
               />
             </div>
             <div className="mb-8">
-              <label className="text-sm font-medium">Tag</label>
               <CategoryMultiSelect
                 selected={selectedTags}
                 onChange={setSelectedTags}
@@ -216,37 +215,17 @@ export default function NewArticlePage() {
                 endpoint="/api/dashboard/taxonomy-type/tag"
                 label="Tag"
               />
+            </div>
 
-
-              {/*   <div className="mb-8">
-              <CategorySelect
-                initialValue={formData.category}
-                onValueChange={(value) => updateForm("category", value)}
-                categories={categories}
-                loading={catLoading}
-                error={catError}
-              />
-              <div className="mb-8">
-                <TagSelect
-                  initialValue={formData.tag}
-                  onValueChange={(value) => updateForm("tag", value)}
-                  tags={tags}
-                  loading={tagLoading}
-                  error={tagError}
-                />
-              </div>
-            </div> */}
-
-              <div className="mb-8">
-                <label className="text-sm font-medium">Carica immagine</label>
-                <div>
-                  <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
-                  {file && (
-                    <Button type="button" onClick={handleFileUpload}>
-                      Carica
-                    </Button>
-                  )}
-                </div>
+            <div className="mb-8">
+              <label className="text-sm font-medium">Carica immagine</label>
+              <div>
+                <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
+                {file && (
+                  <Button type="button" onClick={handleFileUpload}>
+                    Carica
+                  </Button>
+                )}
               </div>
             </div>
           </div>
