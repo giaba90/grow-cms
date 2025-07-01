@@ -19,6 +19,8 @@ interface ArticleFormData {
   content: string;
   status: "draft" | "published" | "archived";
   featured: boolean;
+  url?: string; // URL personalizzato, se non fornito viene generato da slugify
+  description?: string; // Descrizione del post, se non fornita viene generata
   category: string;
   tag: string;
 }
@@ -41,15 +43,15 @@ export default function NewArticlePage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Usa il nuovo hook per taxonomy
-  const {
-    categories,
-    tags,
-    catLoading,
-    tagLoading,
-    catError,
-    tagError,
-  } = useTaxonomy();
-
+  /*  const {
+     categories,
+     tags,
+     catLoading,
+     tagLoading,
+     catError,
+     tagError,
+   } = useTaxonomy();
+  */
   const updateForm = (field: keyof ArticleFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -88,12 +90,7 @@ export default function NewArticlePage() {
         body: JSON.stringify({
           ...formData,
           author_id: numericAuthorId,
-          content_taxonomy: buildContentTaxonomy(
-            categories,
-            tags,
-            formData.category,
-            formData.tag
-          ),
+
         }),
       });
 
@@ -160,13 +157,36 @@ export default function NewArticlePage() {
         <div className="w-1/3 ml-4">
           <div className="flex flex-col">
             <div className="mb-8">
+              <label className="text-sm font-medium">Articolo in evidenza</label>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.featured}
+                  onChange={(e) => updateForm("featured", e.target.checked)}
+                  className="mr-2"
+                />
+                <span>Mostra in evidenza</span>
+              </div>
+            </div>
+            <div className="mb-8 mt-2">
               <PostStatusSelect
                 initialStatus={formData.status}
                 onChange={(value) => updateForm("status", value)}
               />
             </div>
-
             <div className="mb-8">
+              <label className="text-sm font-medium">URL personalizzato</label>
+              <Input
+                className="bg-white"
+                placeholder="Inserisci un URL personalizzato..."
+                value={formData.url}
+                onChange={(e) => updateForm("url", e.target.value)}
+              />
+            </div>
+
+          </div>
+
+          {/*   <div className="mb-8">
               <CategorySelect
                 initialValue={formData.category}
                 onValueChange={(value) => updateForm("category", value)}
@@ -183,22 +203,21 @@ export default function NewArticlePage() {
                   error={tagError}
                 />
               </div>
-            </div>
+            </div> */}
 
-            <div className="mb-8">
-              <label className="text-sm font-medium">Carica immagine</label>
-              <div>
-                <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
-                {file && (
-                  <Button type="button" onClick={handleFileUpload}>
-                    Carica
-                  </Button>
-                )}
-              </div>
+          <div className="mb-8">
+            <label className="text-sm font-medium">Carica immagine</label>
+            <div>
+              <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
+              {file && (
+                <Button type="button" onClick={handleFileUpload}>
+                  Carica
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </form>
+    </form >
   );
 }

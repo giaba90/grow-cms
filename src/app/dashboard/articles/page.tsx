@@ -4,8 +4,13 @@ import { NewButton } from "@/app/components/ui/newbutton";
 import MyTable from "@/app/components/ui/mytable";
 
 export default async function ArticlesPage() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/dashboard/articles`);
-  const data = await res.json();
+  let data = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles`);
+    data = await res.json();
+  } catch (error) {
+    console.error("Failed to fetch articles:", error);
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">
