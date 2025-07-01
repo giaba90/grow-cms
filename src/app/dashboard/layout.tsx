@@ -10,10 +10,10 @@ export default function DashboardLayout({
 }) {
   return (
     <SessionProvider>
-      <EdgeStoreProvider>
-        <DashboardClient>{children}</DashboardClient>
-        <Toaster position="top-center" />
-      </EdgeStoreProvider>
+
+      <DashboardClient>{children}</DashboardClient>
+      <Toaster position="top-center" />
+
     </SessionProvider>
   );
 }
