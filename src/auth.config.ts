@@ -1,10 +1,24 @@
-import { NextAuthConfig } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/app/prisma/client";
 import bcrypt from "bcryptjs";
 import { ZodError } from "zod";
 import { signInSchema } from "@/app/lib/validation";
+
+// Extend the Session type to include id on user
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string | null;
+    };
+  }
+}
 
 async function getUserFromDb(email: string) {
   try {
@@ -19,7 +33,7 @@ async function getUserFromDb(email: string) {
   }
 }
 
-export const authOptions: NextAuthConfig = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
@@ -33,9 +47,7 @@ export const authOptions: NextAuthConfig = {
       },
       authorize: async (credentials) => {
         try {
-          const { email, password } = await signInSchema.parseAsync(
-            credentials
-          );
+          const { email, password } = await signInSchema.parseAsync(credentials);
 
           const user = await getUserFromDb(email);
           if (!user) throw new Error("Utente non trovato");
@@ -57,10 +69,10 @@ export const authOptions: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: any }) {
       if (user) {
-        token.id = user.id; // 
-        // token.role = user.role;
+        token.id = user.id;
+        // token.role = user.role; // Se vuoi aggiungere il ruolo nel token
         token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
       }
       return token;
@@ -69,9 +81,9 @@ export const authOptions: NextAuthConfig = {
       if (session.user && token?.id) {
         session.user.id = token.id as string;
       }
-      session.expires = new Date(token.exp! * 1000) as Date & string;
+      // session.expires deve essere stringa ISO, non Date oggetto
+      session.expires = new Date(Number(token.exp) * 1000).toISOString();
       return session;
     },
-  }
-  ,
+  },
 };

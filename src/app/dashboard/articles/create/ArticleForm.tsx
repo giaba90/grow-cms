@@ -15,7 +15,6 @@ export default function ArticleForm({
     userId,
     initialValues,
     onSubmit,
-    submitLabel = "Salva",
     defaultSelectedCategories = [],
     defaultSelectedTags = [],
 }: ArticleFormProps) {
