@@ -8,7 +8,7 @@ import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import CategoryMultiSelect from "@/app/components/ui/CategoryMultiSelect";
-import { useEdgeStore } from "@/app/lib/edgestore";
+
 
 
 export default function ArticleForm({
@@ -19,7 +19,7 @@ export default function ArticleForm({
     defaultSelectedTags = [],
 }: ArticleFormProps) {
     const router = useRouter();
-    const { edgestore } = useEdgeStore();
+
 
     // Usa i valori di default passati come props
     const [selectedCategories, setSelectedCategories] = useState<number[]>(defaultSelectedCategories);
@@ -43,20 +43,6 @@ export default function ArticleForm({
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleFileUpload = async () => {
-        if (!file) return;
-
-        try {
-            const res = await edgestore.publicFiles.upload({
-                file,
-                onProgressChange: (p) => console.log("Upload progress:", p),
-            });
-            setImageUrl(res.url);
-            toast.success("Immagine caricata con successo");
-        } catch {
-            toast.error("Errore durante il caricamento dell'immagine");
-        }
-    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -161,7 +147,7 @@ export default function ArticleForm({
                         <label className="text-sm font-medium">Carica immagine</label>
                         <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
                         {file && !imageUrl && (
-                            <Button type="button" onClick={handleFileUpload} className="mt-2">
+                            <Button type="button" className="mt-2">
                                 Carica immagine
                             </Button>
                         )}
