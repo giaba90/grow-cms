@@ -7,7 +7,7 @@ import { Button } from "./button";
 import { Trash2 } from "lucide-react";
 
 interface MyTableRowProps {
-  data: Article | PageData | TaxonomyData | UserData;
+  data: PostData | PageData | TaxonomyData | UserData;
   onDelete: (id: number) => void;
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
@@ -39,7 +39,11 @@ export default function MyTableRow({
 
       const response = await fetch(url, { method: "DELETE" });
       if (!response.ok) throw new Error("Errore durante l'eliminazione");
-      onDelete(data.id);
+      if (typeof data.id === "number") {
+        onDelete(data.id);
+      } else {
+        console.error("ID non definito o non numerico:", data.id);
+      }
     } catch (error) {
       console.error("Errore di rete:", error);
     }
@@ -107,7 +111,7 @@ export default function MyTableRow({
   }
 
   // --- RENDER: Articles (default) ---
-  const article = data as Article;
+  const article = data as PostData;
   return (
     <TableRow>
       <TableCell className="font-medium">{article.id}</TableCell>

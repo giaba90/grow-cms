@@ -4,16 +4,20 @@ declare global {
   type taxonomy_type = "category" | "tag";
 
   type PostData = {
+    id?: number;
     title: string;
     content: string;
-    status?: post_status; // default: "draft"
+    status: post_status; // default: "draft"
     url?: string;              // URL personalizzato, se non fornito viene generato da slugify
     description?: string;      // Descrizione del post, se non fornita viene gener
     featured?: boolean;
+    created_at: string;         // Data di creazione, se non fornita viene impostata automaticamente
     author_id: number;
     category?: number[];         // ID categoria (taxonomy_type = category)
     tag?: number[];            // array di ID tag (taxonomy_type = tag)
   };
+  type PageData = { id: number; title: string; url: string; status: string };
+  type TaxonomyData = { id: number; name: string; slug: string; type: string };
 
   interface ArticleFormData {
     title: string;

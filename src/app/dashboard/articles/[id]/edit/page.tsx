@@ -1,14 +1,12 @@
 import { notFound } from "next/navigation";
+import { auth } from "@/auth"; // opzionale
 import ArticleForm from "../../create/ArticleForm";
 import prisma from "@/app/prisma/client";
 
-interface EditArticlePageProps {
-    params: { id: string };
-}
 
-export default async function EditArticlePage({ params }: EditArticlePageProps) {
+export default async function EditArticlePage({ params }: { params: { id: string } }) {
     const articleId = Number(params.id);
-    if (isNaN(articleId)) return notFound();
+    if (isNaN(articleId) || articleId <= 0) return notFound();
 
     const post = await prisma.post.findUnique({
         where: { id: articleId },
@@ -19,14 +17,17 @@ export default async function EditArticlePage({ params }: EditArticlePageProps) 
 
     if (!post) return notFound();
 
-    // Estrai categorie e tag
     const categories = post.taxonomies
-        .filter(pt => pt.taxonomy.type === "category")
-        .map(pt => pt.taxonomy.id);
+        .filter((pt: { taxonomy: { type: string; }; }) => pt.taxonomy.type === "category")
+        .map((pt: { taxonomy: { id: any; }; }) => pt.taxonomy.id);
 
     const tags = post.taxonomies
-        .filter(pt => pt.taxonomy.type === "tag")
-        .map(pt => pt.taxonomy.id);
+        .filter((pt: { taxonomy: { type: string; }; }) => pt.taxonomy.type === "tag")
+        .map((pt: { taxonomy: { id: any; }; }) => pt.taxonomy.id);
+
+    // opzionale:
+    const session = await auth();
+    const userId = session?.user?.id ?? "";
 
     return (
         <div className="container mx-auto py-6">
@@ -56,7 +57,7 @@ export default async function EditArticlePage({ params }: EditArticlePageProps) 
                             url: formValues.url || null,
                             description: formValues.description || null,
                             taxonomies: {
-                                set: [], // Reset per sicurezza
+                                set: [],
                                 connect: [
                                     ...buildTaxonomyConnect(articleId, formValues.category || []),
                                     ...buildTaxonomyConnect(articleId, formValues.tags || []),
@@ -65,18 +66,13 @@ export default async function EditArticlePage({ params }: EditArticlePageProps) 
                         },
                     });
                 }}
-                userId={""}
+                userId={userId}
             />
         </div>
     );
 }
 
-function buildTaxonomyConnect(postId: number, taxonomyIds: number[]): {
-    post_id_taxonomy_id: {
-        post_id: number;
-        taxonomy_id: number;
-    };
-}[] {
+function buildTaxonomyConnect(postId: number, taxonomyIds: number[]) {
     return taxonomyIds.map((taxonomyId) => ({
         post_id_taxonomy_id: {
             post_id: postId,
