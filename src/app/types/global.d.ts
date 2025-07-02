@@ -61,7 +61,7 @@ declare global {
     name: string;
     surname: string;
     email: string;
-    password?: string;
+    password: string;
     last_login?: Date;
 
     role: string;

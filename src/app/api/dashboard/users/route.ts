@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 // POST api/dashboard/users
 export async function POST(req: Request) {
   try {
-    const data: User = await req.json();
+    const data: UserData = await req.json();
 
     if (!userDataSchema.safeParse(data).success) {
       // Check if the data is valid according to the schema
