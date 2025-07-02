@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+// File: src/app/dashboard/articles/[id]/edit/page.tsx
+
 import { notFound } from "next/navigation";
 import { auth } from "@/auth"; // opzionale
 import ArticleForm from "../../create/ArticleForm";

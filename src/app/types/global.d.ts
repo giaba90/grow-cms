@@ -61,13 +61,13 @@ declare global {
     name: string;
     surname: string;
     email: string;
+    password?: string;
+    last_login?: Date;
+
     role: string;
   };
 
-  interface User extends UserData {
-    password: string;
-    lastlogin?: Date;
-  }
+
 
   type MediaData = {
     user_id: number;

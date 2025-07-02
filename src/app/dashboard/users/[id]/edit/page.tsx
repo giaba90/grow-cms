@@ -6,15 +6,6 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
 
-type UserData = {
-    id: number;
-    name: string;
-    surname: string;
-    email: string;
-    role: string;
-    password: string;
-};
-
 // Initial form state
 const initialForm: UserData = {
     id: 0, // 
