@@ -1,13 +1,18 @@
+
+
 import type { NextAuthOptions } from "next-auth";
-import type { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/app/prisma/client";
 import bcrypt from "bcryptjs";
-import { ZodError } from "zod";
 import { signInSchema } from "@/app/lib/validation";
+import "next-auth";
 
 declare module "next-auth" {
+  interface User {
+    id: string;
+    role?: string | null;
+  }
   interface Session {
     user: {
       id: string;
@@ -18,7 +23,44 @@ declare module "next-auth" {
     };
   }
 }
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt", maxAge: 60 * 60 },
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        const { email, password } = await signInSchema.parseAsync(credentials);
+        const user = await prisma.users.findUnique({
+          where: { email },
+          select: { id: true, email: true, password: true, role: true },
+        });
+        if (!user || !user.password) throw new Error("Invalid credentials");
+        const isValid = bcrypt.compareSync(password, user.password);
+        if (!isValid) throw new Error("Invalid credentials");
 
+        return { id: String(user.id), email: user.email, role: user.role };
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.sub = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user && token?.id) session.user.id = token.id as string;
+      return session;
+    },
+  },
+  pages: { signIn: "/login" },
+};
 async function getUserFromDb(email: string) {
   try {
     const user = await prisma.users.findUnique({
@@ -31,57 +73,3 @@ async function getUserFromDb(email: string) {
     return null;
   }
 }
-
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60, // 1 ora
-  },
-  providers: [
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      authorize: async (credentials) => {
-        try {
-          const { email, password } = await signInSchema.parseAsync(credentials);
-          const user = await getUserFromDb(email);
-          if (!user || !user.password) throw new Error("Credenziali non valide");
-          const valid = bcrypt.compareSync(password, user.password);
-          if (!valid) throw new Error("Credenziali errate");
-
-          return {
-            id: String(user.id),
-            email: user.email ?? "",
-            role: user.role,
-          };
-        } catch (error) {
-          if (error instanceof ZodError) return null;
-          throw error;
-        }
-      },
-    }),
-  ],
-  callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: any }) {
-      if (user) {
-        token.id = user.id;
-        token.sub = user.id;
-        token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user && token?.id) {
-        session.user.id = token.id as string;
-      }
-      session.expires = new Date(Number(token.exp) * 1000).toISOString();
-      return session;
-    },
-  },
-  pages: {
-    signIn: "/login",
-  },
-};
