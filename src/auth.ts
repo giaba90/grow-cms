@@ -1,11 +1,7 @@
-// auth.ts
-import NextAuth from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth.config";
 
-const authHandler = NextAuth(authOptions);
-
-export const handlers = {
-    GET: authHandler,
-    POST: authHandler,
-};
-export { authHandler as auth };
+export async function auth() {
+    const session = await getServerSession(authOptions);
+    return session;
+}
