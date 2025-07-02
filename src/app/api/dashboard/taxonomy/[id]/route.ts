@@ -70,13 +70,13 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        const { name, slug, type, description } = data;
+        const { title, type, description } = data;
 
         const updatedtaxonomy = await prisma.taxonomy.update({
             where: { id: id },
             data: {
-                name,
-                slug,
+                title,
+
                 type,
                 description,
             },

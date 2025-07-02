@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { pageDataSchema } from "@/app/lib/validation";
 import slugify from "slugify";
+import { Prisma } from "@prisma/client";
 
 /**
  * Extracts the numeric ID from a given URL string.
@@ -91,7 +92,7 @@ export async function PUT(req: NextRequest) {
       data: {
         title,
         content,
-        status,
+        status: status, // Use status directly, assuming it matches the expected type
         url: url || slugify(title, { lower: true, strict: true }),
         description: description || content.slice(0, 200),
       },
