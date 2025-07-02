@@ -29,7 +29,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         <div className="flex items-center gap-4">
           <button
             className="border p-2 cursor-pointer"
-            onClick={() => signOut({ redirectTo: "/login" })}
+            onClick={() => signOut({ callbackUrl: "/login" })}
           >
             Logout
           </button>

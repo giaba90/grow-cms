@@ -2,8 +2,20 @@
 
 import { useEffect, useState } from "react"
 
+// Define the tag type if not already defined elsewhere
+type tag = {
+  id: string | number;
+  name: string;
+  slug: string;
+};
+
+interface TagSelectProps {
+  initialValue?: string;
+  onValueChange?: (value: string) => void;
+}
+
 function TagSelect({ initialValue, onValueChange, tags, loading, error }: TagSelectProps & {
-  tags: Tag[];
+  tags: tag[];
   loading: boolean;
   error: string | null;
 }) {
