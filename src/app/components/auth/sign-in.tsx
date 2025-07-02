@@ -14,12 +14,17 @@ export function SignIn() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email,
       password,
-      redirect: true,
-      callbackUrl: "/dashboard",
+      redirect: false,
     });
+    if (result?.error) {
+      // mostra messaggio di errore all’utente
+    } else if (result?.url) {
+      window.location.href = result.url;
+    }
+
   };
 
   return (
