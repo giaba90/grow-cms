@@ -1,33 +1,37 @@
-import NextAuth from "next-auth";
-import { authOptions } from "./auth.config";
+import { withAuth } from "next-auth/middleware";
 import { APP_PATHS } from "./app/lib/constants/paths";
 
-const { auth } = NextAuth(authOptions);
-const privateRoutes: string[] = Object.values(APP_PATHS.dashboard).map(String); // Private routes
-const authRoutes: string[] = Object.values(APP_PATHS.auth).map(String); // Auth routes
-// Middleware to protect private routes
-export default auth(async function middleware(req) {
-  const isLoggedIn = !!req.auth;
-  const { nextUrl } = req;
-  const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+const privateRoutes = Object.values(APP_PATHS.dashboard).map(String);
+const authRoutes = Object.values(APP_PATHS.auth).map(String);
 
-  if (isLoggedIn && isAuthRoute) {
-    return Response.redirect(
-      new URL(process.env.NEXTAUTH_URL + APP_PATHS.dashboard.root, nextUrl)
-    );
+export default withAuth(
+  function middleware(req) {
+    const isLoggedIn = !!req.nextauth.token;
+    const { pathname } = req.nextUrl;
+
+    const isPrivateRoute = privateRoutes.includes(pathname);
+    const isAuthRoute = authRoutes.includes(pathname);
+
+    if (isLoggedIn && isAuthRoute) {
+      return Response.redirect(
+        new URL(APP_PATHS.dashboard.root, req.url)
+      );
+    }
+
+    if (!isLoggedIn && isPrivateRoute) {
+      return Response.redirect(
+        new URL(APP_PATHS.auth.login, req.url)
+      );
+    }
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token, // true se autenticato
+    },
   }
+);
 
-  if (!isLoggedIn && isAuthRoute) return;
-
-  if (!isLoggedIn && isPrivateRoute) {
-    return Response.redirect(
-      new URL(process.env.NEXTAUTH_URL + APP_PATHS.auth.login, nextUrl)
-    );
-  }
-});
-
-// Optionally, don't invoke Middleware on some paths
+// Matcher
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

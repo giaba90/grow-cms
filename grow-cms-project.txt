@@ -14,20 +14,6 @@ CI/CD : GitHub
 Hosting : Vercel (maybe)
 
 -------------------------------
-
-To-do
-
-- articles section
-    - problema della visualizzazione dell'anteprima articolo
-    - creare pagina con form di creazione articolo nuovo
-    - creare pagina con form di modifica articolo
-   
-- page section
-- user section
-- media section
-- taxonomy section
-
-
 Note: stiamo usando la App Router , Route Handlers
 
 
@@ -41,23 +27,5 @@ POST /api/dashboard/articles → Crea un nuovo articolo
 PUT /api/dashboard/articles/{id} → Aggiorna un articolo specifico.
 DELETE /api/dashboard/articles/{id} → Elimina un articolo specifico.
 
-
-
-
 ------------------------------------------------------------------------------------------------------
 
-## URL
-
-/dashboard         
-    --- cartella: app/dashboard                 ---# pagine principale gestita da page.tsx
-/dashboard/articles  
-    --- cartella: app/dashboard/articles        ---# pagina che visualizza tutti gli articoli , lo gestiamo con page.tsx 
-/dashboard/articles/id 
-    -- cartella: app/dashboard/articles/[id]    ---# pagina singolo articolo , lo gestiamo con page.tsx 
-/dashboard/articles/create 
-    --cartella: app/dashboard/articles/create   ---# pagina per la creazione singolo articolo , lo gestiamo con page.tsx 
-/dashboard/articles/id/edit 
-    -- cartella: app/dashboard/articles/[id]    ---# pagina modifica singolo articolo , lo gestiamo con edit.tsx
-
-
---------------------------

@@ -1,5 +1,6 @@
 // dashboard page component
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth.config";
 import {
   Card,
   CardContent,
@@ -10,7 +11,7 @@ import { BarChart, Users, FileText, Activity } from "lucide-react";
 import Modal from "../components/ui/modal";
 
 export default async function Dashboard() {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
   if (!session)
     return (
       <Modal
