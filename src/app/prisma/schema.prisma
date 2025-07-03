@@ -7,21 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model post {
-  id          Int            @id @default(autoincrement())
-  title       String
-  content     String
-  url         String?        @db.VarChar(255) // per creare url custom
-  description String?        @db.VarChar(255) // descrizione seo
-  status      post_status?   @default(draft)
-  featured    Boolean?       @default(false)
-  created_at  DateTime?      @default(now()) @db.Timestamp(6)
-  author_id   Int?
-  users       users?         @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
-  taxonomies  postTaxonomy[]
-  media       media[]
-}
-
 model taxonomy {
   id          Int            @id @default(autoincrement())
   title       String         @db.VarChar(255)
@@ -40,21 +25,24 @@ model page {
   status      post_status? @default(draft)
 }
 
-model users {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(500)
-  surname   String    @db.VarChar(500)
-  email     String?   @unique @db.VarChar(500)
-  password  String?   @db.VarChar(500)
-  role      String
-  lastlogin DateTime? @default(now()) @db.Timestamptz(6)
-  post      post[]
-  media     media[]
+model post {
+  id          Int            @id @default(autoincrement())
+  title       String
+  content     String
+  url         String?        @db.VarChar(255)
+  description String?        @db.VarChar(255)
+  status      post_status?   @default(draft)
+  featured    Boolean?       @default(false)
+  created_at  DateTime?      @default(now()) @db.Timestamp(6)
+  author_id   String?
+  author      User?          @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  taxonomies  postTaxonomy[]
+  media       media[]
 }
 
 model media {
   id         Int       @id @default(autoincrement())
-  user_id    Int? // Cambiato da String? a Int? per corrispondere al tipo di `id` in `users`
+  user_id    String?
   file_name  String?   @db.VarChar(255)
   file_path  String?   @db.VarChar(255)
   file_type  String?   @db.VarChar(50)
@@ -62,7 +50,7 @@ model media {
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   content_id Int?
   post       post?     @relation(fields: [content_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_content_id_fk")
-  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk") // Relazione con `users`
+  user       User?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk")
 }
 
 model postTaxonomy {
@@ -84,4 +72,66 @@ enum post_status {
 enum taxonomy_type {
   category
   tag
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  post          post[]
+  media         media[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }

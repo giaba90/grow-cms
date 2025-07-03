@@ -37,10 +37,6 @@
         "./src/app/components/*"
       ]
     },
-    "typeRoots": [
-      "./src/app/types",
-      "./node_modules/@types"
-    ]
   },
   "include": [
     "next-env.d.ts",
