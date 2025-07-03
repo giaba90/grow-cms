@@ -23,7 +23,7 @@ export function SignIn() {
 
     try {
       const response = await authClient.signIn.email({ email, password });
-
+      console.log(response);
       if (response?.error) {
         setError(response.error.message || "Errore durante l'autenticazione");
         return;
