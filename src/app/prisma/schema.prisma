@@ -7,24 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model taxonomy {
-  id          Int            @id @default(autoincrement())
-  title       String         @db.VarChar(255)
-  description String? //descrizione opzionale
-  type        taxonomy_type
-  parent_id   Int? // utile per creare sotto categorie
-  posts       postTaxonomy[]
-}
-
-model page {
-  id          Int          @id @default(autoincrement())
-  title       String?
-  content     String?
-  url         String?      @db.VarChar(255)
-  description String       @db.VarChar(255)
-  status      post_status? @default(draft)
-}
-
 model post {
   id          Int            @id @default(autoincrement())
   title       String
@@ -38,6 +20,24 @@ model post {
   author      User?          @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   taxonomies  postTaxonomy[]
   media       media[]
+}
+
+model taxonomy {
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(255)
+  description String?
+  type        taxonomy_type
+  parent_id   Int?
+  posts       postTaxonomy[]
+}
+
+model page {
+  id          Int          @id @default(autoincrement())
+  title       String?
+  content     String?
+  url         String?      @db.VarChar(255)
+  description String       @db.VarChar(255)
+  status      post_status? @default(draft)
 }
 
 model media {
@@ -60,7 +60,7 @@ model postTaxonomy {
   post     post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
   taxonomy taxonomy @relation(fields: [taxonomy_id], references: [id], onDelete: Cascade)
 
-  @@id([post_id, taxonomy_id]) // chiave primaria composta
+  @@id([post_id, taxonomy_id])
 }
 
 enum post_status {
