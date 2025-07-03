@@ -1,30 +1,28 @@
-// dashboard page component
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth.config";
+import { auth } from "@/auth/auth";
+import prisma from "@/app/prisma/client";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "@/app/components/ui/card";
 import { BarChart, Users, FileText, Activity } from "lucide-react";
-import Modal from "../components/ui/modal";
-
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
-  if (!session)
-    return (
-      <Modal
-        title={"Acccess danied"}
-        children={
-          <span>
-            Sorry! You can view this content because you are not authenticated
-          </span>
-        }
-        ctaText={"Go to Login"}
-        redirectTo={"/login"}
-      />
-    );
+  const session = await auth.api.getSession({
+    headers: await headers() // you need to pass the headers object.
+  })
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const [totalUsers, totalArticles] = await Promise.all([
+    prisma.user.count(),
+    prisma.post.count(),
+  ]);
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -36,27 +34,23 @@ export default async function Dashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,234</div>
+            <div className="text-2xl font-bold">{totalUsers.toLocaleString()}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Articoli Pubblicati
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Articoli Pubblicati</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">573</div>
+            <div className="text-2xl font-bold">{totalArticles.toLocaleString()}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Visite Mensili
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Visite Mensili</CardTitle>
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -66,9 +60,7 @@ export default async function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Tasso di Attività
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Tasso di Attività</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

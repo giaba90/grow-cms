@@ -1,55 +1,41 @@
-// src/auth/auth.ts
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcrypt'
+import { betterAuth } from "better-auth";
+import prisma from "@/app/prisma/client";
+//import { prismaAdapter } from "./prismaAdapter";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient()
-
-export const authConfig = {
-    adapter: PrismaAdapter(prisma),
+export const auth = betterAuth({
+    database: prismaAdapter(prisma, {
+        provider: "postgresql", // or "mysql", "postgresql", ...etc
+    }),
+    emailAndPassword: {
+        enabled: true,
+        disableSignUp: false,
+        requireEmailVerification: false,
+        minPasswordLength: 8,
+        maxPasswordLength: 128,
+        autoSignIn: true,
+        password: {
+            hash: async (password: string) => {
+                const salt = await bcrypt.genSalt(10);
+                return await bcrypt.hash(password, salt);
+            },
+            verify: async ({ hash, password }) => {
+                return await bcrypt.compare(password, hash);
+            },
+        },
+    },
     session: {
-        modelName: 'session',
+        modelName: "session",
         fields: {
-            expiresAt: 'expiresAt',
-            token: 'token',
-            createdAt: 'createdAt',
-            updatedAt: 'updatedAt',
-            ipAddress: 'ipAddress',
-            userAgent: 'userAgent',
-            userId: 'userId',
+            expiresAt: "expiresAt",
+            token: "token",
+            createdAt: "createdAt",
+            updatedAt: "updatedAt",
+            ipAddress: "ipAddress",
+            userAgent: "userAgent",
+            userId: "userId",
         },
-        freshAge: 60 * 60, // esempio 1h
+        freshAge: 60 * 60,
     },
-    providers: [
-        CredentialsProvider({
-            name: 'credentials',
-            credentials: {
-                email: { label: 'Email', type: 'text' },
-                password: { label: 'Password', type: 'password' },
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null
-
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                })
-
-                if (!user || !user.password) return null
-
-                const valid = await bcrypt.compare(credentials.password, user.password)
-                if (!valid) return null
-
-                return user
-            },
-        }),
-    ],
-    callbacks: {
-        async session({ session, user }: { session: any; user: any }) {
-            if (session.user) {
-                session.user.id = user.id
-            }
-            return session
-        },
-    },
-}
+});
