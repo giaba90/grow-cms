@@ -2,11 +2,12 @@ import { betterAuth } from "better-auth";
 import prisma from "@/app/prisma/client";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import bcrypt from "bcryptjs";
-
+import { nextCookies } from "better-auth/next-js";
 export const auth = betterAuth({
+    secret: process.env.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
-        provider: "postgresql", // or "mysql", "postgresql", ...etc
-        debugLogs: true, // Set to true to enable debug logs
+        provider: "postgresql",
+        debugLogs: true,
     }),
     emailAndPassword: {
         enabled: true,
@@ -40,4 +41,22 @@ export const auth = betterAuth({
         },
         freshAge: 60 * 60,
     },
+    advanced: {
+        useSecureCookies: process.env.NODE_ENV === 'production',
+        cookies: {
+            session_token: {
+                attributes: {
+                    maxAge: 60 * 60 * 24 * 7,
+                }
+            },
+            dont_remember: {
+                attributes: {
+                    maxAge: 60 * 60 * 24 * 30,
+                }
+            }
+        }
+    },
+    plugins: [
+        nextCookies(),
+    ],
 });
