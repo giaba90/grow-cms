@@ -25,8 +25,17 @@ export default async function TaxonomyPage() {
     redirect('/login');
   }
   // Fetch Taxonomy data from the API
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`);
-  const data = await res.json();
+  let data = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomies`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch taxonomies");
+    }
+    data = await res.json();
+  } catch (error) {
+    console.error("Failed to fetch taxonomies:", error);
+  }
+  // Render the page with the fetched data
 
   return (
     <div className="container mx-auto py-6 space-y-6">

@@ -23,9 +23,18 @@ export default async function PageList() {
   if (!session) {
     redirect('/login');
   }
-  // Fetch pages data from the API
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages`);
-  const data = await res.json();
+  // Fetch Pages data from the API
+  let data = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch pages");
+    }
+    data = await res.json();
+  } catch (error) {
+    console.error("Failed to fetch pages:", error);
+  }
+
 
   return (
     <div className="container mx-auto py-6 space-y-6">
