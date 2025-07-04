@@ -7,8 +7,8 @@ import { Button } from "./button";
 import { Trash2 } from "lucide-react";
 
 interface MyTableRowProps {
-  data: Article | PageData | TaxonomyData | UserData;
-  onDelete: (id: number) => void;
+  data: ArticleData | PageData | TaxonomyData | UserData;
+  onDelete: (id: number | string | undefined) => void;
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
@@ -29,9 +29,9 @@ export default function MyTableRow({
         case "taxonomy":
           url = `/api/dashboard/taxonomy/${data.id}`;
           break;
-        case "users":
-          url = `/api/dashboard/users/${data.id}`;
-          break;
+        /*  case "users":
+           url = `/api/dashboard/users/${data.id}`;
+           break; */
         default:
           url = `/api/dashboard/articles/${data.id}`;
           break;
@@ -106,7 +106,7 @@ export default function MyTableRow({
   }
 
   // --- RENDER: Articles (default) ---
-  const article = data as Article;
+  const article = data as ArticleData;
   return (
     <TableRow>
       <TableCell className="font-medium">{article.id}</TableCell>
