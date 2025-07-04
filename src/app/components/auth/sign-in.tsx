@@ -22,38 +22,18 @@ export function SignIn() {
     const password = formData.get("password") as string;
 
     try {
-      const { data, error } = await authClient.signIn.email({
-        /**
-         * The user email
-         */
-        email,
-        /**
-         * The user password
-         */
-        password,
-        /**
-         * A URL to redirect to after the user verifies their email (optional)
-         */
-        callbackURL: "/dashboard",
-        /**
-         * remember the user session after the browser is closed. 
-         * @default true
-         */
-        rememberMe: false
-      }, {
-        //callbacks
-      })
+      const { data, error } = await authClient.signIn.email({ email, password, callbackURL: "/dashboard", rememberMe: false }, {})
       if (error) {
         setError(error.message || "Errore durante l'autenticazione");
         return;
       }
-
-      // Autenticazione riuscita, redirect
       window.location.href = "/dashboard";
-    } catch (err: any) {
+    }
+    catch (err: any) {
       console.error(err);
       setError("Errore imprevisto durante il login.");
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };

@@ -5,9 +5,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-lg bg-white p-6
         shadow-lg">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Sign In</h1>
+          <h1 className="text-2xl font-bold">Accedi</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your account to continue
+            Benvenuto! Inserisci le tue credenziali per accedere al tuo account.
+            Altrimenti <a href="/signup" className="text-blue-600 hover:underline">registrati</a> se non l'hai fatto.
           </p>
         </div>
         <SignIn />
