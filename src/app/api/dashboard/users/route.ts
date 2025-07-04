@@ -13,15 +13,6 @@ export async function GET(req: Request) {
   const requestHeaders = await headers();
   const compatibleHeaders = new Headers(requestHeaders); // Crea un oggetto Headers compatibile
 
-  // --- LOG DI DEBUG ---
-  console.log("--- API Route /dashboard/users GET ---");
-  console.log("Request Headers received:");
-  compatibleHeaders.forEach((value, name) => {
-    console.log(`  ${name}: ${value}`);
-  });
-  // --- FINE LOG DI DEBUG ---
-
-
   // Verifica la sessione dell'utente
   const session = await auth.api.getSession({
     headers: compatibleHeaders,
@@ -35,8 +26,6 @@ export async function GET(req: Request) {
       { status: 401 }
     );
   }
-
-
 
   try {
     const users = await prisma.user.findMany();
