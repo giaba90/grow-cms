@@ -1,12 +1,12 @@
 import { betterAuth } from "better-auth";
 import prisma from "@/app/prisma/client";
-//import { prismaAdapter } from "./prismaAdapter";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import bcrypt from "bcryptjs";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
+        debugLogs: true, // Set to true to enable debug logs
     }),
     emailAndPassword: {
         enabled: true,
@@ -14,15 +14,17 @@ export const auth = betterAuth({
         requireEmailVerification: false,
         minPasswordLength: 8,
         maxPasswordLength: 128,
-        autoSignIn: true,
+        autoSignIn: false,
         password: {
             hash: async (password: string) => {
                 const salt = await bcrypt.genSalt(10);
                 return await bcrypt.hash(password, salt);
             },
             verify: async ({ hash, password }) => {
+                console.log('password:', password);
+                console.log('hash:', hash);
                 return await bcrypt.compare(password, hash);
-            },
+            }
         },
     },
     session: {

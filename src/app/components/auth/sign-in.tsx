@@ -22,10 +22,30 @@ export function SignIn() {
     const password = formData.get("password") as string;
 
     try {
-      const response = await authClient.signIn.email({ email, password });
-      console.log(response);
-      if (response?.error) {
-        setError(response.error.message || "Errore durante l'autenticazione");
+      const { data, error } = await authClient.signIn.email({
+        /**
+         * The user email
+         */
+        email,
+        /**
+         * The user password
+         */
+        password,
+        /**
+         * A URL to redirect to after the user verifies their email (optional)
+         */
+        callbackURL: "/dashboard",
+        /**
+         * remember the user session after the browser is closed. 
+         * @default true
+         */
+        rememberMe: false
+      }, {
+        //callbacks
+      })
+      console.log(data);
+      if (error) {
+        setError(error.message || "Errore durante l'autenticazione");
         return;
       }
 
