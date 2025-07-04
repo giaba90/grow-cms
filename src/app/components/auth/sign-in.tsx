@@ -43,7 +43,6 @@ export function SignIn() {
       }, {
         //callbacks
       })
-      console.log(data);
       if (error) {
         setError(error.message || "Errore durante l'autenticazione");
         return;
