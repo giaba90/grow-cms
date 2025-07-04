@@ -1,4 +1,4 @@
-import { SignIn } from "@/app/components/auth/sign-in";
+import { SignIn } from "@/app/components/auth/signin";
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
