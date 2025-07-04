@@ -1,10 +1,26 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import MyTable from "@/app/components/ui/mytable";
 import { NewButton } from "@/app/components/ui/newbutton";
+import { auth } from "@/auth/auth";
+import { headers } from "next/headers";
 
-export default function UsersPage() {
+export default async function UsersPage() {
+  // Ottieni l'oggetto ReadonlyHeaders da next/headers
+  const requestHeaders = headers();
+
+  // Crea un nuovo oggetto Headers standard popolandolo direttamente con le intestazioni da requestHeaders.
+  // Questo è il modo più robusto e garantisce la compatibilità con il tipo Headers atteso da better-auth.
+  const compatibleHeaders = new Headers(requestHeaders as unknown as HeadersInit);
+
+  // Passa l'oggetto Headers compatibile a getSession
+  const session = await auth.api.getSession({
+    headers: compatibleHeaders,
+  });
+
+  if (!session) {
+    redirect('/login');
+  }
+
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,3 +85,7 @@ export default function UsersPage() {
     </div>
   );
 }
+function redirect(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+

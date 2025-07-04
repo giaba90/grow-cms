@@ -3,9 +3,27 @@ import { NewButton } from "@/app/components/ui/newbutton";
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
 import MyTable from "@/app/components/ui/mytable";
+import { headers } from "next/headers";
+import { auth } from "@/auth/auth";
+import { redirect } from "next/navigation";
 
 
 export default async function TaxonomyPage() {
+  // Ottieni l'oggetto ReadonlyHeaders da next/headers
+  const requestHeaders = headers();
+
+  // Crea un nuovo oggetto Headers standard popolandolo direttamente con le intestazioni da requestHeaders.
+  // Questo è il modo più robusto e garantisce la compatibilità con il tipo Headers atteso da better-auth.
+  const compatibleHeaders = new Headers(requestHeaders as unknown as HeadersInit);
+
+  // Passa l'oggetto Headers compatibile a getSession
+  const session = await auth.api.getSession({
+    headers: compatibleHeaders,
+  });
+
+  if (!session) {
+    redirect('/login');
+  }
   // Fetch Taxonomy data from the API
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`);
   const data = await res.json();
