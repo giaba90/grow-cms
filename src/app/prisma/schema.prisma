@@ -105,22 +105,12 @@ model Session {
   @@map("session")
 }
 
-// schema.prisma
-
-// ... other models
-
 model Account {
-  id     String @id @default(cuid())
-  userId String
-
-  // These fields are being sent by better-auth's adapter:
-  providerId String // This corresponds to what better-auth is sending as 'providerId'
-  accountId  String // This corresponds to what better-auth is sending as 'accountId'
-
-  // The 'type' field still needs to be handled.
-  // Since better-auth is not sending it, you must make it optional.
-  type String? // Make this optional if better-auth isn't sending it
-
+  id            String   @id @default(cuid())
+  userId        String
+  providerId    String // This corresponds to what better-auth is sending as 'providerId'
+  accountId     String // This corresponds to what better-auth is sending as 'accountId'
+  type          String? // Make this optional if better-auth isn't sending it
   refresh_token String?  @db.Text
   access_token  String?  @db.Text
   expires_at    Int?
@@ -131,15 +121,10 @@ model Account {
   password      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // IMPORTANT: The @@unique constraint needs to reference the actual fields in the model.
-  // If providerId and accountId are the fields, then use them here.
-  // If 'type' can be null, it might also affect unique constraints.
-  // Let's use the fields better-auth is sending.
-  @@unique([providerId, accountId]) // Use the names that better-auth is sending
-  @@map("account") // Ensure your table name is 'account' if it's not already
+  @@unique([providerId, accountId])
+  @@map("account")
 }
 
 model Verification {
