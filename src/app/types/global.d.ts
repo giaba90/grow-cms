@@ -41,16 +41,15 @@ declare global {
   }
 
   interface UserData {
-    id: number;
+    id?: string;
     name: string;
-    surname: string;
     email: string;
-    role: string;
   };
 
   interface User extends UserData {
-    password: string;
-    lastlogin?: Date;
+    password?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
   }
 
   type MediaData = {

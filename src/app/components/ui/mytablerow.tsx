@@ -96,9 +96,8 @@ export default function MyTableRow({
     return (
       <TableRow>
         <TableCell>{user.id}</TableCell>
-        <TableCell>{user.name} {user.surname}</TableCell>
+        <TableCell>{user.name}</TableCell>
         <TableCell>{user.email}</TableCell>
-        <TableCell>{user.role}</TableCell>
         <TableCell>
           <RowActions url={`users/${user.id}/edit`} onDelete={handleDelete} />
         </TableCell>
@@ -140,27 +139,39 @@ function StatusBadge({
   status,
   isTaxonomy = false,
 }: {
-  status: string;
+  status?: string | null; // Reso opzionale e nullable
   isTaxonomy?: boolean;
 }) {
+  // Se status è null o undefined, usiamo una stringa vuota per evitare errori
+  const safeStatus = status || "";
+
   let classes = "";
   if (isTaxonomy) {
     classes =
-      status === "category"
+      safeStatus === "category"
         ? "bg-green-100 text-green-800"
         : "bg-blue-300 text-blue-800";
   } else {
     classes =
-      status === "published"
+      safeStatus === "published"
         ? "bg-green-100 text-green-800"
-        : status === "draft"
+        : safeStatus === "draft"
           ? "bg-yellow-100 text-yellow-800"
-          : "bg-blue-300 text-blue-800";
+          : "bg-blue-300 text-blue-800"; // Stile predefinito se status non corrisponde
   }
 
+  // Aggiungi uno stile predefinito se safeStatus è vuoto o se non ci sono classi definite
+  const defaultClasses = "bg-gray-100 text-gray-800";
+  const finalClasses = classes || defaultClasses; // Usa classi definite o quelle di default
+
+  // Esegui i metodi stringa solo se safeStatus non è vuoto
+  const displayText = safeStatus
+    ? safeStatus.charAt(0).toUpperCase() + safeStatus.slice(1)
+    : "N/A"; // Testo predefinito se status è vuoto
+
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${classes}`}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${finalClasses}`}>
+      {displayText}
     </span>
   );
 }

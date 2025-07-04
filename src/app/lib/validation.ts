@@ -65,10 +65,8 @@ export const taxonomyDataSchema = z.object({
 // zod schema for user data
 export const userDataSchema = z.object({
   name: z.string().min(1).max(100),
-  surname: z.string().min(1).max(100),
   email: z.string().email(),
-  role: z.string().optional(),
-  lastlogin: z.date().optional(),
+  password: z.string().min(6).max(100).optional(),
 });
 
 // zod schema for media data

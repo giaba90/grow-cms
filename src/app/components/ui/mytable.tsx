@@ -10,16 +10,11 @@ import {
 import { useState } from "react";
 import MyTableRow from "./mytablerow";
 
-
-// Import or define the required types above
-// Example import (adjust the path as needed):
-// import { Article, PageData, TaxonomyData, UserData } from "../../types";
-
 // Temporary type definitions if you don't have them yet:
 type Article = { id: number; titolo: string; creatoIl: string; stato: string };
 type PageData = { id: number; titolo: string; url: string; stato: string };
 type TaxonomyData = { id: number; nome: string; slug: string; tipo: string };
-type UserData = { id: number; nome: string; email: string; ruolo: string };
+
 
 type TableData = Article | PageData | TaxonomyData | UserData;
 
@@ -64,9 +59,8 @@ export default function MyTable({ initialData, type }: MyTableProps) {
       return (
         <TableRow>
           <TableHead className="w-20 font-bold">ID</TableHead>
-          <TableHead className="font-bold">Nome e Cognome</TableHead>
+          <TableHead className="font-bold">Nome</TableHead>
           <TableHead className="font-bold">Email</TableHead>
-          <TableHead className="font-bold">Ruolo</TableHead>
           <TableHead className="w-32 font-bold">Operazioni</TableHead>
         </TableRow>
       );
