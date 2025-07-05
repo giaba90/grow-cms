@@ -27,7 +27,7 @@ export default async function TaxonomyPage() {
   // Fetch Taxonomy data from the API
   let data = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomies`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`);
     if (!res.ok) {
       throw new Error("Failed to fetch taxonomies");
     }
