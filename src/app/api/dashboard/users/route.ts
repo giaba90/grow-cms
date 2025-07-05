@@ -9,23 +9,23 @@ import { headers } from "next/headers"; // Per accedere alle intestazioni della 
 
 // GET api/dashboard/users
 export async function GET(req: Request) {
-  /*  // Ottieni le intestazioni della richiesta per la sessione
-   const requestHeaders = await headers();
-   const compatibleHeaders = new Headers(requestHeaders); // Crea un oggetto Headers compatibile
- 
-   // Verifica la sessione dell'utente
-   const session = await auth.api.getSession({
-     headers: compatibleHeaders,
-   });
- 
- 
-   // Se l'utente non è autenticato, restituisci un errore 401
-   if (!session) {
-     return NextResponse.json(
-       { error: "Unauthorized: Authentication required" },
-       { status: 401 }
-     );
-   } */
+  // Ottieni le intestazioni della richiesta per la sessione
+  const requestHeaders = await headers();
+  const compatibleHeaders = new Headers(requestHeaders); // Crea un oggetto Headers compatibile
+
+  // Verifica la sessione dell'utente
+  const session = await auth.api.getSession({
+    headers: compatibleHeaders,
+  });
+
+
+  // Se l'utente non è autenticato, restituisci un errore 401
+  if (!session) {
+    return NextResponse.json(
+      { error: "Unauthorized: Authentication required" },
+      { status: 401 }
+    );
+  }
 
   try {
     const users = await prisma.user.findMany();

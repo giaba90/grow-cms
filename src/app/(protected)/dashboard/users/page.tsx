@@ -2,17 +2,19 @@ import { Search } from "lucide-react";
 import { Input } from "@components/ui/input";
 import { NewButton } from "@/app/components/ui/newbutton";
 import MyTable from "@/app/components/ui/mytable";
+import { headers } from "next/headers";
 
 export default async function UsersPage() {
-
+  // Ottieni le intestazioni della richiesta corrente per inoltrare il cookie all'API
+  const requestHeaders = headers();
   let data = { users: [] };
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {
-      /*       headers: {
-              'Cookie': requestHeaders.get('cookie') || ''
-            },
-            // Cache settings if needed, e.g., no-store for dynamic data
-            cache: 'no-store' */
+      headers: {
+        'Cookie': (await requestHeaders).get('cookie') || ''
+      },
+      // Cache settings if needed, e.g., no-store for dynamic data
+      cache: 'no-store'
     });
 
 
