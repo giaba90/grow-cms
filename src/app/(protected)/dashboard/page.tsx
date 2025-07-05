@@ -1,4 +1,3 @@
-import { auth } from "@/auth/auth";
 import prisma from "@/app/prisma/client";
 import {
   Card,
@@ -7,16 +6,8 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { BarChart, Users, FileText, Activity } from "lucide-react";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 export default async function Dashboard() {
-  const session = await auth.api.getSession({
-    headers: await headers() // you need to pass the headers object.
-  })
 
-  if (!session) {
-    redirect("/login");
-  }
 
   const [totalUsers, totalArticles] = await Promise.all([
     prisma.user.count(),

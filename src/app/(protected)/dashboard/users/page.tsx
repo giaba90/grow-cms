@@ -2,37 +2,17 @@ import { Search } from "lucide-react";
 import { Input } from "@components/ui/input";
 import { NewButton } from "@/app/components/ui/newbutton";
 import MyTable from "@/app/components/ui/mytable";
-import { auth } from "@/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
-  // Ottieni l'oggetto ReadonlyHeaders da next/headers
-  const requestHeaders = await headers();
-
-  // Crea un nuovo oggetto Headers standard popolandolo con le intestazioni da requestHeaders.
-  const compatibleHeaders = new Headers(requestHeaders);
-
-  // Passa l'oggetto Headers compatibile a getSession per autenticare la pagina
-  const session = await auth.api.getSession({
-    headers: compatibleHeaders,
-  });
-
-  // Se l'utente non è autenticato, reindirizza alla pagina di login
-  if (!session) {
-    redirect('/login');
-  }
-
-  const user = session.user;
 
   let data = { users: [] };
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {
-      headers: {
-        'Cookie': requestHeaders.get('cookie') || ''
-      },
-      // Cache settings if needed, e.g., no-store for dynamic data
-      cache: 'no-store'
+      /*       headers: {
+              'Cookie': requestHeaders.get('cookie') || ''
+            },
+            // Cache settings if needed, e.g., no-store for dynamic data
+            cache: 'no-store' */
     });
 
 
