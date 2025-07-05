@@ -1,15 +1,26 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth.config"; // Assicurati che questo percorso sia corretto
-import { redirect } from "next/navigation";
+import { auth } from "@/auth/auth"; // Importa la tua istanza di better-auth
+import { headers } from "next/headers"; // Per accedere alle intestazioni della richiesta
+import { redirect } from "next/navigation"; // Per il reindirizzamento
 import ArticleForm from "./ArticleForm";
 
 export default async function CreateArticlePage() {
-  const session = await getServerSession(authOptions);
+  // Ottieni l'oggetto ReadonlyHeaders dalla richiesta corrente
+  const requestHeaders = headers();
 
-  if (!session?.user?.id) {
-    redirect("/login");
+  // Crea un nuovo oggetto Headers standard per la compatibilità con better-auth
+  const compatibleHeaders = new Headers(await requestHeaders);
+
+  // Verifica la sessione dell'utente. Se arriviamo qui, il layout l'ha già verificata,
+  // ma la ri-verifica qui per ottenere i dati della sessione per questa pagina.
+  const session = await auth.api.getSession({
+    headers: compatibleHeaders,
+  });
+
+  // Se, per qualche motivo, la sessione non è presente (dovrebbe essere gestito dal layout),
+  // reindirizza al login per maggiore robustezza.
+  if (!session || !session.user || !session.user.id) {
+    redirect('/login');
   }
-
   return (
     <ArticleForm
       userId={session.user.id}

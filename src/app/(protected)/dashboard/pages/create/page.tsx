@@ -7,8 +7,11 @@ import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
 import { toast } from "sonner";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
+import { headers } from "next/headers";
 
 export default function CreatePage() {
+    // Ottieni le intestazioni della richiesta corrente per inoltrare il cookie all'API
+    const requestHeaders = headers();
     const router = useRouter();
     const [formData, setFormData] = useState<PageData>({
         id: 0,
@@ -35,7 +38,12 @@ export default function CreatePage() {
         try {
             const response = await fetch("/api/dashboard/pages", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cookie': (await requestHeaders).get('cookie') || ''
+                },
+                // Cache settings if needed, e.g., no-store for dynamic data
+                cache: 'no-store',
                 body: JSON.stringify({ ...formData }),
             });
             const data = await response.json();

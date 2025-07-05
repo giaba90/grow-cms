@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
+import { headers } from "next/headers";
 
 const initialForm = {
     name: "",
@@ -17,6 +18,8 @@ const initialForm = {
 type UserForm = typeof initialForm;
 
 export default function UserCreatePage() {
+    // Ottieni le intestazioni della richiesta corrente per inoltrare il cookie all'API
+    const requestHeaders = headers();
     const [form, setForm] = useState<UserForm>(initialForm);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -39,7 +42,12 @@ export default function UserCreatePage() {
         try {
             const res = await fetch("/api/dashboard/users", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    'Cookie': (await requestHeaders).get('cookie') || ''
+                },
+                // Cache settings if needed, e.g., no-store for dynamic data
+                cache: 'no-store',
                 body: JSON.stringify(form)
             });
 
