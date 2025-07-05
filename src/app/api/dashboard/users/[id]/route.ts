@@ -6,12 +6,14 @@ function getId(url: string) {
   const regex = /users\/(\d+)/;
   const match = url.match(regex);
   if (match && match.length > 0) {
-    const id = parseInt(match[1], 10);
-    if (isNaN(id)) {
-      return null;
-    } else {
-      return id;
-    }
+    const id = match[1];
+    // Uncomment the following lines if you want to ensure the ID is a number
+    //   const id = parseInt(match[1], 10);
+    //   if (isNaN(id)) {
+    //     return null;
+    //  } else {
+    return id;
+    //  }
   } else {
     return null;
   }
@@ -27,7 +29,7 @@ export async function GET(req: NextRequest) {
     );
   }
   try {
-    const users = await prisma.users.findUnique({
+    const users = await prisma.user.findUnique({
       where: { id: id },
     });
 
@@ -61,18 +63,16 @@ export async function PUT(req: NextRequest) {
       { status: 400 }
     );
   }
-  const { name, surname, email, role } = data;
+  const { name, email } = data;
   const lastlogin = new Date();
 
   try {
-    const users = await prisma.users.update({
+    const users = await prisma.user.update({
       where: { id: id },
       data: {
         name: name,
-        surname: surname,
         email: email,
-        role: role as string,
-        lastlogin: lastlogin,
+        updatedAt: lastlogin,
       },
     });
 
@@ -98,7 +98,7 @@ export async function DELETE(req: NextRequest) {
     );
   }
   // Check if the user exists
-  const existingUser = await prisma.users.findUnique({
+  const existingUser = await prisma.user.findUnique({
     where: { id: id },
   });
   if (!existingUser) {
@@ -106,7 +106,7 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    await prisma.users.delete({ where: { id: id } });
+    await prisma.user.delete({ where: { id: id } });
     return NextResponse.json({ message: "users deleted" }, { status: 200 });
   } catch {
     return NextResponse.json(

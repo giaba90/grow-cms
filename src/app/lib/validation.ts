@@ -33,7 +33,7 @@ export const postSchema = z.object({
   content: z.string().min(1, "Content is required"),
   status: z.enum(["draft", "published", "archived"]),
   featured: z.boolean().optional(),
-  author_id: z.number().int(),
+  author_id: z.string(),
 
   category: z.number().int().optional(),      // una singola categoria
   tags: z.array(z.number().int()).optional(), // array di tag
