@@ -5,21 +5,17 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
-import { headers } from "next/headers";
+import { signUp } from "@/auth/auth.client";
 
 const initialForm = {
     name: "",
-    surname: "",
     email: "",
-    role: "user", // valore predefinito
-    password: ""
+    password: "",
 };
 
 type UserForm = typeof initialForm;
 
 export default function UserCreatePage() {
-    // Ottieni le intestazioni della richiesta corrente per inoltrare il cookie all'API
-    const requestHeaders = headers();
     const [form, setForm] = useState<UserForm>(initialForm);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -27,7 +23,7 @@ export default function UserCreatePage() {
     const router = useRouter();
 
     const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+        e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -40,32 +36,19 @@ export default function UserCreatePage() {
         setSuccess(false);
 
         try {
-            const res = await fetch("/api/dashboard/users", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Cookie': (await requestHeaders).get('cookie') || ''
-                },
-                // Cache settings if needed, e.g., no-store for dynamic data
-                cache: 'no-store',
-                body: JSON.stringify(form)
+            const res = await signUp.email({
+                name: form.name,
+                email: form.email,
+                password: form.password,
             });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                const msg = data?.errors ? JSON.stringify(data.errors) : "Errore nella creazione dell'utente";
-                setError(msg);
-                toast.error(msg);
-                return;
-            }
 
             setSuccess(true);
             toast.success("Utente creato con successo!");
             setTimeout(() => router.push("/dashboard/users"), 1000);
         } catch {
-            setError("Errore nella creazione dell'utente");
-            toast.error("Errore nella creazione dell'utente");
+            const msg = "Errore imprevisto durante la registrazione";
+            setError(msg);
+            toast.error(msg);
         } finally {
             setIsLoading(false);
         }
@@ -90,18 +73,6 @@ export default function UserCreatePage() {
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Cognome</label>
-                        <Input
-                            name="surname"
-                            value={form.surname}
-                            onChange={handleInputChange}
-                            required
-                            disabled={isLoading}
-                            className="bg-white"
-                        />
-                    </div>
-
-                    <div>
                         <label className="text-sm font-medium">Email</label>
                         <Input
                             name="email"
@@ -113,6 +84,7 @@ export default function UserCreatePage() {
                             className="bg-white"
                         />
                     </div>
+
                     <div>
                         <label className="text-sm font-medium">Password</label>
                         <Input
@@ -121,31 +93,17 @@ export default function UserCreatePage() {
                             value={form.password}
                             onChange={handleInputChange}
                             required
-                            minLength={6}
                             disabled={isLoading}
                             className="bg-white"
                         />
                     </div>
-                    <div>
-                        <label className="text-sm font-medium">Ruolo</label>
-                        <select
-                            name="role"
-                            value={form.role}
-                            onChange={handleInputChange}
-                            disabled={isLoading}
-                            className="w-full border px-2 py-2 bg-white"
-                            required
-                        >
-                            <option value="admin">Admin</option>
-                            <option value="editor">Editor</option>
-                            <option value="user">User</option>
-                        </select>
-                    </div>
 
-
-
-                    {error && <p className="text-sm text-red-500" style={{ display: 'none' }}>{error}</p>}
-                    {success && <p className="text-sm text-green-600" style={{ display: 'none' }}>Utente creato con successo!</p>}
+                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    {success && (
+                        <p className="text-sm text-green-600">
+                            Utente creato con successo!
+                        </p>
+                    )}
 
                     <div className="flex justify-between pt-6">
                         <Button
