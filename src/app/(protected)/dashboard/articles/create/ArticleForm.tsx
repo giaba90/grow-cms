@@ -11,16 +11,8 @@ import CategoryMultiSelect from "@/app/components/ui/CategoryMultiSelect";
 
 
 
-export default function ArticleForm({
-    userId,
-    initialValues,
-    onSubmit,
-    defaultSelectedCategories = [],
-    defaultSelectedTags = [],
-}: ArticleFormProps) {
+export default function ArticleForm({ userId, initialValues, onSubmit, defaultSelectedCategories = [], defaultSelectedTags = [] }: ArticleFormProps) {
     const router = useRouter();
-
-
     // Usa i valori di default passati come props
     const [selectedCategories, setSelectedCategories] = useState<number[]>(defaultSelectedCategories);
     const [selectedTags, setSelectedTags] = useState<number[]>(defaultSelectedTags);

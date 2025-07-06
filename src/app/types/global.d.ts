@@ -82,16 +82,6 @@ declare global {
     created_at: Date;
   };
 
-  interface SignupState {
-    errors?: {
-      name?: string;
-      email?: string;
-      password?: string[];
-    };
-    message?: string;
-  }
-
-
 }
 
 export { }
