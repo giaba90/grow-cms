@@ -6,11 +6,6 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
 
-<<<<<<< HEAD:src/app/dashboard/users/[id]/edit/page.tsx
-// Initial form state
-=======
-
->>>>>>> cr/better-auth:src/app/(protected)/dashboard/users/[id]/edit/page.tsx
 const initialForm: UserData = {
     id: "",
     name: "",

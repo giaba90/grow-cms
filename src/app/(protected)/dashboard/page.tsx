@@ -1,10 +1,4 @@
-<<<<<<< HEAD:src/app/dashboard/page.tsx
-// src/app/dashboard/page.tsx 
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-=======
 import prisma from "@/app/prisma/client";
->>>>>>> cr/better-auth:src/app/(protected)/dashboard/page.tsx
 import {
   Card,
   CardContent,
@@ -12,17 +6,6 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { BarChart, Users, FileText, Activity } from "lucide-react";
-<<<<<<< HEAD:src/app/dashboard/page.tsx
-
-export default async function Dashboard() {
-  const session = await auth();
-
-  if (!session) {
-    redirect("/login");
-  }
-
-  // Nessun redirect qui! L'utente è autenticato e può vedere la dashboard
-=======
 export default async function Dashboard() {
 
 
@@ -30,7 +13,6 @@ export default async function Dashboard() {
     prisma.user.count(),
     prisma.post.count(),
   ]);
->>>>>>> cr/better-auth:src/app/(protected)/dashboard/page.tsx
 
   return (
     <div className="space-y-6">
