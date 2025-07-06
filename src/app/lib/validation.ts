@@ -33,7 +33,7 @@ export const postSchema = z.object({
   content: z.string().min(1, "Content is required"),
   status: z.enum(["draft", "published", "archived"]),
   featured: z.boolean().optional(),
-  author_id: z.number().int(),
+  author_id: z.string(),
 
   category: z.number().int().optional(),      // una singola categoria
   tags: z.array(z.number().int()).optional(), // array di tag
@@ -65,10 +65,8 @@ export const taxonomyDataSchema = z.object({
 // zod schema for user data
 export const userDataSchema = z.object({
   name: z.string().min(1).max(100),
-  surname: z.string().min(1).max(100),
   email: z.string().email(),
-  role: z.string().optional(),
-  lastlogin: z.date().optional(),
+  password: z.string().min(6).max(100).optional(),
 });
 
 // zod schema for media data

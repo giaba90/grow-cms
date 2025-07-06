@@ -11,13 +11,13 @@ model post {
   id          Int            @id @default(autoincrement())
   title       String
   content     String
-  url         String?        @db.VarChar(255) // per creare url custom
-  description String?        @db.VarChar(255) // descrizione seo
+  url         String?        @db.VarChar(255)
+  description String?        @db.VarChar(255)
   status      post_status?   @default(draft)
   featured    Boolean?       @default(false)
   created_at  DateTime?      @default(now()) @db.Timestamp(6)
-  author_id   Int?
-  users       users?         @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction) // Relazione con `users`
+  author_id   String?
+  author      User?          @relation("UserPosts", fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   taxonomies  postTaxonomy[]
   media       media[]
 }
@@ -25,9 +25,9 @@ model post {
 model taxonomy {
   id          Int            @id @default(autoincrement())
   title       String         @db.VarChar(255)
-  description String? //descrizione opzionale
+  description String?
   type        taxonomy_type
-  parent_id   Int? // utile per creare sotto categorie
+  parent_id   Int?
   posts       postTaxonomy[]
 }
 
@@ -40,21 +40,9 @@ model page {
   status      post_status? @default(draft)
 }
 
-model users {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(500)
-  surname   String    @db.VarChar(500)
-  email     String?   @unique @db.VarChar(500)
-  password  String?   @db.VarChar(500)
-  role      String
-  lastlogin DateTime? @default(now()) @db.Timestamptz(6)
-  post      post[]
-  media     media[]
-}
-
 model media {
   id         Int       @id @default(autoincrement())
-  user_id    Int? // Cambiato da String? a Int? per corrispondere al tipo di `id` in `users`
+  user_id    String?
   file_name  String?   @db.VarChar(255)
   file_path  String?   @db.VarChar(255)
   file_type  String?   @db.VarChar(50)
@@ -62,7 +50,7 @@ model media {
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   content_id Int?
   post       post?     @relation(fields: [content_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_content_id_fk")
-  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk") // Relazione con `users`
+  user       User?     @relation("UserMedia", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_user_id_fk")
 }
 
 model postTaxonomy {
@@ -72,7 +60,7 @@ model postTaxonomy {
   post     post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
   taxonomy taxonomy @relation(fields: [taxonomy_id], references: [id], onDelete: Cascade)
 
-  @@id([post_id, taxonomy_id]) // chiave primaria composta
+  @@id([post_id, taxonomy_id])
 }
 
 enum post_status {
@@ -84,4 +72,68 @@ enum post_status {
 enum taxonomy_type {
   category
   tag
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean
+  image         String?
+  password      String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  accounts      Account[]
+  sessions      Session[]
+  posts         post[]    @relation("UserPosts")
+  media         media[]   @relation("UserMedia")
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id            String   @id @default(cuid())
+  userId        String
+  providerId    String // This corresponds to what better-auth is sending as 'providerId'
+  accountId     String // This corresponds to what better-auth is sending as 'accountId'
+  type          String? // Make this optional if better-auth isn't sending it
+  refresh_token String?  @db.Text
+  access_token  String?  @db.Text
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  id_token      String?  @db.Text
+  session_state String?
+  password      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }

@@ -1,10 +1,8 @@
-"use client";
+"use client"; // MyTable rimane un Client Component se gestisce lo stato di visualizzazione o interazioni complesse.
+// Se MyTable fosse solo un wrapper per MyTableRow e non avesse useState o useEffect, potrebbe essere un Server Component.
 
-import { Table, TableBody, TableHeader, TableRow, TableHead, } from "./table";
-import { useState } from "react";
-import MyTableRow from "./mytablerow";
-
-type TableData = PostData | PageData | TaxonomyData | UserData;
+import { Table, TableBody, TableHeader, TableRow, TableHead } from "./table";
+import MyTableRow, { TableData } from "./mytablerow"; // Importa i tipi e MyTableRow
 
 interface MyTableProps {
   initialData: TableData[];
@@ -12,11 +10,7 @@ interface MyTableProps {
 }
 
 export default function MyTable({ initialData, type }: MyTableProps) {
-  const [rows, setRows] = useState<TableData[]>(initialData);
 
-  const handleDelete = (id: number) => {
-    setRows((prev) => prev.filter((row) => row.id !== id));
-  };
 
   const renderTableHeader = () => {
     if (type === "pages") {
@@ -35,8 +29,7 @@ export default function MyTable({ initialData, type }: MyTableProps) {
       return (
         <TableRow>
           <TableHead className="w-20 font-bold">ID</TableHead>
-          <TableHead className="font-bold">Nome</TableHead>
-          <TableHead className="font-bold">Slug</TableHead>
+          <TableHead className="font-bold">Titolo</TableHead>
           <TableHead className="w-32 font-bold">Tipo</TableHead>
           <TableHead className="w-32 font-bold">Operazioni</TableHead>
         </TableRow>
@@ -47,9 +40,8 @@ export default function MyTable({ initialData, type }: MyTableProps) {
       return (
         <TableRow>
           <TableHead className="w-20 font-bold">ID</TableHead>
-          <TableHead className="font-bold">Nome e Cognome</TableHead>
+          <TableHead className="font-bold">Nome</TableHead>
           <TableHead className="font-bold">Email</TableHead>
-          <TableHead className="font-bold">Ruolo</TableHead>
           <TableHead className="w-32 font-bold">Operazioni</TableHead>
         </TableRow>
       );
@@ -68,16 +60,15 @@ export default function MyTable({ initialData, type }: MyTableProps) {
   };
 
   return (
-    <Table>
-      <TableHeader className="bg-gray-50">
+    <Table className="min-w-full divide-y divide-gray-200 shadow-sm rounded-lg overflow-hidden">
+      <TableHeader className="bg-gray-100">
         {renderTableHeader()}
       </TableHeader>
-      <TableBody>
-        {rows.map((row) => (
+      <TableBody className="bg-white divide-y divide-gray-200">
+        {initialData.map((row) => (
           <MyTableRow
             key={row.id}
             data={row}
-            onDelete={handleDelete}
             type={type}
           />
         ))}

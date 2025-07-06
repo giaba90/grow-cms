@@ -1,22 +1,14 @@
-import { Rocket } from "lucide-react";
-import { SignIn } from "../components/auth/sign-in";
-import { cn } from "../utils/utils";
-
+import { SignIn } from "@/app/components/auth/signin";
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+      <div className="w-full max-w-md rounded-lg bg-white p-6
+        shadow-lg">
         <div className="text-center">
-          <div className="flex h-16 items-center justify-center px-4">
-            <Rocket className="h-6 w-6 text-primary" />
-            <span
-              className={cn("ml-2 font-bold transition-opacity duration-300")}
-            >
-              GROW CMS
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold">Accedi</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your account to continue
+            Benvenuto! Inserisci le tue credenziali per accedere al tuo account.
+            Altrimenti <a href="/signup" className="text-blue-600 hover:underline">registrati</a> se non l'hai fatto.
           </p>
         </div>
         <SignIn />
