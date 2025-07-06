@@ -1,8 +1,9 @@
 import { betterAuth } from "better-auth";
-import prisma from "@/app/prisma/client";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import bcrypt from "bcryptjs";
 import { nextCookies } from "better-auth/next-js";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import prisma from "@/app/prisma/client";
+import bcrypt from "bcryptjs";
+
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
