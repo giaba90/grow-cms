@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link"; // Import Link for navigation
-// Rimossi gli import di shadcn/ui per Input, Button, Label per risolvere gli errori di risoluzione
+import Link from "next/link";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { Label } from "@/app/components/ui/label";
-import { authClient } from "@/app/lib/auth-client"; // Importa il tuo client better-auth (assicurati che questo percorso sia risolvibile nel tuo progetto)
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { authClient } from "@/app/lib/auth-client";
 
 interface SignUpFormProps {
     // Puoi aggiungere props qui se necessario, ad esempio per i valori iniziali del form
@@ -41,8 +40,6 @@ export function SignUpForm({ }: SignUpFormProps) {
                     email: form.email,
                     password: form.password,
                     name: form.name,
-                    // Puoi aggiungere callbackURL qui se vuoi che better-auth gestisca il reindirizzamento
-                    // callbackURL: "/dashboard",
                 },
                 {
                     // onSuccess e onError sono passati direttamente come opzioni al metodo signUp.email
@@ -93,7 +90,7 @@ export function SignUpForm({ }: SignUpFormProps) {
                 </div>
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6">
                     <div>
-                        <Label htmlFor="name" className="sr-only">Nome</Label> {/* Sostituito Label con label */}
+                        <Label htmlFor="name" className="sr-only">Nome</Label>
                         <Input
                             id="name"
                             name="name"
@@ -104,11 +101,11 @@ export function SignUpForm({ }: SignUpFormProps) {
                             placeholder="Nome"
                             value={form.name}
                             onChange={handleChange}
-                        /> {/* Sostituito Input con input */}
+                        />
                     </div>
 
                     <div>
-                        <Label htmlFor="email" className="sr-only">Email</Label> {/* Sostituito Label con label */}
+                        <Label htmlFor="email" className="sr-only">Email</Label>
                         <Input
                             id="email"
                             name="email"
@@ -119,11 +116,11 @@ export function SignUpForm({ }: SignUpFormProps) {
                             placeholder="Indirizzo Email"
                             value={form.email}
                             onChange={handleChange}
-                        /> {/* Sostituito Input con input */}
+                        />
                     </div>
 
                     <div>
-                        <Label htmlFor="password" className="sr-only">Password</Label> {/* Sostituito Label con label */}
+                        <Label htmlFor="password" className="sr-only">Password</Label>
                         <Input
                             id="password"
                             name="password"
@@ -135,7 +132,7 @@ export function SignUpForm({ }: SignUpFormProps) {
                             value={form.password}
                             onChange={handleChange}
                             minLength={8}
-                        /> {/* Sostituito Input con input */}
+                        />
                     </div>
 
                     {error && (
@@ -158,7 +155,7 @@ export function SignUpForm({ }: SignUpFormProps) {
 
                     <div>
                         <Button disabled={loading} className="mt-4 w-full text-white bg-black"
-                            type="submit"> {/* Sostituito Button con button */}
+                            type="submit">
                             {loading ? "Loading..." : (
                                 <>
                                     Registrati <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
