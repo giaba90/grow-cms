@@ -1,22 +1,9 @@
 "use client";
-
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableRow,
-  TableHead,
-} from "./table";
 import { useState } from "react";
+import { Table, TableBody, TableHeader, TableRow, TableHead } from "./table";
 import MyTableRow from "./mytablerow";
 
-// Temporary type definitions if you don't have them yet:
-type Article = { id: number; titolo: string; creatoIl: string; stato: string };
-type PageData = { id: number; titolo: string; url: string; stato: string };
-type TaxonomyData = { id: number; nome: string; slug: string; tipo: string };
-
-
-type TableData = Article | PageData | TaxonomyData | UserData;
+type TableData = ArticleData | PageData | TaxonomyData | UserData;
 
 interface MyTableProps {
   initialData: TableData[];
@@ -26,7 +13,7 @@ interface MyTableProps {
 export default function MyTable({ initialData, type }: MyTableProps) {
   const [rows, setRows] = useState<TableData[]>(initialData);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: number | string) => {
     setRows((prev) => prev.filter((row) => row.id !== id));
   };
 

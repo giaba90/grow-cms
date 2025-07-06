@@ -8,15 +8,11 @@ import { Trash2 } from "lucide-react";
 
 interface MyTableRowProps {
   data: ArticleData | PageData | TaxonomyData | UserData;
-  onDelete: (id: number | string | undefined) => void;
+  onDelete: (id: number | string | any) => void;
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
-export default function MyTableRow({
-  data,
-  onDelete,
-  type,
-}: MyTableRowProps) {
+export default function MyTableRow({ data, onDelete, type }: MyTableRowProps) {
   const handleDelete = async () => {
     if (!window.confirm("Sei sicuro di voler eliminare questa voce?")) return;
 
@@ -29,9 +25,9 @@ export default function MyTableRow({
         case "taxonomy":
           url = `/api/dashboard/taxonomy/${data.id}`;
           break;
-        /*  case "users":
-           url = `/api/dashboard/users/${data.id}`;
-           break; */
+        case "users":
+          url = `/api/dashboard/users/${data.id}`;
+          break;
         default:
           url = `/api/dashboard/articles/${data.id}`;
           break;

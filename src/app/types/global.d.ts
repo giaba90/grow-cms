@@ -3,17 +3,6 @@ declare global {
 
   type taxonomy_type = "category" | "tag";
 
-  type PostData = {
-    title: string;
-    content: string;
-    status?: post_status; // default: "draft"
-    url?: string;              // URL personalizzato, se non fornito viene generato da slugify
-    description?: string;      // Descrizione del post, se non fornita viene gener
-    featured?: boolean;
-    author_id: string;
-    category?: number[];         // ID categoria (taxonomy_type = category)
-    tag?: number[];            // array di ID tag (taxonomy_type = tag)
-  };
 
   interface ArticleFormData {
     title: string;
@@ -46,6 +35,7 @@ declare global {
     email: string;
   };
 
+
   interface ArticleData {
     id: number;
     title: string;
@@ -54,7 +44,7 @@ declare global {
     url?: string;
     description?: string;
     featured: boolean;
-    author_id: number;
+    author_id: string;
     category?: number[]; // ID categoria (taxonomy_type = category)
     tag?: number[]; // array di ID tag (taxonomy_type = tag)
     created_at: string;
