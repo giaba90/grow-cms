@@ -6,12 +6,6 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
 
-// Tipi
-type UserData = {
-    id: string;
-    name: string;
-    email: string;
-};
 
 const initialForm: UserData = {
     id: "",
@@ -41,9 +35,9 @@ export default function UserEditPage() {
 
                 const data = await res.json();
                 setForm({
-                    id: data.users.id ?? "",
-                    name: data.users.name || "",
-                    email: data.users.email || "",
+                    id: data.user.id ?? "",
+                    name: data.user.name || "",
+                    email: data.user.email || "",
                 });
             } catch {
                 setError("Errore nel caricamento dell'utente");
