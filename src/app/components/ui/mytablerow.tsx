@@ -1,172 +1,116 @@
 "use client";
 
+import { useState } from "react";
 import { TableCell, TableRow } from "./table";
-import { formatDate } from "@/app/utils/utils";
-import { EditButton } from "./editbutton";
 import { Button } from "./button";
-import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { deleteTaxonomy } from "@/app/lib/actions"; // Importa la Server Action
+
+export type TableData = ArticleData | PageData | TaxonomyData | UserData;
 
 interface MyTableRowProps {
-  data: ArticleData | PageData | TaxonomyData | UserData;
-  onDelete: (id: number | string | any) => void;
+  data: TableData;
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
-export default function MyTableRow({ data, onDelete, type }: MyTableRowProps) {
-  const handleDelete = async () => {
-    if (!window.confirm("Sei sicuro di voler eliminare questa voce?")) return;
+export default function MyTableRow({ data, type }: MyTableRowProps) {
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
 
+  const handleDelete = async () => {
+    if (!confirm("Sei sicuro di voler eliminare questo elemento?")) {
+      return;
+    }
+
+    setIsDeleting(true);
     try {
-      let url = "";
-      switch (type) {
-        case "pages":
-          url = `/api/dashboard/pages/${data.id}`;
-          break;
-        case "taxonomy":
-          url = `/api/dashboard/taxonomy/${data.id}`;
-          break;
-        case "users":
-          url = `/api/dashboard/users/${data.id}`;
-          break;
-        default:
-          url = `/api/dashboard/articles/${data.id}`;
-          break;
+      let result;
+      if (type === "taxonomy") {
+        result = await deleteTaxonomy(data.id as any);
+      } else {
+        // Gestisci altri tipi o mostra un errore se la cancellazione non è implementata
+        toast.error("Operazione di eliminazione non supportata per questo tipo.");
+        setIsDeleting(false);
+        return;
       }
 
-      const response = await fetch(url, { method: "DELETE" });
-      if (!response.ok) throw new Error("Errore durante l'eliminazione");
-      onDelete(data.id);
-    } catch (error) {
-      console.error("Errore di rete:", error);
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      toast.success("Elemento eliminato con successo!");
+      // Non è più necessario aggiornare lo stato locale di `rows` in MyTable.
+      // router.refresh() farà sì che MyTable (se è un Server Component) rifetchi i dati.
+      router.refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Errore durante l'eliminazione.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  // --- RENDER: Pages ---
-  if (type === "pages") {
-    const page = data as PageData;
-    return (
-      <TableRow>
-        <TableCell className="font-medium">{page.id}</TableCell>
-        <TableCell>{page.title}</TableCell>
-        <TableCell>
-          <a
-            href={`/pages/${page.url}`}
-            className="text-blue-600 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            /pages/{page.url}
-          </a>
-        </TableCell>
-        <TableCell>
-          <StatusBadge status={page.status} />
-        </TableCell>
-        <TableCell>
-          <RowActions url={`pages/${page.id}/edit`} onDelete={handleDelete} />
-        </TableCell>
-      </TableRow>
-    );
-  }
+  const renderRowContent = () => {
+    if (type === "pages") {
+      const page = data as PageData;
+      return (
+        <>
+          <TableCell className="font-medium">{page.id}</TableCell>
+          <TableCell>{page.title}</TableCell>
+          <TableCell>{page.url}</TableCell>
+          <TableCell>{page.status}</TableCell>
+        </>
+      );
+    }
 
-  // --- RENDER: Taxonomy ---
-  if (type === "taxonomy") {
-    const taxonomy = data as TaxonomyData;
-    return (
-      <TableRow>
-        <TableCell className="font-medium">{taxonomy.id}</TableCell>
-        <TableCell>{taxonomy.title}</TableCell>
-        <TableCell>
-          <StatusBadge status={taxonomy.type} isTaxonomy />
-        </TableCell>
-        <TableCell>
-          <RowActions url={`taxonomy/${taxonomy.id}/edit`} onDelete={handleDelete} />
-        </TableCell>
-      </TableRow>
-    );
-  }
+    if (type === "taxonomy") {
+      const taxonomy = data as TaxonomyData;
+      return (
+        <>
+          <TableCell className="font-medium">{taxonomy.id}</TableCell>
+          <TableCell>{taxonomy.title}</TableCell>
+          <TableCell>{taxonomy.type === "category" ? "Categoria" : "Tag"}</TableCell>
+        </>
+      );
+    }
 
-  // --- RENDER: Users ---
-  if (type === "users") {
-    const user = data as unknown as UserData;
-    return (
-      <TableRow>
-        <TableCell>{user.id}</TableCell>
-        <TableCell>{user.name}</TableCell>
-        <TableCell>{user.email}</TableCell>
-        <TableCell>
-          <RowActions url={`users/${user.id}/edit`} onDelete={handleDelete} />
-        </TableCell>
-      </TableRow>
-    );
-  }
+    if (type === "users") {
+      const user = data as UserData;
+      return (
+        <>
+          <TableCell className="font-medium">{user.id}</TableCell>
+          <TableCell>{user.name}</TableCell>
+          <TableCell>{user.email}</TableCell>
+        </>
+      );
+    }
 
-  // --- RENDER: Articles (default) ---
-  const article = data as ArticleData;
+    // Default: articles
+    const article = data as ArticleData;
+    return (
+      <>
+        <TableCell className="font-medium">{article.id}</TableCell>
+        <TableCell>{article.title}</TableCell>
+        <TableCell>{new Date(article.created_at).toLocaleDateString()}</TableCell>
+        <TableCell>{article.status}</TableCell>
+      </>
+    );
+  };
+
   return (
     <TableRow>
-      <TableCell className="font-medium">{article.id}</TableCell>
-      <TableCell>{article.title}</TableCell>
-      <TableCell>{formatDate(article.created_at)}</TableCell>
-      <TableCell>
-        <StatusBadge status={article.status} />
-      </TableCell>
-      <TableCell>
-        <RowActions url={`articles/${article.id}/edit`} onDelete={handleDelete} />
+      {renderRowContent()}
+      <TableCell className="text-right">
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
+        >
+          {isDeleting ? "Eliminazione..." : "Elimina"}
+        </Button>
       </TableCell>
     </TableRow>
-  );
-}
-
-
-function RowActions({ url, onDelete }: { url: string; onDelete: () => void }) {
-  return (
-    <div className="flex space-x-2">
-      <EditButton url={url} />
-      <Button onClick={onDelete} variant="ghost" size="icon">
-        <Trash2 className="h-4 w-4" />
-        <span className="sr-only">Elimina</span>
-      </Button>
-    </div>
-  );
-}
-
-function StatusBadge({
-  status,
-  isTaxonomy = false,
-}: {
-  status?: string | null; // Reso opzionale e nullable
-  isTaxonomy?: boolean;
-}) {
-  // Se status è null o undefined, usiamo una stringa vuota per evitare errori
-  const safeStatus = status || "";
-
-  let classes = "";
-  if (isTaxonomy) {
-    classes =
-      safeStatus === "category"
-        ? "bg-green-100 text-green-800"
-        : "bg-blue-300 text-blue-800";
-  } else {
-    classes =
-      safeStatus === "published"
-        ? "bg-green-100 text-green-800"
-        : safeStatus === "draft"
-          ? "bg-yellow-100 text-yellow-800"
-          : "bg-blue-300 text-blue-800"; // Stile predefinito se status non corrisponde
-  }
-
-  // Aggiungi uno stile predefinito se safeStatus è vuoto o se non ci sono classi definite
-  const defaultClasses = "bg-gray-100 text-gray-800";
-  const finalClasses = classes || defaultClasses; // Usa classi definite o quelle di default
-
-  // Esegui i metodi stringa solo se safeStatus non è vuoto
-  const displayText = safeStatus
-    ? safeStatus.charAt(0).toUpperCase() + safeStatus.slice(1)
-    : "N/A"; // Testo predefinito se status è vuoto
-
-  return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${finalClasses}`}>
-      {displayText}
-    </span>
   );
 }

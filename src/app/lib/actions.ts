@@ -2,7 +2,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers"; // Per accedere alle intestazioni lato server
 
 export async function createTaxonomy(data: TaxonomyData) {
     try {
@@ -29,5 +28,27 @@ export async function createTaxonomy(data: TaxonomyData) {
     } catch (err) {
         console.error("Errore nella Server Action createTaxonomy:", err);
         return { error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato." };
+    }
+}
+
+
+export async function deleteTaxonomy(id: string | number) {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy/${id}`, {
+            method: "DELETE",
+            cache: 'no-store', // Disable cache for delete operations
+        });
+
+        if (!res.ok) {
+            const json = await res.json();
+            return { error: json.error || "Unknown error during taxonomy deletion." };
+        }
+
+        // Revalidate the taxonomy list path to reflect the deletion
+        revalidatePath("/dashboard/taxonomy");
+        return { success: true };
+    } catch (err) {
+        console.error("Error in deleteTaxonomy Server Action:", err);
+        return { error: err instanceof Error ? err.message : "An unexpected error occurred during deletion." };
     }
 }
