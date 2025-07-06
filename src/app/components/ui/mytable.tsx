@@ -34,8 +34,7 @@ export default function MyTable({ initialData, type }: MyTableProps) {
       return (
         <TableRow>
           <TableHead className="w-20 font-bold">ID</TableHead>
-          <TableHead className="font-bold">Nome</TableHead>
-          <TableHead className="font-bold">Slug</TableHead>
+          <TableHead className="font-bold">Titolo</TableHead>
           <TableHead className="w-32 font-bold">Tipo</TableHead>
           <TableHead className="w-32 font-bold">Operazioni</TableHead>
         </TableRow>

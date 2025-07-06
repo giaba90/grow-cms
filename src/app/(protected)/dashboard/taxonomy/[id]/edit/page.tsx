@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import TaxonomyForm, { TaxonomyFormData } from "@/app/components/ui/TaxonomyForm";
 import { toast } from "sonner";
 
 export default function EditTaxonomyPage() {
 
     const params = useParams();
-    const router = useRouter();
     const [formData, setFormData] = useState<TaxonomyFormData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null); // Aggiunto stato per la gestione errori
@@ -57,32 +56,6 @@ export default function EditTaxonomyPage() {
         fetchTaxonomy();
     }, [params.id]); // Dipendenza da params.id per rieseguire il fetch se l'ID cambia
 
-    const handleUpdate = async (data: TaxonomyFormData) => {
-        setIsLoading(true);
-        setError(null); // Resetta l'errore all'inizio dell'aggiornamento
-        try {
-            const res = await fetch(`/api/dashboard/taxonomy/${params.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-            const json = await res.json();
-            if (!res.ok) {
-                throw new Error(json.error || "Errore sconosciuto durante l'aggiornamento.");
-            }
-            toast.success("Tassonomia aggiornata!");
-            router.push("/dashboard/taxonomy");
-            router.refresh(); // Forza un refresh dei dati della pagina di destinazione
-        } catch (err) {
-            console.error("Errore durante l'aggiornamento:", err);
-            toast.error(err instanceof Error ? err.message : "Errore durante l'aggiornamento");
-            setError(err instanceof Error ? err.message : "Errore durante l'aggiornamento");
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     if (isLoading && !formData) {
         return <div className="text-center py-8">Caricamento tassonomia...</div>;
@@ -99,7 +72,7 @@ export default function EditTaxonomyPage() {
     return (
         <>
             <h1 className="text-2xl font-bold mb-6">Modifica tassonomia</h1>
-            <TaxonomyForm initialData={formData} onSubmit={handleUpdate} isLoading={isLoading} />
+            <TaxonomyForm />
         </>
     );
 }

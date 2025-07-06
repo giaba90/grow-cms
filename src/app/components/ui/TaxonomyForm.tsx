@@ -6,77 +6,76 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
 
-export type TaxonomyFormData = {
-    name: string;
-    slug: string;
-    type: "category" | "tag";
-    description: string;
-};
+// Importa la Server Action che gestirà la logica di creazione/aggiornamento
+import { createTaxonomy } from "@/app/lib/actions"; // Assicurati che questo percorso sia corretto
 
+// Le props del componente TaxonomyForm non avranno più onSubmit o isLoading
+// Se vuoi supportare l'editing, potresti ancora passare initialData
 interface TaxonomyFormProps {
-    initialData?: TaxonomyFormData;
-    onSubmit: (data: TaxonomyFormData) => Promise<void>;
-    isLoading?: boolean;
+    initialData?: TaxonomyData;
 }
 
-export default function TaxonomyForm({
-    initialData,
-    onSubmit,
-    isLoading = false,
-}: TaxonomyFormProps) {
+export default function TaxonomyForm({ initialData }: TaxonomyFormProps) {
     const router = useRouter();
-    const [formData, setFormData] = useState<TaxonomyFormData>(
+    const [formData, setFormData] = useState<TaxonomyData>(
         initialData ?? {
-            name: "",
-            slug: "",
+            id: 0,
+            title: "",
             type: "category",
             description: "",
         }
     );
+    const [isLoading, setIsLoading] = useState(false); // Gestisci isLoading internamente
 
-    const updateForm = <K extends keyof TaxonomyFormData>(field: K, value: TaxonomyFormData[K]) => {
+    const updateForm = <K extends keyof TaxonomyData>(field: K, value: TaxonomyData[K]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!formData.name || !formData.type) {
-            toast.error("Tutti i campi obbligatori devono essere compilati");
-            return;
-        }
+        setIsLoading(true); // Inizia il caricamento
 
-        await onSubmit(formData);
+        try {
+            // Invocazione della Server Action
+            // Se stai creando, userai createTaxonomy. Se stai modificando, potresti avere un updateTaxonomy
+            // Per semplicità, qui usiamo solo createTaxonomy come esempio.
+            const result = await createTaxonomy(formData);
+
+            if (result.error) {
+                // Se la Server Action restituisce un errore, mostralo
+                throw new Error(result.error);
+            }
+
+            toast.success("Tassonomia salvata con successo!");
+            router.push("/dashboard/taxonomy"); // Reindirizza dopo il successo
+            router.refresh(); // Riconvalida i dati della pagina di destinazione
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : "Errore durante il salvataggio della tassonomia.");
+        } finally {
+            setIsLoading(false); // Ferma il caricamento alla fine, sia in caso di successo che di errore
+        }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
             <div className="space-y-6">
                 <div>
-                    <label className="text-sm font-medium">Nome</label>
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Titolo</label>
                     <Input
-                        className="bg-white"
-                        value={formData.name}
-                        onChange={(e) => updateForm("name", e.target.value)}
+                        id="title"
+                        name="title" // Aggiungi l'attributo name per FormData
+                        className="bg-white" value={formData.title}
+                        onChange={(e) => updateForm("title", e.target.value)}
                         placeholder="Nome tassonomia"
                         required
                         disabled={isLoading}
                     />
                 </div>
-
                 <div>
-                    <label className="text-sm font-medium">Slug</label>
-                    <Input
-                        className="bg-white"
-                        value={formData.slug}
-                        onChange={(e) => updateForm("slug", e.target.value)}
-                        placeholder="Slug (es: categoria-news)"
-                        disabled={isLoading}
-                    />
-                </div>
-
-                <div>
-                    <label className="text-sm font-medium">Tipo</label>
+                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
                     <select
+                        id="type"
+                        name="type" // Aggiungi l'attributo name
                         className="w-full border px-2 py-2 bg-white"
                         value={formData.type}
                         onChange={(e) => updateForm("type", e.target.value as "category" | "tag")}
@@ -89,8 +88,10 @@ export default function TaxonomyForm({
                 </div>
 
                 <div>
-                    <label className="text-sm font-medium">Descrizione</label>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Descrizione</label>
                     <textarea
+                        id="description"
+                        name="description" // Aggiungi l'attributo name
                         className="w-full border p-2 min-h-[80px] bg-white"
                         value={formData.description}
                         onChange={(e) => updateForm("description", e.target.value)}

@@ -74,8 +74,7 @@ export default function MyTableRow({ data, onDelete, type }: MyTableRowProps) {
     return (
       <TableRow>
         <TableCell className="font-medium">{taxonomy.id}</TableCell>
-        <TableCell>{taxonomy.name}</TableCell>
-        <TableCell>{taxonomy.slug}</TableCell>
+        <TableCell>{taxonomy.title}</TableCell>
         <TableCell>
           <StatusBadge status={taxonomy.type} isTaxonomy />
         </TableCell>

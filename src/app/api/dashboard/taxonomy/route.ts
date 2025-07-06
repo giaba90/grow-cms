@@ -4,11 +4,6 @@ import prisma from "@/app/prisma/client";
 import { ZodError } from "zod";
 import { taxonomyDataSchema } from "@/app/lib/validation";
 
-type TaxonomyData = {
-  title: string;  // Name of the taxonomy
-  type: "category" | "tag";  // Type of taxonomy
-  description?: string;  // Optional description of the taxonomy
-};
 
 // GET api/dashboard/taxonomy
 export async function GET(req: Request) {
@@ -71,7 +66,7 @@ export async function POST(req: Request) {
       data: {
         title,
         type,
-        description,
+        description
       },
     });
     return NextResponse.json(

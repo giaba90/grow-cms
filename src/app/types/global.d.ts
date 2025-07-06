@@ -61,8 +61,7 @@ declare global {
 
   interface TaxonomyData {
     id: number;
-    name: string;
-    slug: string;
+    title: string;
     type: taxonomy_type;
     description?: string;
   }
