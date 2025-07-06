@@ -1,14 +1,8 @@
 // src/app/api/dashboard/users/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
-import { ZodError } from "zod";
-import { userDataSchema } from "@/app/lib/validation";
-import bcrypt from "bcryptjs";
 import { auth } from "@/auth/auth"; // Importa la tua istanza di better-auth
 import { headers } from "next/headers"; // Per accedere alle intestazioni della richiesta
-
-
-
 
 export async function GET() {
   const requestHeaders = headers();

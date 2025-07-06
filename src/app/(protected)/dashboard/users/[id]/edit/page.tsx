@@ -6,25 +6,18 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
 
+// Tipi
 type UserData = {
-    id: number;
+    id: string;
     name: string;
-    surname: string;
     email: string;
-    role: string;
-    password: string;
 };
 
-// Initial form state
 const initialForm: UserData = {
-    id: 0, // 
+    id: "",
     name: "",
-    surname: "",
     email: "",
-    role: "user",
-    password: "",
 };
-
 
 export default function UserEditPage() {
     const [form, setForm] = useState<UserData>(initialForm);
@@ -34,25 +27,23 @@ export default function UserEditPage() {
     const router = useRouter();
     const params = useParams();
 
+    const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 
     useEffect(() => {
-        if (typeof params.id !== "string") return;
+        if (!userId) return;
 
         const fetchUser = async () => {
             setIsLoading(true);
             setError(null);
             try {
-                const res = await fetch(`/api/dashboard/users/${params.id}`);
+                const res = await fetch(`/api/dashboard/users/${userId}`);
                 if (!res.ok) throw new Error();
 
                 const data = await res.json();
                 setForm({
-                    id: data.users.id ?? 0,
+                    id: data.users.id ?? "",
                     name: data.users.name || "",
-                    surname: data.users.surname || "",
                     email: data.users.email || "",
-                    role: data.users.role || "user",
-                    password: "" // non viene mai pre-popolata
                 });
             } catch {
                 setError("Errore nel caricamento dell'utente");
@@ -62,7 +53,7 @@ export default function UserEditPage() {
         };
 
         fetchUser();
-    }, []);
+    }, [userId]);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -73,27 +64,30 @@ export default function UserEditPage() {
 
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!params.id) return;
+        if (!userId) return;
 
         setIsLoading(true);
         setError(null);
         setSuccess(false);
 
         try {
-            const res = await fetch(`/api/dashboard/users/${params.id}`, {
+            const res = await fetch(`/api/dashboard/users/${userId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form)
+                body: JSON.stringify(form),
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                const msg = data?.errors ? JSON.stringify(data.errors) : "Errore nella modifica dell'utente";
+                const msg = data?.errors
+                    ? JSON.stringify(data.errors)
+                    : "Errore nella modifica dell'utente";
                 setError(msg);
                 toast.error(msg);
                 return;
             }
+
             setSuccess(true);
             toast.success("Utente modificato con successo!");
             setTimeout(() => router.push("/dashboard/users"), 1000);
@@ -108,6 +102,7 @@ export default function UserEditPage() {
     return (
         <form onSubmit={handleFormSubmit} aria-busy={isLoading}>
             <h1 className="text-2xl font-bold mb-6">Modifica utente</h1>
+
             <div className="flex w-full flex-row justify-between items-start flex-nowrap">
                 <div className="w-2/3 space-y-4">
                     <div>
@@ -121,17 +116,7 @@ export default function UserEditPage() {
                             className="bg-white"
                         />
                     </div>
-                    <div>
-                        <label className="text-sm font-medium">Cognome</label>
-                        <Input
-                            name="surname"
-                            value={form.surname}
-                            onChange={handleInputChange}
-                            required
-                            disabled={isLoading}
-                            className="bg-white"
-                        />
-                    </div>
+
                     <div>
                         <label className="text-sm font-medium">Email</label>
                         <Input
@@ -144,36 +129,11 @@ export default function UserEditPage() {
                             className="bg-white"
                         />
                     </div>
-                    <div>
-                        <label className="text-sm font-medium">Password (opzionale)</label>
-                        <Input
-                            name="password"
-                            type="password"
-                            value={form.password}
-                            onChange={handleInputChange}
-                            minLength={6}
-                            disabled={isLoading}
-                            className="bg-white"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium">Ruolo</label>
-                        <select
-                            name="role"
-                            value={form.role}
-                            onChange={handleInputChange}
-                            disabled={isLoading}
-                            className="w-full border px-2 py-2 bg-white"
-                            required
-                        >
-                            <option value="admin">Admin</option>
-                            <option value="editor">Editor</option>
-                            <option value="user">User</option>
-                        </select>
-                    </div>
 
-                    {error && <p className="text-sm text-red-500" style={{ display: 'none' }}>{error}</p>}
-                    {success && <p className="text-sm text-green-600" style={{ display: 'none' }}>Utente modificato con successo!</p>}
+                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    {success && (
+                        <p className="text-sm text-green-600">Utente modificato con successo!</p>
+                    )}
 
                     <div className="flex justify-between pt-6">
                         <Button
