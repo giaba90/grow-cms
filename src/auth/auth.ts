@@ -22,8 +22,6 @@ export const auth = betterAuth({
                 return await bcrypt.hash(password, salt);
             },
             verify: async ({ hash, password }) => {
-                console.log('password:', password);
-                console.log('hash:', hash);
                 return await bcrypt.compare(password, hash);
             }
         },
