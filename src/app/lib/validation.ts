@@ -51,9 +51,7 @@ export const pageDataSchema = z.object({
   content: z.string().min(10).max(10000),
   status: z.enum(["draft", "published", "archived"]),
   url: z.string().optional(),
-  description: z.string()
-    .min(50, { message: "La descrizione deve contenere almeno 50 caratteri." })
-    .max(160, { message: "La descrizione non può superare i 160 caratteri." }).optional(),
+  description: z.string().optional(),
 });
 
 // zod schema for taxonomy data
