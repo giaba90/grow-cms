@@ -49,7 +49,7 @@ declare global {
   }
 
   interface PageData {
-    id: number;
+    id?: number;
     title: string;
     content: string;
     url: string;
