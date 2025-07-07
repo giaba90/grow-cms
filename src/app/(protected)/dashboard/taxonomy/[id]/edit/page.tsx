@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import TaxonomyForm, { TaxonomyFormData } from "@/app/components/ui/TaxonomyForm";
+import TaxonomyForm from "@/app/components/ui/TaxonomyForm";
 import { toast } from "sonner";
 
 export default function EditTaxonomyPage() {
 
     const params = useParams();
-    const [formData, setFormData] = useState<TaxonomyFormData | null>(null);
+    const [formData, setFormData] = useState<TaxonomyData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null); // Aggiunto stato per la gestione errori
 
@@ -39,8 +39,8 @@ export default function EditTaxonomyPage() {
 
                 const data = await res.json();
                 setFormData({
-                    name: data.name ?? "",
-                    slug: data.slug ?? "",
+                    id: data.id ?? 0,
+                    title: data.title ?? "",
                     type: data.type ?? "category",
                     description: data.description ?? "",
                 });
@@ -54,7 +54,7 @@ export default function EditTaxonomyPage() {
         };
 
         fetchTaxonomy();
-    }, [params.id]); // Dipendenza da params.id per rieseguire il fetch se l'ID cambia
+    }, []);
 
 
     if (isLoading && !formData) {
@@ -72,7 +72,7 @@ export default function EditTaxonomyPage() {
     return (
         <>
             <h1 className="text-2xl font-bold mb-6">Modifica tassonomia</h1>
-            <TaxonomyForm />
+            <TaxonomyForm initialData={formData} />
         </>
     );
 }

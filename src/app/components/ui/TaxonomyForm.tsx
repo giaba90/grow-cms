@@ -7,7 +7,7 @@ import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
 
 // Importa la Server Action che gestirà la logica di creazione/aggiornamento
-import { createTaxonomy } from "@/app/lib/actions"; // Assicurati che questo percorso sia corretto
+import { createTaxonomy } from "@/app/lib/actions";
 
 // Le props del componente TaxonomyForm non avranno più onSubmit o isLoading
 // Se vuoi supportare l'editing, potresti ancora passare initialData
@@ -63,7 +63,7 @@ export default function TaxonomyForm({ initialData }: TaxonomyFormProps) {
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Titolo</label>
                     <Input
                         id="title"
-                        name="title" // Aggiungi l'attributo name per FormData
+                        name="title"
                         className="bg-white" value={formData.title}
                         onChange={(e) => updateForm("title", e.target.value)}
                         placeholder="Nome tassonomia"
@@ -75,7 +75,7 @@ export default function TaxonomyForm({ initialData }: TaxonomyFormProps) {
                     <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
                     <select
                         id="type"
-                        name="type" // Aggiungi l'attributo name
+                        name="type"
                         className="w-full border px-2 py-2 bg-white"
                         value={formData.type}
                         onChange={(e) => updateForm("type", e.target.value as "category" | "tag")}
@@ -91,7 +91,7 @@ export default function TaxonomyForm({ initialData }: TaxonomyFormProps) {
                     <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Descrizione</label>
                     <textarea
                         id="description"
-                        name="description" // Aggiungi l'attributo name
+                        name="description"
                         className="w-full border p-2 min-h-[80px] bg-white"
                         value={formData.description}
                         onChange={(e) => updateForm("description", e.target.value)}
