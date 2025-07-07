@@ -1,46 +1,48 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./button"; // Assicurati che il percorso sia corretto
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { deleteTaxonomy } from "@/app/lib/actions"; // Importa la Server Action
-import { Trash2 } from 'lucide-react'; // Importa l'icona del cestino da lucide-react
+import { Button } from "./button";
 
 interface DeleteButtonProps {
-    itemId: string | number;
-    itemType: string;
+    itemId: string;
+    itemType: "articles" | "taxonomy" | "pages" | "users";
+    redirectAfterDelete?: string; // es. "/dashboard/taxonomy"
 }
 
-export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
+export default function DeleteButton({
+    itemId,
+    itemType,
+    redirectAfterDelete,
+}: DeleteButtonProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
     const handleDelete = async () => {
         if (!window.confirm("Sei sicuro di voler eliminare questa voce?")) return;
+        setIsDeleting(true);
 
         try {
-            let url = "";
-            switch (itemType) {
-                case "pages":
-                    url = `/api/dashboard/pages/${itemId}`;
-                    break;
-                case "taxonomy":
-                    url = `/api/dashboard/taxonomy/${itemId}`;
-                    break;
-                case "users":
-                    url = `/api/dashboard/users/${itemId}`;
-                    break;
-                default:
-                    url = `/api/dashboard/articles/${itemId}`;
-                    break;
-            }
+            const res = await fetch(`/api/dashboard/${itemType}/${itemId}`, {
+                method: "DELETE",
+            });
 
-            const response = await fetch(url, { method: "DELETE" });
-            if (!response.ok) throw new Error("Errore durante l'eliminazione");
-            onDelete(itemId);
-        } catch (error) {
-            console.error("Errore di rete:", error);
+            if (!res.ok) throw new Error("Errore durante l'eliminazione");
+
+            toast.success("Elemento eliminato");
+
+            if (redirectAfterDelete) {
+                router.push(redirectAfterDelete);
+            } else {
+                router.refresh(); // ricarica la pagina corrente
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Errore durante l'eliminazione");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -50,14 +52,9 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
             size="sm"
             onClick={handleDelete}
             disabled={isDeleting}
-            className=" inline-flex items-center justify-center"
+            className="inline-flex items-center justify-center"
         >
-            {isDeleting ? (
-
-                "Eliminazione..."
-            ) : (
-                <Trash2 className="h-4 w-4" /> // The trash icon
-            )}
+            {isDeleting ? "Eliminazione..." : <Trash2 className="h-4 w-4" />}
         </Button>
     );
 }
