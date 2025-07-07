@@ -1,8 +1,8 @@
 import { Table, TableBody, TableHeader, TableRow, TableHead } from "./table";
-import MyTableRow, { TableData } from "./mytablerow"; // Importa i tipi e MyTableRow
+import MyTableRow from "./mytablerow";
 
 interface MyTableProps {
-  initialData: TableData[];
+  initialData: [ArticleData | PageData | TaxonomyData | UserData];
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 

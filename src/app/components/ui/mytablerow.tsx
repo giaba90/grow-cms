@@ -59,6 +59,7 @@ export default function MyTableRow({ data, type }: MyTableRowProps) {
     return (
       <TableRow>
         <TableCell>{user.id}</TableCell>
+        <TableCell>{user.name}</TableCell>
         <TableCell>{user.email}</TableCell>
         <TableCell>
           <RowActions url={`users/${user.id}/edit`} type={type} id={data.id} />
