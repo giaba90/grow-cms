@@ -9,7 +9,7 @@ import { Trash2 } from 'lucide-react'; // Importa l'icona del cestino da lucide-
 
 interface DeleteButtonProps {
     itemId: string | number;
-    itemType: "articles" | "pages" | "taxonomy" | "users";
+    itemType: string;
 }
 
 export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
@@ -17,37 +17,30 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
     const router = useRouter();
 
     const handleDelete = async () => {
-        // Use a custom modal instead of `confirm()` for better UX
-        // For simplicity, I will still use `confirm()` here, but in a real application you would replace it.
-        if (!window.confirm("Sei sicuro di voler eliminare questo elemento?")) {
-            return;
-        }
+        if (!window.confirm("Sei sicuro di voler eliminare questa voce?")) return;
 
-        setIsDeleting(true);
         try {
-            let result;
-            // Based on the type, call the appropriate Server Action
-            // For now, we only handle taxonomy as an example.
-            // You will need to create similar Server Actions for articles, pages, users.
-            if (itemType === "taxonomy") {
-                result = await deleteTaxonomy(itemId);
-            } else {
-                toast.error(`Operazione di eliminazione non supportata per il tipo: ${itemType}.`);
-                setIsDeleting(false);
-                return;
+            let url = "";
+            switch (itemType) {
+                case "pages":
+                    url = `/api/dashboard/pages/${itemId}`;
+                    break;
+                case "taxonomy":
+                    url = `/api/dashboard/taxonomy/${itemId}`;
+                    break;
+                case "users":
+                    url = `/api/dashboard/users/${itemId}`;
+                    break;
+                default:
+                    url = `/api/dashboard/articles/${itemId}`;
+                    break;
             }
 
-            if (result.error) {
-                throw new Error(result.error);
-            }
-
-            toast.success("Elemento eliminato con successo!");
-            // Revalidate the current page to reflect the deletion
-            router.refresh();
-        } catch (err) {
-            toast.error(err instanceof Error ? err.message : "Errore durante l'eliminazione.");
-        } finally {
-            setIsDeleting(false);
+            const response = await fetch(url, { method: "DELETE" });
+            if (!response.ok) throw new Error("Errore durante l'eliminazione");
+            onDelete(itemId);
+        } catch (error) {
+            console.error("Errore di rete:", error);
         }
     };
 
@@ -57,11 +50,10 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
             size="sm"
             onClick={handleDelete}
             disabled={isDeleting}
-            // Added inline-flex and items-center to properly align the icon and text (if any)
             className=" inline-flex items-center justify-center"
         >
             {isDeleting ? (
-                // You can add a spinner here if you want
+
                 "Eliminazione..."
             ) : (
                 <Trash2 className="h-4 w-4" /> // The trash icon
