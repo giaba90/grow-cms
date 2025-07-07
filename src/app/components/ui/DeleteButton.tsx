@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./button";
+import { Button } from "./button"; // Assicurati che il percorso sia corretto
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { deleteTaxonomy } from "@/app/lib/actions"; // Importa la Server Action
+import { Trash2 } from 'lucide-react'; // Importa l'icona del cestino da lucide-react
 
 interface DeleteButtonProps {
     itemId: string | number;
@@ -16,8 +17,8 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
     const router = useRouter();
 
     const handleDelete = async () => {
-        // Utilizza un modal personalizzato invece di `confirm()` per una migliore UX
-        // Per semplicità, qui userò ancora `confirm()` ma in un'applicazione reale lo sostituiresti.
+        // Use a custom modal instead of `confirm()` for better UX
+        // For simplicity, I will still use `confirm()` here, but in a real application you would replace it.
         if (!window.confirm("Sei sicuro di voler eliminare questo elemento?")) {
             return;
         }
@@ -25,9 +26,9 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
         setIsDeleting(true);
         try {
             let result;
-            // In base al tipo, chiama la Server Action appropriata
-            // Per ora, gestiamo solo la tassonomia come esempio.
-            // Dovrai creare Server Actions simili per articoli, pagine, utenti.
+            // Based on the type, call the appropriate Server Action
+            // For now, we only handle taxonomy as an example.
+            // You will need to create similar Server Actions for articles, pages, users.
             if (itemType === "taxonomy") {
                 result = await deleteTaxonomy(itemId);
             } else {
@@ -41,7 +42,7 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
             }
 
             toast.success("Elemento eliminato con successo!");
-            // Riconvalida la pagina corrente per riflettere l'eliminazione
+            // Revalidate the current page to reflect the deletion
             router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : "Errore durante l'eliminazione.");
@@ -54,11 +55,17 @@ export default function DeleteButton({ itemId, itemType }: DeleteButtonProps) {
         <Button
             variant="destructive"
             size="sm"
-            onClick={handleDelete} // La funzione handleDelete è qui
+            onClick={handleDelete}
             disabled={isDeleting}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
+            // Added inline-flex and items-center to properly align the icon and text (if any)
+            className=" inline-flex items-center justify-center"
         >
-            {isDeleting ? "Eliminazione..." : "Elimina"}
+            {isDeleting ? (
+                // You can add a spinner here if you want
+                "Eliminazione..."
+            ) : (
+                <Trash2 className="h-4 w-4" /> // The trash icon
+            )}
         </Button>
     );
 }
