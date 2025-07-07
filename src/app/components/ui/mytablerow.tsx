@@ -1,73 +1,163 @@
-import { TableCell, TableRow } from "./table";
-import DeleteButton from "./DeleteButton";
-import { EditButton } from "./editbutton";
+"use client";
 
-export type TableData = ArticleData | PageData | TaxonomyData | UserData;
+import { TableCell, TableRow } from "./table";
+import { formatDate } from "@/app/utils/utils";
+import { EditButton } from "./editbutton";
+import { Button } from "./button";
+import { Trash2 } from "lucide-react";
 
 interface MyTableRowProps {
-  data: TableData;
+  data: ArticleData | PageData | TaxonomyData | UserData;
+  onDelete: (id: number | string) => void;
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 
-export default function MyTableRow({ data, type }: MyTableRowProps) {
+export default function MyTableRow({
+  data,
+  onDelete,
+  type,
+}: MyTableRowProps) {
+  const handleDelete = async () => {
+    if (!window.confirm("Sei sicuro di voler eliminare questa voce?")) return;
 
-  const renderRowContent = () => {
-    if (type === "pages") {
-      const page = data as PageData;
-      return (
-        <>
-          <TableCell className="font-medium">{page.id}</TableCell>
-          <TableCell>{page.title}</TableCell>
-          <TableCell>{page.url}</TableCell>
-          <TableCell>{page.status}</TableCell>
-        </>
-      );
+    try {
+      let url = "";
+      switch (type) {
+        case "pages":
+          url = `/api/dashboard/pages/${data.id}`;
+          break;
+        case "taxonomy":
+          url = `/api/dashboard/taxonomy/${data.id}`;
+          break;
+        case "users":
+          url = `/api/dashboard/users/${data.id}`;
+          break;
+        default:
+          url = `/api/dashboard/articles/${data.id}`;
+          break;
+      }
+
+      const response = await fetch(url, { method: "DELETE" });
+      if (!response.ok) throw new Error("Errore durante l'eliminazione");
+      onDelete(data.id);
+    } catch (error) {
+      console.error("Errore di rete:", error);
     }
-
-    if (type === "taxonomy") {
-      const taxonomy = data as TaxonomyData;
-      return (
-        <>
-          <TableCell className="font-medium">{taxonomy.id}</TableCell>
-          <TableCell>{taxonomy.title}</TableCell>
-          <TableCell>{taxonomy.type === "category" ? "Categoria" : "Tag"}</TableCell>
-        </>
-      );
-    }
-
-    if (type === "users") {
-      const user = data as UserData;
-      return (
-        <>
-          <TableCell className="font-medium">{user.id}</TableCell>
-          <TableCell>{user.name}</TableCell>
-          <TableCell>{user.email}</TableCell>
-        </>
-      );
-    }
-
-    // Default: articles
-    const article = data as ArticleData;
-    return (
-      <>
-        <TableCell className="font-medium">{article.id}</TableCell>
-        <TableCell>{article.title}</TableCell>
-        <TableCell>{new Date(article.created_at).toLocaleDateString()}</TableCell>
-        <TableCell>{article.status}</TableCell>
-      </>
-    );
   };
 
-  // Costruisci l'URL di modifica in base al tipo e all'ID
-  const editUrl = `${type || "articles"}/${data.id}/edit/`;
-  return (
+  // --- RENDER: Pages ---
+  if (type === "pages") {
+    const page = data as PageData;
+    return (
+      <TableRow>
+        <TableCell className="font-medium">{page.id}</TableCell>
+        <TableCell>{page.title}</TableCell>
+        <TableCell>
+          <a
+            href={`/pages/${page.url}`}
+            className="text-blue-600 underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            /pages/{page.url}
+          </a>
+        </TableCell>
+        <TableCell>
+          <StatusBadge status={page.status} />
+        </TableCell>
+        <TableCell>
+          <RowActions url={`pages/${page.id}/edit`} onDelete={handleDelete} />
+        </TableCell>
+      </TableRow>
+    );
+  }
 
+  // --- RENDER: Taxonomy ---
+  if (type === "taxonomy") {
+    const taxonomy = data as TaxonomyData;
+    return (
+      <TableRow>
+        <TableCell className="font-medium">{taxonomy.id}</TableCell>
+        <TableCell>{taxonomy.title}</TableCell>
+        <TableCell>
+          <StatusBadge status={taxonomy.type} isTaxonomy />
+        </TableCell>
+        <TableCell>
+          <RowActions url={`taxonomy/${taxonomy.id}/edit`} onDelete={handleDelete} />
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  // --- RENDER: Users ---
+  if (type === "users") {
+    const user = data as unknown as UserData;
+    return (
+      <TableRow>
+        <TableCell>{user.id}</TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>
+          <RowActions url={`users/${user.id}/edit`} onDelete={handleDelete} />
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  // --- RENDER: Articles (default) ---
+  const article = data as ArticleData;
+  return (
     <TableRow>
-      {renderRowContent()}
-      <TableCell className="text-right">
-        <EditButton url={editUrl}></EditButton>
-        <DeleteButton itemId={data.id} itemType={type || "articles"} />
+      <TableCell className="font-medium">{article.id}</TableCell>
+      <TableCell>{article.title}</TableCell>
+      <TableCell>{formatDate(article.created_at)}</TableCell>
+      <TableCell>
+        <StatusBadge status={article.status} />
       </TableCell>
-    </TableRow >
+      <TableCell>
+        <RowActions url={`articles/${article.id}/edit`} onDelete={handleDelete} />
+      </TableCell>
+    </TableRow>
+  );
+}
+
+
+function RowActions({ url, onDelete }: { url: string; onDelete: () => void }) {
+  return (
+    <div className="flex space-x-2">
+      <EditButton url={url} />
+      <Button onClick={onDelete} variant="ghost" size="icon">
+        <Trash2 className="h-4 w-4" />
+        <span className="sr-only">Elimina</span>
+      </Button>
+    </div>
+  );
+}
+
+function StatusBadge({
+  status,
+  isTaxonomy = false,
+}: {
+  status: string;
+  isTaxonomy?: boolean;
+}) {
+  let classes = "";
+  if (isTaxonomy) {
+    classes =
+      status === "category"
+        ? "bg-green-100 text-green-800"
+        : "bg-blue-300 text-blue-800";
+  } else {
+    classes =
+      status === "published"
+        ? "bg-green-100 text-green-800"
+        : status === "draft"
+          ? "bg-yellow-100 text-yellow-800"
+          : "bg-blue-300 text-blue-800";
+  }
+
+  return (
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${classes}`}>
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
   );
 }
