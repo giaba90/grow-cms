@@ -16,7 +16,7 @@ function PostStatusSelect({ initialStatus = "draft", onChange, }: PostStatusSele
 
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium">Stato</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Stato</label>
       <select
         id="postStatus"
         value={status}
