@@ -38,7 +38,7 @@ export default async function UsersPage() {
           <Input placeholder="Cerca utenti..." className="pl-8" />
         </div>
       </div>
-      <div className="border bg-white rounded-md shadow-sm p-4">
+      <div className="border bg-white">
         <MyTable type="users" initialData={data.users} />
       </div>
     </div>

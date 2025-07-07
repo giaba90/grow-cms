@@ -1,6 +1,3 @@
-"use client"; // MyTable rimane un Client Component se gestisce lo stato di visualizzazione o interazioni complesse.
-// Se MyTable fosse solo un wrapper per MyTableRow e non avesse useState o useEffect, potrebbe essere un Server Component.
-
 import { Table, TableBody, TableHeader, TableRow, TableHead } from "./table";
 import MyTableRow, { TableData } from "./mytablerow"; // Importa i tipi e MyTableRow
 
@@ -30,7 +27,7 @@ export default function MyTable({ initialData, type }: MyTableProps) {
         <TableRow>
           <TableHead className="w-20 font-bold">ID</TableHead>
           <TableHead className="font-bold">Titolo</TableHead>
-          <TableHead className="w-32 font-bold">Tipo</TableHead>
+          <TableHead className="font-bold">Tipo</TableHead>
           <TableHead className="w-32 font-bold">Operazioni</TableHead>
         </TableRow>
       );
