@@ -17,7 +17,6 @@ export default async function TaxonomyPage() {
   } catch (error) {
     console.error("Failed to fetch taxonomies:", error);
   }
-  // Render the page with the fetched data
 
   return (
     <div className="container mx-auto py-6 space-y-6">

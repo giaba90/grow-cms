@@ -5,12 +5,8 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { toast } from "sonner";
-
-// Importa la Server Action che gestirà la logica di creazione/aggiornamento
 import { createTaxonomy } from "@/app/lib/actions";
 
-// Le props del componente TaxonomyForm non avranno più onSubmit o isLoading
-// Se vuoi supportare l'editing, potresti ancora passare initialData
 interface TaxonomyFormProps {
     initialData?: TaxonomyData;
 }
