@@ -8,13 +8,15 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
+import { pageDataSchema } from "@/app/lib/validation";
+import { createPage, updatePage } from "@/app/lib/actions";
 
 interface PageFormProps {
     initialData: PageData;
     action: "create" | "edit";
 }
 
-export default function PageForm({ initialData }: PageFormProps) {
+export default function PageForm({ initialData, action }: PageFormProps) {
     const router = useRouter();
     const [formData, setFormData] = useState<PageData>(
         {
@@ -23,6 +25,8 @@ export default function PageForm({ initialData }: PageFormProps) {
             status: initialData.status,
             url: initialData.url,
             description: initialData.description,
+            // Se initialData ha un ID, lo includiamo nel formData
+            ...(initialData.id && { id: initialData.id }),
         }
     );
     const [isLoading, setIsLoading] = useState(false);
@@ -31,26 +35,57 @@ export default function PageForm({ initialData }: PageFormProps) {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+
+    //if action == "create" handleSubmit call createPage from lib/actions
+    // elseif action == "edit" handleSubmit call updatepage from lib/actions
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        //zod validation
+        // Validazione Zod
+        const validationResult = pageDataSchema.safeParse(formData);
+        if (!validationResult.success) {
+            // Se la validazione fallisce, mostra un toast con gli errori
+            toast.error("Errore di validazione", {
+                description: validationResult.error.errors.map((err) => err.message).join(", "),
+            });
+            setIsLoading(false);
+            return; // Ferma l'esecuzione se la validazione fallisce
+        }
 
+        try {
+            let result;
+            if (action === "create") {
+                // Chiamata alla funzione createPage per la creazione
+                result = await createPage(formData);
+                if (result?.error) {
+                    throw new Error(result.error);
+                }
+                toast.success("Pagina creata con successo!");
+            } else if (action === "edit") {
+                // Assicurati che initialData.id sia definito per l'editing
+                if (!initialData.id) {
+                    throw new Error("ID della pagina non fornito per l'editing.");
+                }
+                // Chiamata alla funzione updatePage per l'aggiornamento
+                result = await updatePage(formData);
+                if (result?.error) {
+                    throw new Error(result.error);
+                }
+                toast.success("Pagina aggiornata con successo!");
+            }
 
-        /*      try {
-                 const result = await onSubmit(formData);
-     
-                 if (result.error) throw new Error(result.error);
-     
-                 toast.success("Pagina salvata con successo!");
-                 router.push("/dashboard/pages");
-                 router.refresh();
-             } catch (error) {
-                 toast.error(error instanceof Error ? error.message : "Errore durante il salvataggio.");
-             } finally {
-                 setIsLoading(false);
-             } */
+            // Reindirizza dopo il successo
+            router.push("/dashboard/pages");
+            router.refresh(); // Per revalidare la cache e mostrare i dati aggiornati
+        } catch (error: any) {
+            console.error("Errore durante l'operazione:", error);
+            toast.error("Errore durante il salvataggio", {
+                description: error.message || "Si è verificato un errore inatteso.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

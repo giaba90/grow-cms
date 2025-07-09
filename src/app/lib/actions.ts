@@ -96,7 +96,6 @@ export async function createPage(data: PageData): Promise<ActionResponse<PageDat
 
 /**
  * Server Action per aggiornare una pagina esistente.
- * @param id L'ID della pagina da aggiornare.
  * @param data I dati aggiornati della pagina.
  * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
  */
