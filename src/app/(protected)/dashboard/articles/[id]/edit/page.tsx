@@ -7,7 +7,8 @@ import ArticleForm from "../../create/ArticleForm";
 import prisma from "@/app/prisma/client";
 
 
-export default async function EditArticlePage({ params }: { params: { id: string } }) {
+export default async function EditArticlePage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const articleId = Number(params.id);
     if (isNaN(articleId) || articleId <= 0) return notFound();
 

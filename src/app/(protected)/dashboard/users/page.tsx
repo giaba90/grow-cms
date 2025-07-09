@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 
 export default async function UsersPage() {
   // Ottieni le intestazioni della richiesta corrente per inoltrare il cookie all'API
-  const requestHeaders = headers();
+  const requestHeaders = await headers();
   let data = []
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {

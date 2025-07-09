@@ -5,7 +5,7 @@ import ArticleForm from "./ArticleForm";
 
 export default async function CreateArticlePage() {
   // Ottieni l'oggetto ReadonlyHeaders dalla richiesta corrente
-  const requestHeaders = headers();
+  const requestHeaders = await headers();
 
   // Crea un nuovo oggetto Headers standard per la compatibilità con better-auth
   const compatibleHeaders = new Headers(await requestHeaders);

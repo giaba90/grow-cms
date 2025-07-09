@@ -5,7 +5,7 @@ import { auth } from "@/auth/auth"; // Importa la tua istanza di better-auth
 import { headers } from "next/headers"; // Per accedere alle intestazioni della richiesta
 
 export async function GET() {
-  const requestHeaders = headers();
+  const requestHeaders = await headers();
   const session = await auth.api.getSession({
     headers: new Headers(await requestHeaders),
   });

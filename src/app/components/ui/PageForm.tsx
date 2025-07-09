@@ -20,33 +20,35 @@ interface PageFormProps {
 
 export default function PageForm({ initialData, onSubmit }: PageFormProps) {
     const router = useRouter();
-    const [formData, setFormData] = useState<PageData>({
-        title: initialData?.title ?? "",
-        content: initialData?.content ?? "",
-        status: initialData?.status ?? "draft",
-        url: initialData?.url ?? "",
-        description: initialData?.description ?? "",
-    });
+    const [formData, setFormData] = useState<PageData>(
+        initialData ?? {
+            title: initialData.title ?? "",
+            content: initialData?.content ?? "",
+            status: initialData?.status ?? "draft",
+            url: initialData?.url ?? "",
+            description: initialData?.description ?? "",
+        }
+    );
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (initialData) {
-            // Ensure all string fields are actual strings, not null/undefined
-            // This prevents the "controlled to uncontrolled" error
-            const cleanedData: PageData = {
-                ...initialData,
-                title: initialData.title || "",
-                content: initialData.content || "",
-                url: initialData.url || "",
-                description: initialData.description || "",
-                // Ensure status has a default if it could be null/undefined from API
-                status: initialData.status || "draft"
-            };
-            setFormData(cleanedData);
-        }
-    }, [initialData]);
-
-
+    /*    useEffect(() => {
+           if (initialData) {
+               // Ensure all string fields are actual strings, not null/undefined
+               // This prevents the "controlled to uncontrolled" error
+               const cleanedData: PageData = {
+                   ...initialData,
+                   title: initialData.title || "",
+                   content: initialData.content || "",
+                   url: initialData.url || "",
+                   description: initialData.description || "",
+                   // Ensure status has a default if it could be null/undefined from API
+                   status: initialData.status || "draft"
+               };
+               setFormData(cleanedData);
+           }
+       }, [initialData]);
+   
+    */
     const updateForm = <K extends keyof PageData>(field: K, value: PageData[K]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
