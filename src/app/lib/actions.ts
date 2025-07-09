@@ -69,7 +69,7 @@ export async function deleteTaxonomy(id: string | number) {
  * @param data I dati della pagina da creare.
  * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
  */
-export async function createPage(data: PageData): Promise<ActionResponse<PageData>> { // Aggiunto tipo di ritorno esplicito
+export async function createPage(data: PageData): Promise<ActionResponse<PageData>> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages`, {
             method: "POST",
@@ -100,7 +100,7 @@ export async function createPage(data: PageData): Promise<ActionResponse<PageDat
  * @param data I dati aggiornati della pagina.
  * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
  */
-export async function updatePage(data: PageData): Promise<ActionResponse<PageData>> { // Aggiunto tipo di ritorno esplicito
+export async function updatePage(data: PageData): Promise<ActionResponse<PageData>> {
     try {
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages/${data.id}`, {

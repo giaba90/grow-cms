@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -10,45 +10,23 @@ import Tiptap from "@/app/components/ui/Tiptap";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 
 interface PageFormProps {
-    initialData?: PageData;
-    onSubmit: (data: PageData) => Promise<{
-        success: boolean;
-        error?: string;
-        data?: PageData;
-    }>;
+    initialData: PageData;
+    action: "create" | "edit";
 }
 
-export default function PageForm({ initialData, onSubmit }: PageFormProps) {
+export default function PageForm({ initialData }: PageFormProps) {
     const router = useRouter();
     const [formData, setFormData] = useState<PageData>(
-        initialData ?? {
-            title: initialData.title ?? "",
-            content: initialData?.content ?? "",
-            status: initialData?.status ?? "draft",
-            url: initialData?.url ?? "",
-            description: initialData?.description ?? "",
+        {
+            title: initialData.title,
+            content: initialData.content,
+            status: initialData.status,
+            url: initialData.url,
+            description: initialData.description,
         }
     );
     const [isLoading, setIsLoading] = useState(false);
 
-    /*    useEffect(() => {
-           if (initialData) {
-               // Ensure all string fields are actual strings, not null/undefined
-               // This prevents the "controlled to uncontrolled" error
-               const cleanedData: PageData = {
-                   ...initialData,
-                   title: initialData.title || "",
-                   content: initialData.content || "",
-                   url: initialData.url || "",
-                   description: initialData.description || "",
-                   // Ensure status has a default if it could be null/undefined from API
-                   status: initialData.status || "draft"
-               };
-               setFormData(cleanedData);
-           }
-       }, [initialData]);
-   
-    */
     const updateForm = <K extends keyof PageData>(field: K, value: PageData[K]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -57,25 +35,22 @@ export default function PageForm({ initialData, onSubmit }: PageFormProps) {
         e.preventDefault();
         setIsLoading(true);
 
-        if (!formData.title.trim() || !formData.content.trim()) {
-            toast.error("Il titolo e il contenuto sono obbligatori.");
-            setIsLoading(false);
-            return;
-        }
+        //zod validation
 
-        try {
-            const result = await onSubmit(formData);
 
-            if (result.error) throw new Error(result.error);
-
-            toast.success("Pagina salvata con successo!");
-            router.push("/dashboard/pages");
-            router.refresh();
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : "Errore durante il salvataggio.");
-        } finally {
-            setIsLoading(false);
-        }
+        /*      try {
+                 const result = await onSubmit(formData);
+     
+                 if (result.error) throw new Error(result.error);
+     
+                 toast.success("Pagina salvata con successo!");
+                 router.push("/dashboard/pages");
+                 router.refresh();
+             } catch (error) {
+                 toast.error(error instanceof Error ? error.message : "Errore durante il salvataggio.");
+             } finally {
+                 setIsLoading(false);
+             } */
     };
 
     return (
