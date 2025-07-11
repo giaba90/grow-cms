@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import prisma from "@/app/prisma/client";
 import { buildTaxonomyConnect, buildTaxonomyCreateMany } from "@/app/utils/utils";
 import slugify from "slugify";
+import { postSchema } from "./validation";
 
 type ActionResponse<T = undefined> = {
     success: boolean;
@@ -133,9 +134,12 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
 export async function createArticle(data: ArticleData): Promise<ActionResponse<ArticleData>> {
     try {
         const { title, content, status, featured, author_id, category, tag, url, description } = data;
-        if (!title || !content) {
-            return { success: false, error: "Missing required fields" };
+        //zod validation
+        const validationResult = postSchema.safeParse(data);
+        if (!validationResult.success) {
+            return { success: false, error: validationResult.error.errors.map(error => error.message).join(", ") };
         }
+
         const post = await prisma.post.create({
             data: {
                 title,
