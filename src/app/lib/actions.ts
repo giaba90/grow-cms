@@ -3,6 +3,9 @@
 
 import { revalidatePath } from "next/cache";
 
+import prisma from "@/app/prisma/client";
+import { buildTaxonomyConnect, buildTaxonomyCreateMany } from "@/app/utils/utils";
+
 type ActionResponse<T = undefined> = {
     success: boolean;
     error?: string;
@@ -123,5 +126,78 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
     } catch (err) {
         console.error("Errore nella Server Action updatePage:", err);
         return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante l'aggiornamento." }; // Imposta success a false
+    }
+}
+
+export async function createPost(data: FormDataToSubmit): Promise<ActionResponse> {
+    try {
+        const { title, content, status, featured, author_id, category, tags, url, description, image } = data;
+        if (!title || !content || !author_id) {
+            return { success: false, error: "Missing required fields" };
+        }
+        const post = await prisma.post.create({
+            data: {
+                title,
+                content,
+                status,
+                featured,
+                author_id: String(author_id),
+                url: url || undefined,
+                description: description || undefined,
+            },
+        });
+        // Connect taxonomies
+        if ((category && category.length) || (tags && tags.length)) {
+            await prisma.postTaxonomy.createMany({
+                data: [
+                    ...(category ? buildTaxonomyCreateMany(post.id, category) : []),
+                    ...(tags ? buildTaxonomyCreateMany(post.id, tags) : []),
+                ],
+                skipDuplicates: true,
+            });
+        }
+        revalidatePath("/dashboard/articles");
+        return { success: true };
+    } catch (err) {
+        console.error("Error in createPost Server Action:", err);
+        return { success: false, error: err instanceof Error ? err.message : "An unexpected error occurred." };
+    }
+}
+
+export async function updatePost(id: number, data: FormDataToSubmit): Promise<ActionResponse> {
+    try {
+        const { title, content, status, featured, author_id, category, tags, url, description, image } = data;
+        if (!title || !content || !author_id) {
+            return { success: false, error: "Missing required fields" };
+        }
+        // Remove old taxonomies
+        await prisma.postTaxonomy.deleteMany({ where: { post_id: id } });
+        // Add new taxonomies
+        if ((category && category.length) || (tags && tags.length)) {
+            await prisma.postTaxonomy.createMany({
+                data: [
+                    ...(category ? buildTaxonomyCreateMany(id, category) : []),
+                    ...(tags ? buildTaxonomyCreateMany(id, tags) : []),
+                ],
+                skipDuplicates: true,
+            });
+        }
+        await prisma.post.update({
+            where: { id },
+            data: {
+                title,
+                content,
+                status,
+                featured,
+                author_id: String(author_id),
+                url: url || undefined,
+                description: description || undefined,
+            },
+        });
+        revalidatePath("/dashboard/articles");
+        return { success: true };
+    } catch (err) {
+        console.error("Error in updatePost Server Action:", err);
+        return { success: false, error: err instanceof Error ? err.message : "An unexpected error occurred." };
     }
 }

@@ -14,3 +14,17 @@ export function formatDate(dateString: string): string {
   };
   return new Date(dateString).toLocaleDateString("it-IT", options);
 }
+export function buildTaxonomyConnect(postId: number, taxonomyIds: number[]) {
+  return taxonomyIds.map((taxonomyId) => ({
+    post_id_taxonomy_id: {
+      post_id: postId,
+      taxonomy_id: taxonomyId,
+    },
+  }));
+}
+export function buildTaxonomyCreateMany(postId: number, taxonomyIds: number[]) {
+  return taxonomyIds.map((taxonomyId) => ({
+    post_id: postId,
+    taxonomy_id: taxonomyId,
+  }));
+}
