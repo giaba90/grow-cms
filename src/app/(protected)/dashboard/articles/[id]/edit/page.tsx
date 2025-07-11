@@ -1,86 +1,41 @@
-export const dynamic = "force-dynamic";
 // File: src/app/dashboard/articles/[id]/edit/page.tsx
 
 import { notFound } from "next/navigation";
-import { auth } from "@/auth"; // opzionale
+import { getServerSession } from "next-auth";
 import ArticleForm from "../../create/ArticleForm";
-import prisma from "@/app/prisma/client";
+interface Params {
+    params: Promise<{ id: string }>;
+}
 
-
-export default async function EditArticlePage(props: { params: Promise<{ id: string }> }) {
+export default async function EditArticlePage(props: Params) {
     const params = await props.params;
-    const articleId = Number(params.id);
-    if (isNaN(articleId) || articleId <= 0) return notFound();
+    const { id } = params;
 
-    const post = await prisma.post.findUnique({
-        where: { id: articleId },
-        include: {
-            taxonomies: { include: { taxonomy: true } },
-        },
-    });
-
-    if (!post) return notFound();
-
-    const categories = post.taxonomies
-        .filter((pt: { taxonomy: { type: string; }; }) => pt.taxonomy.type === "category")
-        .map((pt: { taxonomy: { id: any; }; }) => pt.taxonomy.id);
-
-    const tags = post.taxonomies
-        .filter((pt: { taxonomy: { type: string; }; }) => pt.taxonomy.type === "tag")
-        .map((pt: { taxonomy: { id: any; }; }) => pt.taxonomy.id);
-
-    // opzionale:
-    const session = await auth();
-    const userId = session?.user?.id ?? "";
+    const data = await getArticleData(id);
 
     return (
-        <div className="container mx-auto py-6">
-            <h1 className="text-2xl font-bold mb-6">Modifica articolo</h1>
-            <ArticleForm
-                initialValues={{
-                    title: post.title,
-                    content: post.content,
-                    status: post.status ?? undefined,
-                    featured: post.featured ?? false,
-                    url: post.url || "",
-                    description: post.description || "",
-                }}
-                defaultSelectedCategories={categories}
-                defaultSelectedTags={tags}
-                submitLabel="Salva modifiche"
-                onSubmit={async (formValues) => {
-                    "use server";
-
-                    await prisma.post.update({
-                        where: { id: articleId },
-                        data: {
-                            title: formValues.title,
-                            content: formValues.content,
-                            status: formValues.status,
-                            featured: formValues.featured,
-                            url: formValues.url || null,
-                            description: formValues.description || null,
-                            taxonomies: {
-                                set: [],
-                                connect: [
-                                    ...buildTaxonomyConnect(articleId, formValues.category || []),
-                                    ...buildTaxonomyConnect(articleId, formValues.tags || []),
-                                ],
-                            },
-                        },
-                    });
-                }}
-                userId={userId}
-            />
+        <div className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-8"> Modifica Articolo</h1>
+            <ArticleForm initialData={data.articles} action="edit" />
         </div>
     );
 }
 
-function buildTaxonomyConnect(postId: number, taxonomyIds: number[]) {
-    return taxonomyIds.map((taxonomyId) => ({
-        post_id_taxonomy_id: {
-            post_id: postId,
-            taxonomy_id: taxonomyId,
-        },
-    }));
+
+async function getArticleData(id: string) {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles/${id}`,
+            {
+                next: { revalidate: 0 } // Assicura che i dati siano sempre freschi
+            }
+        );
+        if (!res.ok) {
+            throw new Error(`Failed to fetch articles: ${res.status} ${res.statusText}`);
+        }
+        return await res.json();
+    } catch (error) {
+        console.error("Failed to fetch articles:", error);
+    };
 }
+

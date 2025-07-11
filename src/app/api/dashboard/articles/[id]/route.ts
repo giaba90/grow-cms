@@ -50,7 +50,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
   }
 
-  let data: PostData;
+  let data: ArticleData;
   try {
     data = await req.json();
   } catch {

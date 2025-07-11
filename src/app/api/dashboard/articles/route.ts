@@ -36,7 +36,7 @@ export async function GET() {
 // POST /api/dashboard/articles
 export async function POST(req: Request) {
   try {
-    const data: PostData = await req.json();
+    const data: ArticleData = await req.json();
 
     // Validate with Zod
     const validationResult = postSchema.safeParse(data);
