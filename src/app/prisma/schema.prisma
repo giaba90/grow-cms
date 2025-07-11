@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum post_status {
+  draft
+  published
+  archived
+}
+
+enum taxonomy_type {
+  category
+  tag
+}
+
 model post {
   id          Int            @id @default(autoincrement())
   title       String
@@ -61,17 +72,6 @@ model postTaxonomy {
   taxonomy taxonomy @relation(fields: [taxonomy_id], references: [id], onDelete: Cascade)
 
   @@id([post_id, taxonomy_id])
-}
-
-enum post_status {
-  draft
-  published
-  archived
-}
-
-enum taxonomy_type {
-  category
-  tag
 }
 
 model User {

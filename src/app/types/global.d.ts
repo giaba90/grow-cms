@@ -13,14 +13,16 @@ declare global {
     id?: number;
     title: string;
     content: string;
-    status: post_status;
     url?: string;
     description?: string;
+    status: post_status;
     featured: boolean;
+
+    created_at: string;
     author_id?: string;
     category?: number[]; // ID categoria (taxonomy_type = category)
     tag?: number[]; // array di ID tag (taxonomy_type = tag)
-    created_at: string;
+
   }
 
   interface PageData {
