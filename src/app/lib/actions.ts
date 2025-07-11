@@ -131,7 +131,7 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
 
 export async function createArticle(data: ArticleData): Promise<ActionResponse> {
     try {
-        const { title, content, status, featured, author_id, category, url, description } = data;
+        const { title, content, status, featured, author_id, category, tag, url, description } = data;
         if (!title || !content || !author_id) {
             return { success: false, error: "Missing required fields" };
         }
@@ -147,11 +147,11 @@ export async function createArticle(data: ArticleData): Promise<ActionResponse> 
             },
         });
         // Connect taxonomies
-        if ((category && category.length) || (tags && tags.length)) {
+        if ((category && category.length) || (tag && tag.length)) {
             await prisma.postTaxonomy.createMany({
                 data: [
                     ...(category ? buildTaxonomyCreateMany(post.id, category) : []),
-                    ...(tags ? buildTaxonomyCreateMany(post.id, tags) : []),
+                    ...(tag ? buildTaxonomyCreateMany(post.id, tag) : []),
                 ],
                 skipDuplicates: true,
             });
@@ -166,18 +166,18 @@ export async function createArticle(data: ArticleData): Promise<ActionResponse> 
 
 export async function updateArticle(data: ArticleData): Promise<ActionResponse> {
     try {
-        const { title, content, status, featured, author_id, category, tags, url, description } = data;
+        const { title, content, status, featured, author_id, category, tag, url, description, id } = data;
         if (!title || !content || !author_id) {
             return { success: false, error: "Missing required fields" };
         }
         // Remove old taxonomies
         await prisma.postTaxonomy.deleteMany({ where: { post_id: id } });
         // Add new taxonomies
-        if ((category && category.length) || (tags && tags.length)) {
+        if ((category && category.length) || (tag && tag.length)) {
             await prisma.postTaxonomy.createMany({
                 data: [
-                    ...(category ? buildTaxonomyCreateMany(id, category) : []),
-                    ...(tags ? buildTaxonomyCreateMany(id, tags) : []),
+                    ...(category ? buildTaxonomyCreateMany(id!, category) : []),
+                    ...(tag ? buildTaxonomyCreateMany(id!, tag) : []),
                 ],
                 skipDuplicates: true,
             });

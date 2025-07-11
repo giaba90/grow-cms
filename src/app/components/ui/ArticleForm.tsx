@@ -19,10 +19,10 @@ interface ArticleFormProps {
 export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
     const router = useRouter();
-    /*   // Usa i valori di default passati come props
-      const [selectedCategories, setSelectedCategories] = useState<number[]>(defaultSelectedCategories);
-      const [selectedTags, setSelectedTags] = useState<number[]>(defaultSelectedTags);
-   */
+    // Usa i valori di default passati come props
+    const [selectedCategories, setSelectedCategories] = useState<number[]>(initialData.category ?? []);
+    const [selectedTags, setSelectedTags] = useState<number[]>(initialData.tag ?? []);
+
     const [formData, setFormData] = useState<ArticleData>({
         id: initialData.id,
         title: initialData.title,
