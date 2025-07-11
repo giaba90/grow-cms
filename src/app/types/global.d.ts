@@ -3,31 +3,6 @@ declare global {
 
   type taxonomy_type = "category" | "tag";
 
-  interface ArticleFormData {
-    title: string;
-    content: string;
-    status: "draft" | "published" | "archived";
-    featured: boolean;
-    url?: string;
-    description?: string;
-  }
-
-  interface FormDataToSubmit extends ArticleFormData {
-    author_id: number;
-    category?: number[];
-    tags?: number[];
-    image?: string;
-  }
-
-  interface ArticleFormProps {
-    userId: string;
-    initialValues?: Partial<ArticleFormData>;
-    onSubmit: (values: FormDataToSubmit) => Promise<void>;
-    submitLabel?: string;
-    defaultSelectedCategories?: number[];
-    defaultSelectedTags?: number[];
-  }
-
   interface UserData {
     id: string;
     name: string;
@@ -70,14 +45,6 @@ declare global {
     updatedAt?: Date;
   }
 
-  type MediaData = {
-    user_id: number;
-    file_name: string;
-    file_type: string;
-    file_path: string;
-    size: number;
-    created_at: Date;
-  };
 
 }
 
