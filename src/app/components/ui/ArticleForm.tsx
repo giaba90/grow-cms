@@ -22,9 +22,8 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
     // Usa i valori di default passati come props
     const [selectedCategories, setSelectedCategories] = useState<number[]>(initialData.category ?? []);
     const [selectedTags, setSelectedTags] = useState<number[]>(initialData.tag ?? []);
-
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<ArticleData>({
-        id: initialData.id,
         title: initialData.title,
         content: initialData.content,
         status: initialData.status,
@@ -32,7 +31,6 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
         description: initialData.description,
         url: initialData.url,
         author_id: initialData.author_id,
-        created_at: initialData.created_at,
         // Se initialData ha un ID, lo includiamo nel formData
         ...(initialData.id && { id: initialData.id }),
 
@@ -40,7 +38,7 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
     /*     const [file, setFile] = useState<File>();
         const [imageUrl, setImageUrl] = useState<string | null>(null); */
-    const [isLoading, setIsLoading] = useState(false);
+
 
     const updateForm = (field: keyof ArticleData, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }));

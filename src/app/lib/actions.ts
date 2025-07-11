@@ -140,11 +140,11 @@ export async function createArticle(data: ArticleData): Promise<ActionResponse<A
             data: {
                 title,
                 content,
+                url: url || slugify(title, { lower: true, strict: true }),
+                description: description || content.slice(0, 160),
                 status,
                 featured,
                 author_id: author_id || undefined,
-                url: url || slugify(title, { lower: true, strict: true }),
-                description: description || content.slice(0, 160),
             },
         });
         // Connect taxonomies

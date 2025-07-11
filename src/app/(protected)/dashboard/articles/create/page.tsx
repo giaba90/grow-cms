@@ -1,13 +1,19 @@
-import { getServerSession } from "next-auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import ArticleForm from "../../../../components/ui/ArticleForm";
+import { auth } from "@/auth/auth";
 
 export default async function CreateArticlePage() {
-  /*  const session = await getServerSession();
-   //const userId = session?.user.
-   if (!session || !userId) {
-     redirect('/login');
-   } */
+  const requestHeaders = await headers();
+  const compatibleHeaders = new Headers(requestHeaders);
+  const session = await auth.api.getSession({
+    headers: compatibleHeaders,
+  });
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const data: ArticleData = {
     title: "",
     content: "",
@@ -15,9 +21,8 @@ export default async function CreateArticlePage() {
     url: "",
     description: "",
     featured: false,
-    author_id: "",
-    created_at: new Date().toISOString(),
-  }
+    author_id: session.user.id,
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-8">Crea un nuovo articolo</h1>

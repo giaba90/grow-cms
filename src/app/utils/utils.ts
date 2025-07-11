@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
 export function formatDate(dateString: string): string {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -14,6 +15,7 @@ export function formatDate(dateString: string): string {
   };
   return new Date(dateString).toLocaleDateString("it-IT", options);
 }
+
 export function buildTaxonomyConnect(postId: number, taxonomyIds: number[]) {
   return taxonomyIds.map((taxonomyId) => ({
     post_id_taxonomy_id: {
@@ -22,12 +24,14 @@ export function buildTaxonomyConnect(postId: number, taxonomyIds: number[]) {
     },
   }));
 }
+
 export function buildTaxonomyCreateMany(postId: number, taxonomyIds: number[]) {
   return taxonomyIds.map((taxonomyId) => ({
     post_id: postId,
     taxonomy_id: taxonomyId,
   }));
 }
+
 export async function getArticleData(id: string) {
   try {
     const res = await fetch(
@@ -43,7 +47,9 @@ export async function getArticleData(id: string) {
   } catch (error) {
     console.error("Failed to fetch articles:", error);
   };
-} export async function getPageData(id: string) {
+}
+
+export async function getPageData(id: string) {
 
   try {
     const res = await fetch(
