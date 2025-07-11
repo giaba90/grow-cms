@@ -35,7 +35,7 @@ declare global {
   };
 
   interface ArticleData {
-    id: number;
+    id?: number;
     title: string;
     content: string;
     status: post_status;
