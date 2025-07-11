@@ -130,6 +130,11 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
         return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante l'aggiornamento." }; // Imposta success a false
     }
 }
+/**
+ * Server Action per creare un nuovo articolo.
+ * @param data I dati dell'articolo da creare.
+ * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
+ */
 
 export async function createArticle(data: ArticleData): Promise<ActionResponse<ArticleData>> {
     try {
