@@ -129,9 +129,9 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
     }
 }
 
-export async function createPost(data: FormDataToSubmit): Promise<ActionResponse> {
+export async function createArticle(data: ArticleData): Promise<ActionResponse> {
     try {
-        const { title, content, status, featured, author_id, category, tags, url, description, image } = data;
+        const { title, content, status, featured, author_id, category, url, description } = data;
         if (!title || !content || !author_id) {
             return { success: false, error: "Missing required fields" };
         }
@@ -164,9 +164,9 @@ export async function createPost(data: FormDataToSubmit): Promise<ActionResponse
     }
 }
 
-export async function updatePost(id: number, data: FormDataToSubmit): Promise<ActionResponse> {
+export async function updateArticle(data: ArticleData): Promise<ActionResponse> {
     try {
-        const { title, content, status, featured, author_id, category, tags, url, description, image } = data;
+        const { title, content, status, featured, author_id, category, tags, url, description } = data;
         if (!title || !content || !author_id) {
             return { success: false, error: "Missing required fields" };
         }

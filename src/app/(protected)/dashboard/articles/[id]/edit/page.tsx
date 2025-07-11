@@ -1,8 +1,5 @@
 // File: src/app/dashboard/articles/[id]/edit/page.tsx
-
-import { notFound } from "next/navigation";
-import { getServerSession } from "next-auth";
-import ArticleForm from "../../create/ArticleForm";
+import ArticleForm from "../../../../../components/ui/ArticleForm";
 interface Params {
     params: Promise<{ id: string }>;
 }

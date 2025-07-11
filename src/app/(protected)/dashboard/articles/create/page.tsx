@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import ArticleForm from "./ArticleForm";
+import ArticleForm from "../../../../components/ui/ArticleForm";
 
 export default async function CreateArticlePage() {
   const session = await getServerSession();

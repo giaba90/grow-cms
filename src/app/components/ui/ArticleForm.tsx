@@ -8,30 +8,41 @@ import { Input } from "@/app/components/ui/input";
 import Tiptap from "@/app/components/ui/Tiptap";
 import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import CategoryMultiSelect from "@/app/components/ui/CategoryMultiSelect";
+import { postSchema } from "@/app/lib/validation";
+import { createArticle, updateArticle } from "@/app/lib/actions";
 
+interface ArticleFormProps {
+    initialData: ArticleData;
+    action: "create" | "edit";
+}
 
+export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
-export default function ArticleForm({ userId, initialValues, onSubmit, defaultSelectedCategories = [], defaultSelectedTags = [] }: ArticleFormProps) {
     const router = useRouter();
-    // Usa i valori di default passati come props
-    const [selectedCategories, setSelectedCategories] = useState<number[]>(defaultSelectedCategories);
-    const [selectedTags, setSelectedTags] = useState<number[]>(defaultSelectedTags);
+    /*   // Usa i valori di default passati come props
+      const [selectedCategories, setSelectedCategories] = useState<number[]>(defaultSelectedCategories);
+      const [selectedTags, setSelectedTags] = useState<number[]>(defaultSelectedTags);
+   */
+    const [formData, setFormData] = useState<ArticleData>({
+        id: initialData.id,
+        title: initialData.title,
+        content: initialData.content,
+        status: initialData.status,
+        featured: initialData.featured,
+        description: initialData.description,
+        url: initialData.url,
+        author_id: initialData.author_id,
+        created_at: initialData.created_at,
+        // Se initialData ha un ID, lo includiamo nel formData
+        ...(initialData.id && { id: initialData.id }),
 
-    const [formData, setFormData] = useState<ArticleFormData>({
-        title: "",
-        content: "",
-        status: "draft",
-        featured: false,
-        description: "",
-        url: "",
-        ...initialValues,
     });
 
-    const [file, setFile] = useState<File>();
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    /*     const [file, setFile] = useState<File>();
+        const [imageUrl, setImageUrl] = useState<string | null>(null); */
     const [isLoading, setIsLoading] = useState(false);
 
-    const updateForm = (field: keyof ArticleFormData, value: string | boolean) => {
+    const updateForm = (field: keyof ArticleData, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -40,24 +51,50 @@ export default function ArticleForm({ userId, initialValues, onSubmit, defaultSe
         e.preventDefault();
         setIsLoading(true);
 
-        try {
-            await onSubmit({
-                ...formData,
-                author_id: Number(userId),
-                category: selectedCategories,
-                tags: selectedTags,
-                image: imageUrl ?? undefined,
+        // Validazione Zod
+        const validationResult = postSchema.safeParse(formData);
+        if (!validationResult.success) {
+            // Se la validazione fallisce, mostra un toast con gli errori
+            toast.error("Errore di validazione", {
+                description: validationResult.error.errors.map((err) => err.message).join(", "),
             });
+            setIsLoading(false);
+            return; // Ferma l'esecuzione se la validazione fallisce
+        }
 
-            toast.success("Articolo salvato!");
-            router.push("/dashboard/articles");
-            router.refresh();
-        } catch (err) {
-            toast.error(err instanceof Error ? err.message : "Errore durante il salvataggio");
-        } finally {
+        //if action == "create" handleSubmit call createArticle from lib/actions
+        // elseif action == "edit" handleSubmit call updateArticle from lib/actions
+        try {
+            let result;
+            if (action === "create") {
+                result = await createArticle(formData);
+                if (result?.error) {
+                    throw new Error(result.error);
+                }
+                toast.success("Articolo creato con successo!");
+                router.push("/dashboard/articles");
+                router.refresh();
+                return;
+            }
+            else if (action === "edit") {
+                result = await updateArticle(formData);
+                if (result?.error) {
+                    throw new Error(result.error);
+                }
+                toast.success("Articolo aggiornato con successo!");
+                router.push("/dashboard/articles");
+                router.refresh();
+                return;
+            }
+        } catch (error: any) {
+            console.error("Errore durante l'operazione:", error);
+            toast.error("Errore durante l'operazione:", error);
+
+        }
+        finally {
             setIsLoading(false);
         }
-    };
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -135,7 +172,7 @@ export default function ArticleForm({ userId, initialValues, onSubmit, defaultSe
                         disabled={isLoading}
                     />
 
-                    <div>
+                    {/* <div>
                         <label className="text-sm font-medium">Carica immagine</label>
                         <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
                         {file && !imageUrl && (
@@ -143,9 +180,12 @@ export default function ArticleForm({ userId, initialValues, onSubmit, defaultSe
                                 Carica immagine
                             </Button>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </form>
     );
+
 }
+
+
