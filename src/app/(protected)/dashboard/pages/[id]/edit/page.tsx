@@ -1,5 +1,6 @@
 // app/dashboard/pages/edit/[id]/page.tsx
 import PageForm from "@/app/components/ui/PageForm";
+import { getPageData } from "@/app/utils/utils";
 
 interface Params {
     params: Promise<{ id: string }>;
@@ -19,21 +20,3 @@ export default async function EditPage(props: Params) {
     );
 }
 
-async function getPageData(id: string) {
-
-    try {
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages/${id}`,
-            {
-                next: { revalidate: 0 } // Assicura che i dati siano sempre freschi
-            }
-        );
-        if (!res.ok) {
-            throw new Error(`Failed to fetch pages: ${res.status} ${res.statusText}`);
-        }
-        return await res.json();
-    } catch (error) {
-        console.error("Failed to fetch pages:", error);
-    }
-
-}

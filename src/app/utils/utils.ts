@@ -28,3 +28,37 @@ export function buildTaxonomyCreateMany(postId: number, taxonomyIds: number[]) {
     taxonomy_id: taxonomyId,
   }));
 }
+export async function getArticleData(id: string) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles/${id}`,
+      {
+        next: { revalidate: 0 } // Assicura che i dati siano sempre freschi
+      }
+    );
+    if (!res.ok) {
+      throw new Error(`Failed to fetch articles: ${res.status} ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Failed to fetch articles:", error);
+  };
+} export async function getPageData(id: string) {
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages/${id}`,
+      {
+        next: { revalidate: 0 } // Assicura che i dati siano sempre freschi
+      }
+    );
+    if (!res.ok) {
+      throw new Error(`Failed to fetch pages: ${res.status} ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Failed to fetch pages:", error);
+  }
+
+}
+

@@ -77,6 +77,9 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
                 return;
             }
             else if (action === "edit") {
+                if (!initialData.id) {
+                    throw new Error("ID dell'articolo non fornito per l'editing.");
+                }
                 result = await updateArticle(formData);
                 if (result?.error) {
                     throw new Error(result.error);
