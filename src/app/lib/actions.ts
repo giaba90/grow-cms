@@ -17,11 +17,8 @@ type ActionResponse<T = undefined> = {
 // Server Action per creare una nuova tassonomia (già presente)
 export async function createTaxonomy(data: TaxonomyData) {
     try {
-        const apiUrl = process.env.NODE_ENV === 'development'
-            ? "/api/dashboard/taxonomy"
-            : `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`;
 
-        const res = await fetch(apiUrl, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
