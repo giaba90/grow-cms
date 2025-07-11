@@ -47,24 +47,27 @@ export async function POST(req: Request) {
       );
     }
 
-    const { title, content, status, featured, author_id, category, tag, url: customUrl,
+    const { title, content, status, featured, author_id, category, tag, url,
       description, } = data;
 
-    if (!title || !content || !author_id) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    let customUrl = url || slugify(title, { lower: true, strict: true });
+
+    //check if exists a post with the same url
+    const existingPost = await prisma.post.findUnique({
+      where: { url: customUrl },
+    });
+
+    if (existingPost) {
+      customUrl = slugify(title, { lower: true, strict: true }) + "-" + existingPost.id;
     }
 
-    const url = customUrl || slugify(title, { lower: true, strict: true });
     const finalDescription = description || content.slice(0, 160);
 
     const newPost = await prisma.post.create({
       data: {
         title,
         content,
-        url,
+        url: customUrl,
         description: finalDescription,
         status,
         featured,
