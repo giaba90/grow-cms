@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import prisma from "@/app/prisma/client";
 import { buildTaxonomyConnect, buildTaxonomyCreateMany } from "@/app/utils/utils";
+import slugify from "slugify";
 
 type ActionResponse<T = undefined> = {
     success: boolean;
@@ -129,10 +130,10 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
     }
 }
 
-export async function createArticle(data: ArticleData): Promise<ActionResponse> {
+export async function createArticle(data: ArticleData): Promise<ActionResponse<ArticleData>> {
     try {
         const { title, content, status, featured, author_id, category, tag, url, description } = data;
-        if (!title || !content || !author_id) {
+        if (!title || !content) {
             return { success: false, error: "Missing required fields" };
         }
         const post = await prisma.post.create({
@@ -141,9 +142,9 @@ export async function createArticle(data: ArticleData): Promise<ActionResponse> 
                 content,
                 status,
                 featured,
-                author_id: String(author_id),
-                url: url || undefined,
-                description: description || undefined,
+                author_id: author_id || undefined,
+                url: url || slugify(title, { lower: true, strict: true }),
+                description: description || content.slice(0, 160),
             },
         });
         // Connect taxonomies

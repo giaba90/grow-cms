@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import ArticleForm from "../../../../components/ui/ArticleForm";
 
 export default async function CreateArticlePage() {
-  const session = await getServerSession();
-  const userId = session?.user?.email || "";
-  if (!session || !userId) {
-    redirect('/login');
-  }
+  /*  const session = await getServerSession();
+   //const userId = session?.user.
+   if (!session || !userId) {
+     redirect('/login');
+   } */
   const data: ArticleData = {
     title: "",
     content: "",
@@ -15,7 +15,7 @@ export default async function CreateArticlePage() {
     url: "",
     description: "",
     featured: false,
-    author_id: userId,
+    author_id: "",
     created_at: new Date().toISOString(),
   }
   return (
