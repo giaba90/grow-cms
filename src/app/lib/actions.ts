@@ -4,7 +4,7 @@
 import { revalidatePath } from "next/cache";
 
 import prisma from "@/app/prisma/client";
-import { buildTaxonomyConnect, buildTaxonomyCreateMany } from "@/app/utils/utils";
+import { buildTaxonomyCreateMany } from "@/app/utils/utils";
 import slugify from "slugify";
 import { postSchema } from "./validation";
 
@@ -138,39 +138,26 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
 
 export async function createArticle(data: ArticleData): Promise<ActionResponse<ArticleData>> {
     try {
-        const { title, content, status, featured, author_id, category, tag, url, description } = data;
-        //zod validation
-        const validationResult = postSchema.safeParse(data);
-        if (!validationResult.success) {
-            return { success: false, error: validationResult.error.errors.map(error => error.message).join(", ") };
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cache: 'no-store',
+            body: JSON.stringify(data),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok) {
+            return { success: false, error: json.error || "Errore sconosciuto durante la creazione dell'articolo." };
         }
 
-        const post = await prisma.post.create({
-            data: {
-                title,
-                content,
-                url: url || slugify(title, { lower: true, strict: true }),
-                description: description || content.slice(0, 160),
-                status,
-                featured,
-                author_id: author_id || undefined,
-            },
-        });
-        // Connect taxonomies
-        if ((category && category.length) || (tag && tag.length)) {
-            await prisma.postTaxonomy.createMany({
-                data: [
-                    ...(category ? buildTaxonomyCreateMany(post.id, category) : []),
-                    ...(tag ? buildTaxonomyCreateMany(post.id, tag) : []),
-                ],
-                skipDuplicates: true,
-            });
-        }
         revalidatePath("/dashboard/articles");
-        return { success: true };
+        return { success: true, data: json as ArticleData };
     } catch (err) {
-        console.error("Error in createPost Server Action:", err);
-        return { success: false, error: err instanceof Error ? err.message : "An unexpected error occurred." };
+        console.error("Errore nella Server Action createArticle:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante la creazione." };
     }
 }
 

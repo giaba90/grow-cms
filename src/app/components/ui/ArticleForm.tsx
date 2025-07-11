@@ -19,7 +19,7 @@ interface ArticleFormProps {
 export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
     const router = useRouter();
-    // Usa i valori di default passati come props
+
     const [selectedCategories, setSelectedCategories] = useState<number[]>(initialData.category ?? []);
     const [selectedTags, setSelectedTags] = useState<number[]>(initialData.tag ?? []);
     const [isLoading, setIsLoading] = useState(false);
@@ -49,23 +49,28 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
         e.preventDefault();
         setIsLoading(true);
 
+        // Aggiorna formData con le categorie e i tag selezionati
+        const submitData = {
+            ...formData,
+            category: selectedCategories,
+            tag: selectedTags,
+        };
+
         // Validazione Zod
-        const validationResult = postSchema.safeParse(formData);
+        const validationResult = postSchema.safeParse(submitData);
         if (!validationResult.success) {
-            // Se la validazione fallisce, mostra un toast con gli errori
             toast.error("Errore di validazione", {
                 description: validationResult.error.errors.map((err) => err.message).join(", "),
             });
             setIsLoading(false);
-            return; // Ferma l'esecuzione se la validazione fallisce
+            return;
         }
 
-        //if action == "create" handleSubmit call createArticle from lib/actions
-        // elseif action == "edit" handleSubmit call updateArticle from lib/actions
+
         try {
             let result;
             if (action === "create") {
-                result = await createArticle(formData);
+                result = await createArticle(submitData);
                 if (result?.error) {
                     throw new Error(result.error);
                 }
@@ -78,7 +83,7 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
                 if (!initialData.id) {
                     throw new Error("ID dell'articolo non fornito per l'editing.");
                 }
-                result = await updateArticle(formData);
+                result = await updateArticle(submitData);
                 if (result?.error) {
                     throw new Error(result.error);
                 }

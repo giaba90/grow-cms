@@ -37,6 +37,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const data: ArticleData = await req.json();
+    console.log('Received data:', data);
 
     // Validate with Zod
     const validationResult = postSchema.safeParse(data);
@@ -108,7 +109,7 @@ export async function POST(req: Request) {
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.errors }, { status: 400 });
     }
-
+    console.error("Failed to create post:", error);
     return NextResponse.json(
       { error: "Failed to create post" },
       { status: 500 }
