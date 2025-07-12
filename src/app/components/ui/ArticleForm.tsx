@@ -10,29 +10,11 @@ import PostStatusSelect from "@/app/components/ui/PostStatusSelect";
 import CategoryMultiSelect from "@/app/components/ui/CategoryMultiSelect";
 import { postSchema } from "@/app/lib/validation";
 import { createArticle, updateArticle } from "@/app/lib/actions";
+import { extractTaxonomies } from "@/app/utils/utils";
 
 interface ArticleFormProps {
     initialData: ArticleData;
     action: "create" | "edit";
-}
-
-// Helper function to extract categories and tags from taxonomies
-function extractTaxonomies(taxonomies: any[] = []): { categories: number[], tags: number[] } {
-    const categories: number[] = [];
-    const tags: number[] = [];
-
-    taxonomies.forEach((taxonomyRelation) => {
-        if (taxonomyRelation.taxonomy) {
-            const { id, type } = taxonomyRelation.taxonomy;
-            if (type === 'category') {
-                categories.push(id);
-            } else if (type === 'tag') {
-                tags.push(id);
-            }
-        }
-    });
-
-    return { categories, tags };
 }
 
 export default function ArticleForm({ initialData, action }: ArticleFormProps) {

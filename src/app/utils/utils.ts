@@ -79,4 +79,22 @@ export async function getPageData(id: string) {
   }
 
 }
+// Helper function to extract categories and tags from taxonomies
+export function extractTaxonomies(taxonomies: any[] = []): { categories: number[]; tags: number[]; } {
+  const categories: number[] = [];
+  const tags: number[] = [];
+
+  taxonomies.forEach((taxonomyRelation) => {
+    if (taxonomyRelation.taxonomy) {
+      const { id, type } = taxonomyRelation.taxonomy;
+      if (type === 'category') {
+        categories.push(id);
+      } else if (type === 'tag') {
+        tags.push(id);
+      }
+    }
+  });
+
+  return { categories, tags };
+}
 
