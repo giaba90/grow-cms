@@ -21,6 +21,14 @@ declare global {
     author_id?: string;
     category?: number[]; // ID categoria (taxonomy_type = category)
     tag?: number[]; // array di ID tag (taxonomy_type = tag)
+    taxonomies?: Array<{
+      taxonomy: {
+        id: number;
+        title: string;
+        type: taxonomy_type;
+        description?: string;
+      };
+    }>;
   }
 
   interface PageData {

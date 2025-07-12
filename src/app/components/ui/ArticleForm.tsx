@@ -16,12 +16,34 @@ interface ArticleFormProps {
     action: "create" | "edit";
 }
 
+// Helper function to extract categories and tags from taxonomies
+function extractTaxonomies(taxonomies: any[] = []): { categories: number[], tags: number[] } {
+    const categories: number[] = [];
+    const tags: number[] = [];
+
+    taxonomies.forEach((taxonomyRelation) => {
+        if (taxonomyRelation.taxonomy) {
+            const { id, type } = taxonomyRelation.taxonomy;
+            if (type === 'category') {
+                categories.push(id);
+            } else if (type === 'tag') {
+                tags.push(id);
+            }
+        }
+    });
+
+    return { categories, tags };
+}
+
 export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
     const router = useRouter();
 
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-    const [selectedTags, setSelectedTags] = useState<number[]>([]);
+    // Extract categories and tags from taxonomies field
+    const { categories: initialCategories, tags: initialTags } = extractTaxonomies(initialData.taxonomies);
+
+    const [selectedCategories, setSelectedCategories] = useState<number[]>(initialCategories);
+    const [selectedTags, setSelectedTags] = useState<number[]>(initialTags);
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<ArticleData>({
         title: initialData.title || "",
