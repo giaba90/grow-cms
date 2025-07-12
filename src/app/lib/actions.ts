@@ -206,3 +206,64 @@ export async function updateArticle(data: ArticleData): Promise<ActionResponse> 
         return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante l'aggiornamento." };
     }
 }
+
+/**
+ * Server Action per creare un nuovo utente.
+ * @param data I dati dell'utente da creare.
+ * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
+ */
+export async function createUser(data: UserData): Promise<ActionResponse<UserData>> {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cache: 'no-store',
+            body: JSON.stringify(data),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok) {
+            return { success: false, error: json.error || "Errore sconosciuto durante la creazione dell'utente." };
+        }
+
+        revalidatePath("/dashboard/users");
+        return { success: true, data: json as UserData };
+    } catch (err) {
+        console.error("Errore nell'azione del server createUser:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante la creazione." };
+    }
+}
+
+/**
+ * Server Action per aggiornare un utente esistente.
+ * @param data I dati aggiornati dell'utente.
+ * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
+ */
+export async function updateUser(data: UserData): Promise<ActionResponse<UserData>> {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users/${data.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cache: 'no-store',
+            body: JSON.stringify(data),
+        });
+
+        const json = await res.json();
+        console.log(json);
+        if (!res.ok) {
+            return { success: false, error: json.error || "Errore sconosciuto durante l'aggiornamento dell'utente." };
+        }
+
+        revalidatePath("/dashboard/users");
+        revalidatePath(`/dashboard/users/edit/${data.id}`);
+        return { success: true, data: json as UserData };
+    } catch (err) {
+        console.error("Errore nell'azione del server updateUser:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante l'aggiornamento." };
+    }
+}

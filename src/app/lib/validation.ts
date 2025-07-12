@@ -36,6 +36,8 @@ export const postSchema = z.object({
   author_id: z.string(),
   url: z.string().optional(),
   description: z.string().optional(),
+  category: z.array(z.number()).optional(),
+  tag: z.array(z.number()).optional(),
 });
 
 // zod schema for page data

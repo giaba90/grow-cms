@@ -79,6 +79,30 @@ export async function getPageData(id: string) {
   }
 
 }
+
+/**
+ * Recupera i dati di un utente
+ * @param id ID dell'utente da recuperare
+ * @returns I dati dell'utente
+ */
+export async function getUserData(id: string) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users/${id}`,
+      {
+        next: { revalidate: 0 } // Assicura che i dati siano sempre freschi
+      }
+    );
+    if (!res.ok) {
+      throw new Error(`Failed to fetch users: ${res.status} ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+  }
+}
+
+
 // Helper function to extract categories and tags from taxonomies
 export function extractTaxonomies(taxonomies: any[] = []): { categories: number[]; tags: number[]; } {
   const categories: number[] = [];

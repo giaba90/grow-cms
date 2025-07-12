@@ -4,9 +4,12 @@ declare global {
   type taxonomy_type = "category" | "tag";
 
   interface UserData {
-    id: string;
+    id?: number;
     name: string;
     email: string;
+    password?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
   };
 
   interface ArticleData {
@@ -46,13 +49,6 @@ declare global {
     type: taxonomy_type;
     description?: string;
   }
-
-  interface User extends UserData {
-    password?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-  }
-
 
 }
 

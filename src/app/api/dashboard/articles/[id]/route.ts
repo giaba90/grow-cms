@@ -62,7 +62,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ errors: validation.error.flatten() }, { status: 400 });
   }
 
-  const { title, content, url, description, status, featured, author_id, category, tags } = validation.data;
+  const { title, content, url, description, status, featured, author_id, category, tag } = validation.data;
 
   try {
     // ✅ Aggiorna le tassonomie collegate
@@ -70,11 +70,11 @@ export async function PUT(req: NextRequest) {
 
     const taxonomyData: { post_id: number; taxonomy_id: number }[] = [];
 
-    if (category) {
-      taxonomyData.push({ post_id: id, taxonomy_id: category });
+    if (category?.length) {
+      category.forEach((categoryId) => taxonomyData.push({ post_id: id, taxonomy_id: categoryId }));
     }
-    if (tags?.length) {
-      tags.forEach((tagId) => taxonomyData.push({ post_id: id, taxonomy_id: tagId }));
+    if (tag?.length) {
+      tag.forEach((tagId) => taxonomyData.push({ post_id: id, taxonomy_id: tagId }));
     }
 
     if (taxonomyData.length > 0) {
