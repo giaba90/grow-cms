@@ -32,14 +32,14 @@ export async function createTaxonomy(data: TaxonomyData) {
         const json = await res.json();
 
         if (!res.ok) {
-            return { error: json.error || "Unknown error during taxonomy creation." };
+            return { error: json.error || "Errore sconosciuto durante la creazione della tassonomia." };
         }
 
         revalidatePath("/dashboard/taxonomy");
         return { success: true, data: json };
     } catch (err) {
-        console.error("Error in createTaxonomy Server Action:", err);
-        return { error: err instanceof Error ? err.message : "An unexpected error occurred." };
+        console.error("Errore nell'azione del server createTaxonomy:", err);
+        return { error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante la creazione." };
     }
 }
 
@@ -61,14 +61,14 @@ export async function deleteTaxonomy(id: string | number) {
 
         if (!res.ok) {
             const json = await res.json();
-            return { error: json.error || "Unknown error during taxonomy deletion." };
+            return { error: json.error || "Errore sconosciuto durante l'eliminazione della tassonomia." };
         }
 
         revalidatePath("/dashboard/taxonomy");
         return { success: true };
     } catch (err) {
-        console.error("Error in deleteTaxonomy Server Action:", err);
-        return { error: err instanceof Error ? err.message : "An unexpected error occurred during deletion." };
+        console.error("Errore nell'azione del server deleteTaxonomy:", err);
+        return { error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante l'eliminazione." };
     }
 }
 
@@ -97,8 +97,8 @@ export async function createPage(data: PageData): Promise<ActionResponse<PageDat
         revalidatePath("/dashboard/pages");
         return { success: true, data: json as PageData }; // Assicurati che data sia di tipo PageData
     } catch (err) {
-        console.error("Errore nella Server Action createPage:", err);
-        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante la creazione." }; // Imposta success a false
+        console.error("Errore nell'azione del server createPage:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante la creazione." }; // Imposta
     }
 }
 
@@ -129,8 +129,8 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
         revalidatePath(`/dashboard/pages/edit/${data.id}`);
         return { success: true, data: json as PageData }; // Assicurati che data sia di tipo PageData
     } catch (err) {
-        console.error("Errore nella Server Action updatePage:", err);
-        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante l'aggiornamento." }; // Imposta success a false
+        console.error("Errore nell'azione del server updatePage:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante l'aggiornamento." }; // Imposta success a false
     }
 }
 
@@ -159,8 +159,8 @@ export async function createArticle(data: ArticleData): Promise<ActionResponse<A
         revalidatePath("/dashboard/articles");
         return { success: true, data: json as ArticleData };
     } catch (err) {
-        console.error("Errore nella Server Action createArticle:", err);
-        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante la creazione." };
+        console.error("Errore nell'azione del server createArticle:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante la creazione." };
     }
 }
 
@@ -202,7 +202,7 @@ export async function updateArticle(data: ArticleData): Promise<ActionResponse> 
         revalidatePath("/dashboard/articles");
         return { success: true };
     } catch (err) {
-        console.error("Error in updatePost Server Action:", err);
-        return { success: false, error: err instanceof Error ? err.message : "An unexpected error occurred." };
+        console.error("Errore nell'azione del server updateArticle:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante l'aggiornamento." };
     }
 }

@@ -2,7 +2,7 @@ import { Table, TableBody, TableHeader, TableRow, TableHead } from "./table";
 import MyTableRow from "./mytablerow";
 
 interface MyTableProps {
-  initialData: [ArticleData | PageData | TaxonomyData | UserData];
+  initialData: (ArticleData | PageData | TaxonomyData | UserData)[];
   type?: "articles" | "pages" | "taxonomy" | "users";
 }
 

@@ -3,20 +3,11 @@ import { NewButton } from "@/app/components/ui/newbutton";
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
 import MyTable from "@/app/components/ui/mytable";
+import { getTaxonomies } from "@/app/lib/getTaxonomies";
 
 
 export default async function TaxonomyPage() {
-  // Fetch Taxonomy data from the API
-  let data = [];
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/taxonomy`);
-    if (!res.ok) {
-      throw new Error("Failed to fetch taxonomies");
-    }
-    data = await res.json();
-  } catch (error) {
-    console.error("Failed to fetch taxonomies:", error);
-  }
+  const data = await getTaxonomies();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -33,7 +24,7 @@ export default async function TaxonomyPage() {
         </div>
       </div>
       <div className="border bg-white">
-        <MyTable initialData={data.taxonomies} type="taxonomy" />
+        <MyTable initialData={data} type="taxonomy" />
       </div>
     </div>
   );

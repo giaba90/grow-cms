@@ -2,20 +2,12 @@ import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
 import { NewButton } from "@/app/components/ui/newbutton";
 import MyTable from "@/app/components/ui/mytable";
+import { getPages } from "@/app/lib/getPages";
 
 
 export default async function PageList() {
-  // Fetch Pages data from the API
-  let data = [];
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/pages`);
-    if (!res.ok) {
-      throw new Error("Failed to fetch pages");
-    }
-    data = await res.json();
-  } catch (error) {
-    console.error("Failed to fetch pages:", error);
-  }
+
+  const data = await getPages();
 
 
   return (
@@ -31,7 +23,7 @@ export default async function PageList() {
         </div>
       </div>
       <div className="border bg-white">
-        <MyTable initialData={data.pages} type="pages" />
+        <MyTable initialData={data} type="pages" />
       </div>
     </div>
   );

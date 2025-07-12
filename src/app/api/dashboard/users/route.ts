@@ -5,17 +5,17 @@ import { auth } from "@/auth/auth"; // Importa la tua istanza di better-auth
 import { headers } from "next/headers"; // Per accedere alle intestazioni della richiesta
 
 export async function GET() {
-  const requestHeaders = await headers();
-  const session = await auth.api.getSession({
-    headers: new Headers(await requestHeaders),
-  });
-
-  if (!session) {
-    return NextResponse.json(
-      { error: "Unauthorized: Authentication required" },
-      { status: 401 }
-    );
-  }
+  /*   const requestHeaders = await headers();
+    const session = await auth.api.getSession({
+      headers: new Headers(await requestHeaders),
+    });
+  
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized: Authentication required" },
+        { status: 401 }
+      );
+    } */
 
   // Facoltativo: controllo admin
   // if (session.user.role !== "admin") {

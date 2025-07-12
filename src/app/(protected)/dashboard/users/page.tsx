@@ -2,29 +2,10 @@ import { Search } from "lucide-react";
 import { Input } from "@components/ui/input";
 import { NewButton } from "@/app/components/ui/newbutton";
 import MyTable from "@/app/components/ui/mytable";
-import { headers } from "next/headers";
+import { getUsers } from "@/app/lib/getUsers";
 
 export default async function UsersPage() {
-  // Ottieni le intestazioni della richiesta corrente per inoltrare il cookie all'API
-  const requestHeaders = await headers();
-  let data = []
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {
-      headers: {
-        'Cookie': (await requestHeaders).get('cookie') || ''
-      },
-      // Cache settings if needed, e.g., no-store for dynamic data
-      cache: 'no-store'
-    });
-
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch users: ${res.status} ${res.statusText}`);
-    }
-    data = await res.json();
-  } catch (error) {
-    console.error("Failed to fetch users:", error);
-  }
+  const data = await getUsers();
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -39,7 +20,7 @@ export default async function UsersPage() {
         </div>
       </div>
       <div className="border bg-white">
-        <MyTable type="users" initialData={data.users} />
+        <MyTable type="users" initialData={data} />
       </div>
     </div>
   );
