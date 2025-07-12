@@ -56,7 +56,7 @@ export default function CategoryMultiSelect({
   if (error) return <div className="text-sm text-red-500">{error}</div>;
 
   return (
-    <div>
+    <div className="border border-black bg-white p-2">
       <label className="text-sm font-medium mb-2 block">{label}</label>
       <div className="flex flex-col gap-2">
         {categories.map((cat) => (

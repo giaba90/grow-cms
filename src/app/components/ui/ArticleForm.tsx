@@ -20,17 +20,17 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
     const router = useRouter();
 
-    const [selectedCategories, setSelectedCategories] = useState<number[]>(initialData.category ?? []);
-    const [selectedTags, setSelectedTags] = useState<number[]>(initialData.tag ?? []);
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [selectedTags, setSelectedTags] = useState<number[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<ArticleData>({
-        title: initialData.title,
-        content: initialData.content,
-        status: initialData.status,
-        featured: initialData.featured,
-        description: initialData.description,
-        url: initialData.url,
-        author_id: initialData.author_id,
+        title: initialData.title || "",
+        content: initialData.content || "",
+        status: initialData.status || "draft",
+        featured: initialData.featured || false,
+        description: initialData.description || "",
+        url: initialData.url || "",
+        author_id: initialData.author_id || "",
         // Se initialData ha un ID, lo includiamo nel formData
         ...(initialData.id && { id: initialData.id }),
 
@@ -107,6 +107,7 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
             <div className="flex flex-col md:flex-row gap-6">
                 {/* Colonna sinistra */}
                 <div className="w-full md:w-2/3 space-y-6">
+                    <label htmlFor="title" className="text-sm font-medium">Titolo</label>
                     <Input
                         className="bg-white"
                         placeholder="Titolo"
@@ -114,18 +115,21 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
                         onChange={(e) => updateForm("title", e.target.value)}
                         disabled={isLoading}
                     />
+                    <label htmlFor="url" className="text-sm font-medium">URL</label>
                     <Input
                         className="bg-white"
                         placeholder="URL personalizzato"
                         value={formData.url}
                         onChange={(e) => updateForm("url", e.target.value)}
                     />
+                    <label htmlFor="description" className="text-sm font-medium">Descrizione SEO</label>
                     <Input
                         className="bg-white"
                         placeholder="Descrizione SEO"
                         value={formData.description?.replace(/<[^>]*>/g, "")}
                         onChange={(e) => updateForm("description", e.target.value)}
                     />
+                    <label htmlFor="content" className="text-sm font-medium">Contenuto</label>
                     <Tiptap
                         onChange={(value) => updateForm("content", value)}
                         content={formData.content}
@@ -147,15 +151,6 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
 
                 {/* Colonna destra */}
                 <div className="w-full md:w-1/3 space-y-6">
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            checked={formData.featured}
-                            onChange={(e) => updateForm("featured", e.target.checked)}
-                            className="h-4 w-4"
-                        />
-                        <label className="text-sm font-medium">Articolo in evidenza</label>
-                    </div>
 
                     <PostStatusSelect
                         initialStatus={formData.status}
@@ -177,6 +172,17 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
                         label="Tag"
                         disabled={isLoading}
                     />
+
+                    <div className="flex items-center gap-2">
+
+                        <input
+                            type="checkbox"
+                            checked={formData.featured}
+                            onChange={(e) => updateForm("featured", e.target.checked)}
+                            className="h-4 w-4"
+                        />
+                        <label className="text-sm font-medium">Articolo in evidenza</label>
+                    </div>
 
                     {/* <div>
                         <label className="text-sm font-medium">Carica immagine</label>

@@ -5,8 +5,6 @@ import { revalidatePath } from "next/cache";
 
 import prisma from "@/app/prisma/client";
 import { buildTaxonomyCreateMany } from "@/app/utils/utils";
-import slugify from "slugify";
-import { postSchema } from "./validation";
 
 type ActionResponse<T = undefined> = {
     success: boolean;
@@ -14,7 +12,11 @@ type ActionResponse<T = undefined> = {
     data?: T;
 };
 
-// Server Action per creare una nuova tassonomia (già presente)
+/**
+ * Server Action per creare una nuova tassonomia
+ * @param data I dati della tassonomia da creare
+ * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
+ */
 export async function createTaxonomy(data: TaxonomyData) {
     try {
 
@@ -41,7 +43,11 @@ export async function createTaxonomy(data: TaxonomyData) {
     }
 }
 
-// Server Action per eliminare una tassonomia (già presente)
+/** 
+ * Server Action per eliminare una tassonomia
+ * @param id ID della tassonomia da eliminare
+ * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
+ */
 export async function deleteTaxonomy(id: string | number) {
     try {
         const apiUrl = process.env.NODE_ENV === 'development'
@@ -127,12 +133,12 @@ export async function updatePage(data: PageData): Promise<ActionResponse<PageDat
         return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore inaspettato durante l'aggiornamento." }; // Imposta success a false
     }
 }
+
 /**
  * Server Action per creare un nuovo articolo.
  * @param data I dati dell'articolo da creare.
  * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
  */
-
 export async function createArticle(data: ArticleData): Promise<ActionResponse<ArticleData>> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles`, {
@@ -158,6 +164,11 @@ export async function createArticle(data: ArticleData): Promise<ActionResponse<A
     }
 }
 
+/**
+ * Server Action per aggiornare un articolo esistente.
+ * @param data I dati aggiornati dell'articolo.
+ * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
+ */
 export async function updateArticle(data: ArticleData): Promise<ActionResponse> {
     try {
         const { title, content, status, featured, author_id, category, tag, url, description, id } = data;

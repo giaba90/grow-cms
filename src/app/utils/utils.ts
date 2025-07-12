@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Formatta una data in formato italiano
+ * @param dateString La data da formattare
+ * @returns La data formattata
+ */
 export function formatDate(dateString: string): string {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -16,15 +21,12 @@ export function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("it-IT", options);
 }
 
-export function buildTaxonomyConnect(postId: number, taxonomyIds: number[]) {
-  return taxonomyIds.map((taxonomyId) => ({
-    post_id_taxonomy_id: {
-      post_id: postId,
-      taxonomy_id: taxonomyId,
-    },
-  }));
-}
-
+/**
+ * Costruisce un array di oggetti per la creazione di molti-a-molti tra post e taxonomy
+ * @param postId ID del post
+ * @param taxonomyIds Array di ID delle taxonomy da collegare al post
+ * @returns Array di oggetti per la creazione di molti-a-molti tra post e taxonomy
+ */
 export function buildTaxonomyCreateMany(postId: number, taxonomyIds: number[]) {
   return taxonomyIds.map((taxonomyId) => ({
     post_id: postId,
@@ -32,7 +34,12 @@ export function buildTaxonomyCreateMany(postId: number, taxonomyIds: number[]) {
   }));
 }
 
-export async function getArticleData(id: string) {
+/**
+ * Recupera i dati di un articolo
+ * @param id ID dell'articolo da recuperare
+ * @returns I dati dell'articolo
+ */
+export async function getArticleData(id: number) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/articles/${id}`,
@@ -49,6 +56,11 @@ export async function getArticleData(id: string) {
   };
 }
 
+/**
+ * Recupera i dati di una pagina
+ * @param id ID della pagina da recuperare
+ * @returns I dati della pagina
+ */
 export async function getPageData(id: string) {
 
   try {
