@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { Input } from "@components/ui/input";
-import { NewButton } from "@/app/components/ui/newbutton";
+import NewButton from "@/app/components/ui/NewButton";
 import MyTable from "@/app/components/ui/MyTable";
 import { getUsers } from "@/app/lib/getUsers";
 

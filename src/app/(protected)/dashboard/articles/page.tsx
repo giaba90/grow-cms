@@ -1,8 +1,9 @@
 import { Search } from "lucide-react";
 import { Input } from "@components/ui/input";
-import { NewButton } from "@/app/components/ui/newbutton";
 import MyTable from "@/app/components/ui/MyTable";
 import { getArticles } from "@/app/lib/getArticles";
+import NewButton from "@/app/components/ui/NewButton";
+
 
 export default async function ArticlesPage() {
 
