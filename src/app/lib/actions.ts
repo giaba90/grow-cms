@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import prisma from "@/app/prisma/client";
 import { buildTaxonomyCreateMany } from "@/app/utils/utils";
+import { authClient } from "./auth-client";
 
 type ActionResponse<T = undefined> = {
     success: boolean;
@@ -213,29 +214,28 @@ export async function updateArticle(data: ArticleData): Promise<ActionResponse> 
  * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
  */
 export async function createUser(data: UserData): Promise<ActionResponse<UserData>> {
-    //use better-auth to create a new user
-
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            cache: 'no-store',
-            body: JSON.stringify(data),
-        });
+        if (!data.password) {
+            return { success: false, error: "Password is required" };
+        }
 
-        const json = await res.json();
+        const { data: UserData, error: authError } = await authClient.signUp.email(
+            {
+                email: data.email,
+                password: data.password,
+                name: data.name,
+            }
+        );
 
-        if (!res.ok) {
-            return { success: false, error: json.error || "Errore sconosciuto durante la creazione dell'utente." };
+        if (authError) {
+            return { success: false, error: authError.message || "Registration failed" };
         }
 
         revalidatePath("/dashboard/users");
-        return { success: true, data: json as UserData };
+        return { success: true, data: data };
     } catch (err) {
-        console.error("Errore nell'azione del server createUser:", err);
-        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante la creazione." };
+        console.error("Errore inatteso durante la registrazione:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Si è verificato un errore imprevisto durante la registrazione." };
     }
 }
 
