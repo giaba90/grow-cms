@@ -30,7 +30,6 @@ export function SignIn() {
       window.location.href = "/dashboard";
     }
     catch (err: any) {
-      console.error(err);
       setError("Errore imprevisto durante il login.");
     }
     finally {

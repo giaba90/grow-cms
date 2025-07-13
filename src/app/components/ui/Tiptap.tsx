@@ -59,12 +59,6 @@ const Tiptap = ({ content = "", onChange }: TiptapProps) => {
     return null;
   }
 
-  const saveContent = () => {
-    if (editor) {
-      console.log(editor.getJSON());
-    }
-  };
-
   return (
     <>
       <div className="flex flex-col">

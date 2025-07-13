@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
 import { auth } from "@/auth/auth";
 import { userDataSchema } from "@/app/lib/validation";
+import bcrypt from "bcryptjs";
 
 // Helpers
 function getUserIdFromUrl(req: NextRequest): string | null {
@@ -69,7 +70,12 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ errors: validation.error.flatten() }, { status: 400 });
   }
 
-  const { name, email } = validation.data;
+  const { name, email, password } = validation.data;
+
+  let passwordHash = "";
+  if (password) {
+    passwordHash = await bcrypt.hash(password, 10);
+  }
 
 
   try {
@@ -78,9 +84,24 @@ export async function PUT(req: NextRequest) {
       data: {
         name,
         email,
+        password: passwordHash,
         updatedAt: new Date(),
       },
     });
+
+    // Find and update the account associated with this user
+    const account = await prisma.account.findFirst({
+      where: { userId: id },
+    });
+
+    if (account) {
+      await prisma.account.update({
+        where: { id: account.id },
+        data: {
+          password: passwordHash,
+        },
+      });
+    }
 
     return NextResponse.json({ message: "User updated", user }, { status: 200 });
   } catch (error) {

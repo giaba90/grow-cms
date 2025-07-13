@@ -213,6 +213,8 @@ export async function updateArticle(data: ArticleData): Promise<ActionResponse> 
  * @returns Un oggetto con 'success: true' in caso di successo o 'error: string' in caso di fallimento.
  */
 export async function createUser(data: UserData): Promise<ActionResponse<UserData>> {
+    //use better-auth to create a new user
+
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/users`, {
             method: "POST",
@@ -254,7 +256,7 @@ export async function updateUser(data: UserData): Promise<ActionResponse<UserDat
         });
 
         const json = await res.json();
-        console.log(json);
+
         if (!res.ok) {
             return { success: false, error: json.error || "Errore sconosciuto durante l'aggiornamento dell'utente." };
         }

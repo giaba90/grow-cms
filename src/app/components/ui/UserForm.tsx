@@ -17,6 +17,7 @@ export default function UserForm({ initialData, action }: UserFormProps) {
     const [form, setForm] = useState<UserData>({
         name: initialData.name || "",
         email: initialData.email || "",
+        password: initialData.password || "",
         // Se initialData ha un ID, lo includiamo nel formData
         ...(initialData.id && { id: initialData.id }),
     });
@@ -82,6 +83,18 @@ export default function UserForm({ initialData, action }: UserFormProps) {
                             value={form.email}
                             onChange={(e) => updateForm("email", e.target.value)}
                             required
+                            disabled={isLoading}
+                            className="bg-white"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-sm font-medium">Password</label>
+                        <Input
+                            name="password"
+                            type="password"
+                            value={form.password}
+                            onChange={(e) => updateForm("password", e.target.value)}
                             disabled={isLoading}
                             className="bg-white"
                         />

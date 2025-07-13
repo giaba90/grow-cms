@@ -8,6 +8,7 @@ import { Button } from "@/app/components/ui/button";
 import { Label } from "@/app/components/ui/label";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { authClient } from "@/app/lib/auth-client";
+import { toast } from "sonner";
 
 interface SignUpFormProps {
     // Puoi aggiungere props qui se necessario, ad esempio per i valori iniziali del form
@@ -45,12 +46,12 @@ export function SignUpForm({ }: SignUpFormProps) {
                     // onSuccess e onError sono passati direttamente come opzioni al metodo signUp.email
                     onSuccess: (context) => {
                         // better-auth gestisce l'impostazione dei cookie di sessione automaticamente qui
-                        console.log("Registrazione avvenuta con successo:", context.data);
+                        toast.success("Registrazione avvenuta con successo");
                         router.push("/dashboard"); // Reindirizza alla dashboard in caso di successo
                     },
                     onError: (context) => {
                         // Gestisci errori specifici da better-auth
-                        console.error("Registrazione fallita:", context.error);
+                        toast.error("Registrazione fallita: " + (context.error?.message || "Errore sconosciuto"));
                         setError(context.error?.message || "Errore nella registrazione.");
                     },
                     // Se hai bisogno di configurazioni aggiuntive per la fetch sottostante,

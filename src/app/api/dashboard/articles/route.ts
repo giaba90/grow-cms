@@ -37,7 +37,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const data: ArticleData = await req.json();
-    console.log('Received data:', data);
+
 
     // Validate with Zod
     const validationResult = postSchema.safeParse(data);
