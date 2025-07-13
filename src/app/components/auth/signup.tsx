@@ -10,11 +10,8 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { authClient } from "@/app/lib/auth-client";
 import { toast } from "sonner";
 
-interface SignUpFormProps {
-    // Puoi aggiungere props qui se necessario, ad esempio per i valori iniziali del form
-}
 
-export function SignUpForm({ }: SignUpFormProps) {
+export function SignUpForm() {
     const [form, setForm] = useState({
         name: "",
         email: "",
