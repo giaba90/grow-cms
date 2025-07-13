@@ -1,5 +1,5 @@
 import { Table, TableBody, TableHeader, TableRow, TableHead } from "./table";
-import MyTableRow from "./mytablerow";
+import MyTableRow from "./MyTableRow";
 
 interface MyTableProps {
   initialData: (ArticleData | PageData | TaxonomyData | UserData)[];

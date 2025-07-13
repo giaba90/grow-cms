@@ -1,5 +1,5 @@
 // app/dashboard/pages/edit/[id]/page.tsx
-import PageForm from "@/app/components/ui/PageForm";
+import PageForm from "@/app/components/ui/form/PageForm";
 import { getPageData } from "@/app/utils/utils";
 
 interface Params {

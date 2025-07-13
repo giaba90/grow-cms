@@ -6,7 +6,7 @@ interface EditButtonProps {
   url: string;
 }
 
-export function EditButton({ url }: EditButtonProps) {
+export default function EditButton({ url }: EditButtonProps) {
   return (
     <Link href={`/dashboard/${url}`}>
       <Button variant="ghost" size="icon">

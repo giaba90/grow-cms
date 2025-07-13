@@ -1,5 +1,4 @@
-
-import { EditButton } from "./editbutton";
+import EditButton from "./editbutton";
 import DeleteButton from "./DeleteButton";
 
 interface RowActionsProps {

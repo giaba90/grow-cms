@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import ArticleForm from "../../../../components/ui/ArticleForm";
+import ArticleForm from "../../../../components/ui/form/ArticleForm";
 import { auth } from "@/auth/auth";
 
 export default async function CreateArticlePage() {

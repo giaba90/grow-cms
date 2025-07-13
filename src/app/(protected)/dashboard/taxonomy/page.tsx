@@ -2,7 +2,7 @@
 import { NewButton } from "@/app/components/ui/newbutton";
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
-import MyTable from "@/app/components/ui/mytable";
+import MyTable from "@/app/components/ui/MyTable";
 import { getTaxonomies } from "@/app/lib/getTaxonomies";
 
 

@@ -1,5 +1,5 @@
 //dashboard/pages/create/page.tsx
-import PageForm from "@/app/components/ui/PageForm"; // Importa il componente PageForm
+import PageForm from "@/app/components/ui/form/PageForm"; // Importa il componente PageForm
 
 export default function CreatePage() {
     const data: PageData = {

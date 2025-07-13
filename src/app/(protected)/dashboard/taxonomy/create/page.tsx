@@ -1,4 +1,4 @@
-import TaxonomyForm from "@/app/components/ui/TaxonomyForm";
+import TaxonomyForm from "@/app/components/ui/form/TaxonomyForm";
 
 export default function CreateTaxonomyPage() {
 

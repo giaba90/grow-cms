@@ -1,5 +1,5 @@
 //dashboard/users/[id]/edit/page.tsx
-import UserForm from "@/app/components/ui/UserForm";
+import UserForm from "@/app/components/ui/form/UserForm";
 import { getUserData } from "@/app/utils/utils";
 
 interface Params {

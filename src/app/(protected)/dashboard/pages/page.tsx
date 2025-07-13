@@ -1,7 +1,7 @@
 import { Input } from "@/app/components/ui/input";
 import { Search } from "lucide-react";
 import { NewButton } from "@/app/components/ui/newbutton";
-import MyTable from "@/app/components/ui/mytable";
+import MyTable from "@/app/components/ui/MyTable";
 import { getPages } from "@/app/lib/getPages";
 
 

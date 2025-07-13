@@ -4,20 +4,15 @@ import Link from "next/link";
 
 interface NewButtonProps {
   url: string;
-  type?: "articles" | "pages" | "taxonomy" | "users";
+  type: "articles" | "pages" | "taxonomy" | "users";
 }
 
-const typeToPath: Record<NonNullable<NewButtonProps["type"]>, string> = {
-  articles: "articles",
-  pages: "pages",
-  taxonomy: "taxonomy",
-  users: "users",
-};
 
-export function NewButton({ url, type }: NewButtonProps) {
-  const path = type ? typeToPath[type] : "articles";
+
+export default function NewButton({ url, type }: NewButtonProps) {
+
   return (
-    <Link href={`/dashboard/${path}/${url}`}>
+    <Link href={`/dashboard/${type}/${url}`}>
       <Button className="cursor-pointer mt-2 bg-black text-white" size="sm">
         <Plus className="mr-2 h-4 w-4" />
         Nuovo

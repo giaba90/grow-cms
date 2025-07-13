@@ -1,6 +1,6 @@
 // File: src/app/dashboard/articles/[id]/edit/page.tsx
 import { getArticleData } from "@/app/utils/utils";
-import ArticleForm from "../../../../../components/ui/ArticleForm";
+import ArticleForm from "../../../../../components/ui/form/ArticleForm";
 interface Params {
     params: Promise<{ id: string }>;
 }

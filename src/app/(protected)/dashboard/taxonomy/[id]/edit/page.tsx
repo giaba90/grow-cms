@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import TaxonomyForm from "@/app/components/ui/TaxonomyForm";
+import TaxonomyForm from "@/app/components/ui/form/TaxonomyForm";
 import { toast } from "sonner";
 
 export default function EditTaxonomyPage() {
