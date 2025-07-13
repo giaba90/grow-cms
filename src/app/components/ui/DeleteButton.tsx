@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "./button";
 
 interface DeleteButtonProps {
-    itemId: string;
+    itemId: string | number | undefined;
     itemType: "articles" | "taxonomy" | "pages" | "users";
     redirectAfterDelete?: string; // es. "/dashboard/taxonomy"
 }

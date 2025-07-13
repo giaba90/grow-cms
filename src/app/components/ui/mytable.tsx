@@ -3,7 +3,7 @@ import MyTableRow from "./mytablerow";
 
 interface MyTableProps {
   initialData: (ArticleData | PageData | TaxonomyData | UserData)[];
-  type?: "articles" | "pages" | "taxonomy" | "users";
+  type: "articles" | "pages" | "taxonomy" | "users";
 }
 
 export default function MyTable({ initialData, type }: MyTableProps) {

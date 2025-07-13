@@ -5,7 +5,7 @@ import { RowActions } from "./RowActions";
 
 interface MyTableRowProps {
   data: ArticleData | PageData | TaxonomyData | UserData;
-  type?: "articles" | "pages" | "taxonomy" | "users";
+  type: "articles" | "pages" | "taxonomy" | "users";
 }
 
 export default function MyTableRow({ data, type }: MyTableRowProps) {
