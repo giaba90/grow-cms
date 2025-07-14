@@ -1,6 +1,6 @@
-## About project
+# GROW CMS 
 
-GROW CMS - A light CMS to create pages and posts for my little blog
+A light CMS to create pages and posts for my little blog
 
 ## Technologies
 
@@ -13,6 +13,35 @@ GROW CMS - A light CMS to create pages and posts for my little blog
 - GraphQL
 - Eslint
 - Prettier
+
+## Demo
+
+Insert gif or link to demo
+
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`API_KEY`
+
+`ANOTHER_API_KEY`
+
+
+## Installation
+
+Install my-project with npm
+
+```bash
+  npm install my-project
+  cd my-project
+```
+    
+## Documentation
+
+[Documentation](https://linktodocumentation)
+
+
 
 ## API
 
