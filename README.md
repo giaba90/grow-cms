@@ -6,6 +6,7 @@ A light CMS to create pages and posts for my little blog
 
 - TypeScript
 - NextJS 15
+- Better-auth
 - TailwindCSS
 - Shadcn-ui
 - PostgreSQL
