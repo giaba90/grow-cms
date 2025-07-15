@@ -50,5 +50,8 @@
     "prisma": "^6.11.0",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3"
+  },
+  "prisma": {
+    "schema": "./src/app/prisma/schema.prisma"
   }
 }
