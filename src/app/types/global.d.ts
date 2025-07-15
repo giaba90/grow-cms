@@ -50,6 +50,17 @@ declare global {
     description?: string;
   }
 
+  interface MediaData {
+    id?: number;
+    user_id?: string;
+    file_name?: string;
+    file_path?: string;
+    file_type?: string;
+    size?: number;
+    created_at?: string;
+    content_id?: number; // ID dell'articolo o della pagina associata
+  }
+
 }
 
 export { }
