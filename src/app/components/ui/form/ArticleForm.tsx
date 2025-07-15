@@ -35,6 +35,7 @@ export default function ArticleForm({ initialData, action }: ArticleFormProps) {
         description: initialData.description || "",
         url: initialData.url || "",
         author_id: initialData.author_id || "",
+        created_at: initialData.created_at || new Date().toISOString(),
         // Se initialData ha un ID, lo includiamo nel formData
         ...(initialData.id && { id: initialData.id }),
 
