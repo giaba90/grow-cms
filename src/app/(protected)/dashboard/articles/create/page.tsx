@@ -22,6 +22,7 @@ export default async function CreateArticlePage() {
     description: "",
     featured: false,
     author_id: session.user.id,
+    created_at: new Date().toISOString(),
   };
   return (
     <div className="container mx-auto px-4 py-8">
