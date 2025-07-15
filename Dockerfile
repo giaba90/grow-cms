@@ -1,32 +1,29 @@
-# Install dependencies only when needed
+# Install dependencies
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# Install system dependencies for Prisma
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl libc6-compat
 
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Rebuild the Prisma client
-COPY ./src/prisma ./src/prisma
-COPY ./prisma ./prisma
-RUN npx prisma generate || true
+# Generate Prisma client
+COPY src/app/prisma ./src/app/prisma
+RUN npx prisma generate
 
-# Copy all files
+# Build app
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
 
-# Build the Next.js app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . ./
 RUN npm run build
 
-# Production image, copy only necessary files
+# Final production image
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
@@ -36,4 +33,4 @@ COPY --from=builder /app/src ./src
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["node", ".next/standalone/server.js"]
