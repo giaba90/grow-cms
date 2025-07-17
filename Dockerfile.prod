@@ -1,0 +1,38 @@
+# Dockerfile.prod
+
+# Stage 1: Build dell'applicazione Next.js
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copia i file delle dipendenze
+COPY package*.json ./
+
+# Installa le dipendenze di produzione
+# --omit=dev è importante per non installare dipendenze di sviluppo
+RUN npm install --omit=dev
+
+# Copia tutti i file sorgente del progetto Next.js
+COPY . .
+
+# Esegui la build di Next.js
+# Questo comando crea la cartella .next/
+RUN npm run build
+
+# Stage 2: Immagine finale leggera per la produzione
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copia solo ciò che è necessario per eseguire l'app in produzione
+# Questo include i file compilati, node_modules e public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public # Non dimenticare la cartella public
+
+# Espone la porta su cui Next.js ascolterà
+EXPOSE 3000
+
+# Comando per avviare l'applicazione in produzione
+CMD ["npm", "start"]

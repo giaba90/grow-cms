@@ -1,0 +1,37 @@
+# docker-compose.prod.yml
+version: '3.8'
+
+services:
+  webapp:
+    # Usa il Dockerfile specifico per la produzione
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: nextjs-prod-app
+    ports:
+      - "80:3000" # Mappa la porta 80 pubblica alla porta 3000 del container
+    environment:
+      DATABASE_URL: "postgresql://user_prod:password_prod@db-prod:5432/mydb_prod"
+      NEXTAUTH_SECRET: "your_nextauth_secret_PROD_VERY_LONG_AND_RANDOM" # GENERARE UN SEGRETO ROBUSTO
+      NEXTAUTH_URL: "https://your-domain.com" # L'URL effettivo della tua app in produzione
+      NODE_ENV: production # Importante per Next.js
+    depends_on:
+      - db-prod
+    restart: unless-stopped # Assicura che il container riparta in caso di crash
+
+  db-prod:
+    image: postgres:16-alpine
+    container_name: nextjs-prod-db
+    environment:
+      POSTGRES_DB: mydb_prod
+      POSTGRES_USER: user_prod
+      POSTGRES_PASSWORD: password_prod
+    volumes:
+      - prod_db_data:/var/lib/postgresql/data # Volume per la persistenza dei dati
+    # ports:
+    #   - "5432:5432" # In produzione, il DB non dovrebbe essere esposto pubblicamente,
+    #                # ma solo al container dell'app (tramite la rete Docker interna).
+    #                # Rimuovi questa riga se non hai bisogno di accedere al DB esternamente.
+
+volumes:
+  prod_db_data:
