@@ -1,7 +1,7 @@
 import { Menu, Rocket } from "lucide-react";
 import { cn } from "../../utils/utils";
-import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/auth/auth.client";
 
 interface HeaderProps {
   onMenuClick: () => void;
