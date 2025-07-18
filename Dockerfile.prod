@@ -2,11 +2,35 @@
 # Stage 1: Build dell'applicazione Next.js
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Copia solo package.json e package-lock.json per sfruttare la cache di Docker.
 COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npx prisma generate
-RUN npm run build
+
+# Installa TUTTE le dipendenze per la fase di build, incluse quelle di sviluppo.
+RUN npm install
+
+# COPIA TUTTO IL CODICE SORGENTE PRIMA DI QUALSIASI OPERAZIONE DI BUILD O GENERAZIONE.
+# Questo include la directory 'src' e quindi 'schema.prisma'.
+COPY . . 
+
+# AGGIUNGI QUESTI COMANDI DI DEBUG QUI
+# Questi comandi mostreranno il contenuto delle directory e la presenza di schema.prisma
+# nel log di build di Docker.
+RUN echo "Checking for schema.prisma and its path..."
+RUN ls -la /app/src/app/prisma/schema.prisma || echo "schema.prisma NOT found at /app/src/app/prisma/schema.prisma"
+RUN ls -la /app/src/app/prisma || echo "/app/src/app/prisma directory NOT found"
+RUN ls -la /app/src/app || echo "/app/src/app directory NOT found"
+RUN ls -la /app/src || echo "/app/src directory NOT found"
+RUN ls -la /app || echo "/app directory NOT found"
+RUN echo "Finished schema.prisma path check."
+# FINE DEI COMANDI DI DEBUG
+
+# Genera il client Prisma *PRIMA* di eseguire la build di Next.js.
+# Next.js ha bisogno del client generato durante la fase di compilazione.
+RUN npx prisma generate # Genera il client Prisma
+
+# Esegui la build di Next.js
+RUN npm run build 
 
 # Stage 2: Immagine finale leggera per la produzione
 FROM node:20-alpine
