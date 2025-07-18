@@ -15,7 +15,7 @@ export async function GET() {
     return NextResponse.json(
       {
         message: `Fetched ${pages.length} pages`,
-        pages: pages.map((page) => ({
+        pages: pages.map((page: any) => ({
           id: page.id,
           title: page.title,
           content: page.content,

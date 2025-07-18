@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/prisma/client";
-import { taxonomy_type } from "@prisma/client";
+
 
 function getType(url: string): taxonomy_type {
     // Extract the [type] param from the URL path
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(
             {
                 message: `Fetched ${taxonomies.length} taxonomies of type ${type}`,
-                taxonomies: taxonomies.map((taxonomy) => ({
+                taxonomies: taxonomies.map((taxonomy: any) => ({
                     id: taxonomy.id,
                     name: taxonomy.title,
                     description: taxonomy.description || "",
