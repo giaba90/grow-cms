@@ -5,7 +5,7 @@ import prisma from "@/app/prisma/client";
 import bcrypt from "bcryptjs";
 
 export const auth = betterAuth({
-    secret: process.env.BETTER_AUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || process.env.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
@@ -57,6 +57,7 @@ export const auth = betterAuth({
     trustedOrigins: [
         'http://localhost:3000',
         'http://app:3000',
+        process.env.NEXTAUTH_URL || 'https://localhost:3000',
     ],
     plugins: [
         nextCookies(),
