@@ -21,7 +21,7 @@ Resources:
       DBInstanceIdentifier: !Sub ${AppName}-db
       DBInstanceClass: db.t3.micro
       Engine: postgres
-      EngineVersion: '15.4'
+      EngineVersion: '16.10'
       MasterUsername: postgres
       MasterUserPassword: !Ref DBPassword
       AllocatedStorage: 20
