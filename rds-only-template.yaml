@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'GROW CMS RDS PostgreSQL Database'
+
+Parameters:
+  AppName:
+    Type: String
+    Default: grow-cms
+    Description: Name of the application
+  
+  DBPassword:
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    Description: Database password
+
+Resources:
+  # RDS PostgreSQL
+  PostgreSQLDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub ${AppName}-db
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      EngineVersion: '15.4'
+      MasterUsername: postgres
+      MasterUserPassword: !Ref DBPassword
+      AllocatedStorage: 20
+      StorageType: gp2
+      BackupRetentionPeriod: 7
+      MultiAZ: false
+      PubliclyAccessible: true
+      DeletionProtection: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${AppName}-postgresql
+
+Outputs:
+  DatabaseEndpoint:
+    Description: RDS PostgreSQL Endpoint
+    Value: !GetAtt PostgreSQLDB.Endpoint.Address
+    Export:
+      Name: !Sub ${AppName}-db-endpoint
+
+  DatabaseURL:
+    Description: Complete Database URL
+    Value: !Sub 
+      - postgresql://postgres:${DBPassword}@${DBEndpoint}:5432/postgres
+      - DBEndpoint: !GetAtt PostgreSQLDB.Endpoint.Address
+        DBPassword: !Ref DBPassword
