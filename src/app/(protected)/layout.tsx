@@ -24,7 +24,9 @@ export default async function ProtectedLayout({
     if (!session) {
         // Puoi aggiungere un parametro callbackUrl per reindirizzare l'utente
         // alla pagina originale dopo il login, se necessario.
-        const loginUrl = new URL('/login', requestHeaders.get('x-url') || 'http://localhost:3000');
+        const loginUrl = new URL('/login', requestHeaders.get('x-forwarded-proto') && requestHeaders.get('x-forwarded-host') 
+            ? `${requestHeaders.get('x-forwarded-proto')}://${requestHeaders.get('x-forwarded-host')}`
+            : process.env.NEXTAUTH_URL || 'http://localhost:3000');
         // x-url è un header non standard che Next.js può aggiungere per l'URL originale
         // o puoi costruirlo in base a request.nextUrl.pathname nel middleware se lo riattivi
         // Per semplicità qui, usiamo un fallback.
