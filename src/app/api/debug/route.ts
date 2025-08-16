@@ -9,6 +9,12 @@ export async function GET() {
                 DATABASE_URL: process.env.DATABASE_URL ? 'set' : 'missing',
                 NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ? 'set' : 'missing',
                 NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+                BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET ? 'set' : 'missing',
+                allEnvKeys: Object.keys(process.env).filter(key => 
+                    key.includes('DATABASE') || 
+                    key.includes('AUTH') || 
+                    key.includes('NEXT')
+                )
             }
         });
     } catch (error) {
