@@ -17,3 +17,6 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+  env:
+    variables:
+      NODE_ENV: production
